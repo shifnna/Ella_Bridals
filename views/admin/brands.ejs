@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+            color: #e7dddd;
+            padding-top: 20px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .top-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .main-content-body {
+            display: flex;
+            gap: 20px;
+        }
+        .left-section {
+            width: 30%;
+        }
+        .right-section {
+            width: 70%;
+        }
+        .brand-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .brand-form h3 {
+            margin-bottom: 20px;
+        }
+        .brand-form .form-group {
+            margin-bottom: 15px;
+        }
+        .brand-form .form-control, .brand-form .form-control-file {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .brand-form button {
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .brand-form button:hover {
+            background-color: #218838;
+        }
+        .brand-table {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .action-button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="#"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="/admin/addProducts"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <h2>Brands</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <div class="main-content-body">
+                <div class="left-section">
+                    <!-- Brand Form -->
+                    <div class="brand-form">
+                        <h3>Add New Brand</h3>
+                        <form action="/admin/addBrand" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="brandName">Brand Name</label>
+                                <input style="height: 40px;" type="text" class="form-control" id="brandName" name="brandName" placeholder="Type here">
+                            </div>
+                            <div class="form-group">
+                                <label for="brandImage">Brand Image</label>
+                                <img src="" alt=""/>
+                                <input style="height: 40px;" type="file" class="form-control-file" id="brandImage" name="brandImage">
+                            </div>
+                            <button type="submit">Add Brand</button>
+                            <!--  -->
+                       </form>
+                    </div>
+                </div>
+
+                <div class="right-section">
+                    <!-- Brand Details Table -->
+                    <div class="brand-table">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Brand</th>
+                                    <th>Logo</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loop through your brands (assuming you have an array of brand objects) -->
+                                <% data.forEach(function(brand) { %>
+                                <tr>
+                                    <td><%= brand.brandName %></td>
+                                    <td><img src="/imgs/productImages/<%= brand.brandImage[0] %>" alt="brand logo" style="width: 60px; height: 60px; object-fit: cover;"></td>
+                                    <td><span class="brand-status">Active</span></td>
+                                    <td>
+                                        <button class="action-button">Block</button>
+                                        <button class="action-button">Delete</button>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

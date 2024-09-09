@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>signup</title>
+    <title>login</title>
 
     <style>
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans");
@@ -288,28 +288,27 @@ html, body {
 
 </head>
 <body>
-	<form id="signform" action="/signup" method="post">
+	<form id="loginform" action="/login" method="post">
     <div class="form-structor">
         <div class="signup">
-            <h2 class="form-title" id="signup"><span>or</span>Sign up</h2>
-			<% if (locals.message) { %>
-				<div class="alert alert-danger text-center" id="enterUsername">
-				  <%= message %>
-				</div>
-			  <% } %>
+            <h2 class="form-title" id="signup">Login</h2>
             <div class="form-holder">
-                <input type="text" name="name" id="name" class="input" placeholder="Name" />
+                <!-- <input type="text" name="name" id="name" class="input" placeholder="Name" />
+				<div id="error1" class="error-message"></div> -->
+                <input type="email" name="email" id="email" class="input" placeholder="Email" />			
 				<div id="error1" class="error-message"></div>
-                <input type="email" name="email" id="email" class="input" placeholder="Email" />
-				<div id="error3" class="error-message"></div>
-                <input type="text" name="phone" id="phone" class="input" placeholder="phone" />
-				<div id="error2" class="error-message"></div>
+
                 <input type="password" name="password" id="password" class="input" placeholder="Password" />
-				<div id="error4" class="error-message"></div>
-                <input type="password" name="cpassword" id="cpassword" class="input" placeholder="confirm Password" />
-				<div id="error5" class="error-message"></div>
+				<div id="error2" class="error-message"></div>
+                
             </div>
-            <button type="submit" class="submit-btn">Sign up</button>
+            <%if(locals.message && message.length>0){%>
+                <div class="alert alert-danger text-center">
+                  <%=message%>
+                </div>
+                <%}%>
+            <button type="submit" class="submit-btn">login</button>
+            <span style="margin-left: 50px;">forgot password?</span>
         </div>
 
         <div class="login slide-up">
@@ -317,11 +316,11 @@ html, body {
 				<span style="color: rgb(37, 37, 159);">  or use your google account</span>
 				<a href="/auth/google"> <img style="height: 28px;width: 34px;margin-left: 85px;" src="img/google.png"></a>
                 <h2 class="form-title" id="login"><span>or</span>Log in</h2>
-                <div class="form-holder">
+                <!-- <div class="form-holder">
                     <input type="email" class="input" placeholder="Email" />
                     <input type="password" class="input" placeholder="Password" />
                 </div>
-                <button class="submit-btn">Log in</button>
+                <button class="submit-btn">Log in</button> -->
             </div>
         </div>
 
@@ -359,134 +358,51 @@ signupBtn.addEventListener('click', (e) => {
 
 
 
-
-//form stuffs
-
-const nameid = document.getElementById("name");
-const phoneid = document.getElementById("phone");
-const passwordid = document.getElementById("password");
 const emailid = document.getElementById("email");
-const cpasswordid = document.getElementById("cpassword");
+      const passid = document.getElementById("password");
+      const error1 = document.getElementById("error1");
+      const error2 = document.getElementById("error2");
+      const loginform = document.getElementById("loginform");
 
-const error1 = document.getElementById("error1");
-const error2 = document.getElementById("error2");
-const error3 = document.getElementById("error3");
-const error4 = document.getElementById("error4");
-const error5 = document.getElementById("error5");
+      function emailValidateChecking(e) {
+        const emailval = emailid.value;
+        const emailpattern =
+          /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
 
-const signform = document.getElementById("signform");
+        if (!emailpattern.test(emailval)) {
+          error1.style.display = "block";
+          error1.innerHTML = "Invalid Format";
+        } else {
+          error1.style.display = "none";
+          error1.innerHTML = "";
+        }
+      }
 
+      function passValidateChecking(e) {
+        const passval = passid.value;
+        if (passval.length < 8) {
+          error2.style.display = "block";
+          error2.innerHTML = "Should contain at least 8 characters";
+        } else {
+          error2.style.display = "none";
+          error2.innerHTML = "";
+        }
+      }
 
+      document.addEventListener("DOMContentLoaded", function () {
+        loginform.addEventListener("submit", function (e) {
+          emailValidateChecking();
+          passValidateChecking();
 
+          if (!emailid || !passid || !error1 || !error2 || !loginform) {
+            console.error("One or more elements not found");
+          }
 
-function nameValidateChecking(e) {
- const nameval = nameid.value;
- const namepattern = /^[a-zA-Z]+(?:[\s'-][a-zA-Z]+)*$/;
-
- if(nameval.trim()==""){
-	   error1.style.display="block" ;
-	   error1.innerHTML="please enter a valid name" 
- }else if(!namepattern.test(nameval)){
-	 error1.style.display="block" ;
-	 error1.innerHTML="name can only contain Alphabets and spaces" 
- }else{
-	 error1.style.display="none" ;
-	 error1.innerHTML="";
- }
-
-}
-
-
-function emailValidateChecking(e) {
- const emailval = emailid.value;
- const emailpattern =  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
- if(emailval.trim()==""){
-	   error3.style.display="block" ;
-	   error3.innerHTML="please enter a valid name" 
- }else if(!emailpattern.test(emailval)){
-	 error3.style.display="block" ;
-	 error3.innerHTML="Invalid Format" 
- }else{
-	 error3.style.display="none" ;
-	 error3.innerHTML="";
- }
-
-}
-
-
-
-
-function phoneValidateChecking(e) {
-const phoneval = phoneid.value.trim();
-const phonepattern = /^[0-9]{10}$/;
-
-if (phoneval.trim() === "") {
-	error2.style.display = "block";
-	error2.innerHTML = "Please enter a phone number";
-} else if (!phonepattern.test(phoneval)) {
-	error2.style.display = "block";
-	error2.innerHTML = "Phone number must be exactly 10 digits";
-} else {
-	error2.style.display = "none";
-	error2.innerHTML = "";
-}
-}
-
-
-
-
-function passValidateChecking(e) {
- const passval = passwordid.value;
- const cpassval = cpasswordid.value;
- const alpha = /[a-zA-Z]/;
- const digit = /\d/;
-
- if(passval.trim()==""){
-	   error4.style.display="block" ;
-	   error4.innerHTML="please enter a password" 
- }else if(passval.length<6){
-	 error4.style.display="block" ;
-	 error4.innerHTML="Password should contain atleast 6 characters" ;
- }else if(!alpha.test(passval) || !digit.test(passval)){
-	 error4.style.display="block" ;
-	 error4.innerHTML="Password should contain numbers and letters" 
- }else{
-	 error4.style.display="none" ;
-	 error4.innerHTML="";
- }
-
- if(passval!==cpassval){
-	 error5.style.display="block" ;
-	 error5.innerHTML="Password do not match" 
- }else{
-	 error5.style.display="none" ;
-	 error5.innerHTML="";
- }
-
-}
-
-
-document.addEventListener("DOMContentLoaded",function(){
- signform.addEventListener("submit",function(e){
-
-	 nameValidateChecking();
-	 phoneValidateChecking();
-	 emailValidateChecking();
-	 passValidateChecking();
-
-	 if( !nameid || !phoneid || !passwordid || !emailid || !cpasswordid ||
-		 !error1 || !error2 || !error3 || !error4 || !error5 || !signform ){//ithokke define cheyyunnath aaa defined functions nte ullil aahnnn	        
-		 console.error("One or more elemens are not found");			
-	 }
-
-	 //eee error div kalil error value und (true) anoo enn nokkan
-	 if( error1.innerHTML || error2.innerHTML || error3.innerHTML || error4.innerHTML || error5.innerHTML ){
-			   e.preventDefault() //submission block cheyyunnu
-	 }
-
- })
-})
+          if (error1.innerHTML || error2.innerHTML) {
+            e.preventDefault();
+          }
+        });
+      });
 
     </script>
 

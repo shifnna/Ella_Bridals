@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .breadcrumb {
+            font-size: 18px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .dashboard {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-box {
+            margin-top: 20px;
+        }
+        .search-add-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-add-container .add-category-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .search-add-container .add-category-btn:hover {
+            background-color: #218838;
+        }
+        .search-add-container input {
+            width: 60%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .search-add-container button {
+            display: inline-block;
+            padding: 10px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .search-add-container button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        td{
+            font-size: medium;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        .action-buttons button, .edit-button, .offer-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        .action-buttons button:hover, .edit-button:hover, .offer-button:hover {
+            background-color: #2980b9;
+        }
+        .remove-button {
+            background-color: #e74c3c;
+        }
+        .remove-button:hover {
+            background-color: #c0392b;
+        }
+        .block-button {
+            background-color: #e67e22;
+            
+        }
+        .block-button:hover {
+            background-color: #d35400;
+        }
+        .unblock-button {
+            background-color: #2ecc71;
+        }
+        .unblock-button:hover {
+            background-color: #27ae60;
+        }
+        .offer-button {
+            background-color: #28465b;
+        }
+        .offer-button:hover {
+            background-color: #e67e22;
+        }
+        .edit-button {
+            background-color: #3498db;
+        }
+        .edit-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="#"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="top-header">
+                <h2>Inventory Management</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Brand</th>
+                                <th>Category</th>
+                                <th>Sale Price</th>
+                                <th>Offers %</th>
+                                <th></th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Caps</td>
+                                <td>Brand A</td>
+                                <td>Accessories</td>
+                                <td>$10</td>
+                                <td>5%</td>
+                                <td><button class="offer-button">Add Offer</button></td>
+                                <td>3</td>
+                                <td>
+                                    <button class="edit-button" style="background-color: #d35400;width: 80px;">Block</button>
+                                </td>
+                                <td>
+                                    <button style="width: 80px;" class="edit-button">Edit</button>
+                                </td>
+                            </tr>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

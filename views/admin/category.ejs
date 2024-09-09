@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .breadcrumb {
+            font-size: 18px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .dashboard {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-box {
+            margin-top: 20px;
+        }
+        .search-add-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-add-container .add-category-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .search-add-container .add-category-btn:hover {
+            background-color: #218838;
+        }
+        .search-add-container input {
+            width: 60%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .search-add-container button {
+            display: inline-block;
+            padding: 10px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .search-add-container button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .action-button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="#"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="top-header">
+                <h2>Category Management</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <div class="search-add-container">
+                <a href="/admin/addCategory" class="add-category-btn">+ Add Category</a>
+                <form action="/admin/categories/" method="get" class="d-inline">
+                    <input name="search" type="text" placeholder="Search categories...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+
+            <div class="dashboard">
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Offer Price</th>
+                                <th>Offer</th>
+                                <th>Status</th>
+                                <th>List/Unlist</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% cat.reverse().forEach((category, index) => { %>
+                                <tr>
+                                    <td><%=category.name %></td>
+                                    <td><%=category.description %></td>
+                                    <td> 
+                                        <% if(category.categoryOffer){ %>
+                                            <%=category.categoryOffer%>
+                                        <% } else { %>
+                                            0%
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if(!category.categoryOffer){ %>
+                                            <button class="btn btn-info" style="width: 100px">
+                                                <a href="#" class="text-white" onclick="addOffer('<%=category._id%>')">Add Offer</a>
+                                            </button>
+                                        <% } else { %>
+                                            <button class="btn btn-info" style="width: 100px">
+                                                <a href="#" class="text-white" onclick="removeOffer('<%=category._id %>')">Remove</a>
+                                            </button>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if(category.isListed){ %>
+                                            <span class="badge rounded-pill alert-success" style="width: 60px">Listed</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill alert-danger" style="width: 60px">Unlisted</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if(category.isListed){ %>
+                                            <button class="btn btn-danger" style="width: 70px">
+                                                <a href="/admin/unlistCategory?id=<%=category._id%>" class="text-white">Unlist</a>
+                                            </button>
+                                        <% } else { %>
+                                            <button class="btn btn-success" style="width: 70px">
+                                                <a href="/admin/listCategory?id=<%=category._id%>" class="text-white">List</a>
+                                            </button>
+                                        <% } %>
+                                    </td>
+                                    <td class="text-start">
+                                        <a href="/admin/editCategory?id=<%=category._id%>" class="btn btn-info text-white">Edit</a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination-container">
+                    <% if (currentPage > 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>">Previous</a>
+                    <% } %>
+                    <span>Page <%= currentPage %> of <%= totalPages %></span>
+                    <% if (currentPage < totalPages) { %>
+                        <a href="?page=<%= currentPage + 1 %>">Next</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        
+async function addOffer(categoryId) {
+    const {value:amount} = await Swal.fire({
+        title:"offer in percentage",
+        input:"number",
+        inputLabel:'Percentage',
+        inputPlaceholder:"%",
+    });
+
+    if(amount){
+        try {
+            const response = await fetch("/admin/addCategoryOffer",{
+                method:"POST",
+                headers:{
+                    'content-type':"application/json"
+                },
+                body:JSON.stringify({
+                    percentage:amount,
+                    categoryId:categoryId,
+                }),
+            });
+
+        const data = await response.json();
+            if(response.ok && data.status === true){
+                Swal.fire(
+                    "offer added",
+                    "the offer has been added",
+                    "success"
+                ).then(()=>{
+                   location.reload()
+                })
+            }else{
+                Swal.fire("failed",data.message || "Adding Offer Failed","error")
+            }
+        } catch (error) {
+            Swal.fire(
+                "Error",
+                "An error occured while adding the offer",
+                "error"
+            );
+            console.log("error adding offer",error);
+            
+        }
+    }
+}
+
+
+
+async function removeOffer(categoryId){
+    try {
+        const response= await fetch("/admin/removeCategoryOffer",{
+            method:"POST",
+            headers:{
+                "content-type":"application/json"
+            },
+            body:JSON.stringify({
+                categoryId:categoryId
+            })
+        })
+
+        const data= await response.json();
+
+        if(response.ok && data.status === true){
+                Swal.fire(
+                    "offer removed",
+                    "the offer has been removed",
+                    "success"
+                ).then(()=>{
+                   location.reload()
+                })
+            }else{
+                Swal.fire("failed",data.message || "Removing Offer Failed","error")
+            }
+
+    } catch (error) {
+         Swal.fire(
+                "Error",
+                "An error occured while removing the offer",
+                "error"
+            );
+            console.log("error removing offer",error);
+            
+        }
+      }
+
+
+      
+    </script>
+</body>
+</html>

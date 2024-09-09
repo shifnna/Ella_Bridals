@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store - Add Category</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar with dark theme */
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+
+        /* Main Content with light theme */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .breadcrumb {
+            font-size: 18px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .dashboard {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form styling */
+        .form-container {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="#"><i class="fas fa-plus"></i> Add Product</a></li>
+                <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <h2>Add New Category</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div class="form-container">
+                <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
+                    <div class="mb-4">
+                        <label for="product_name" class="form-label">Name</label>
+                        <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required/>
+                        <div id="name-error" class="error-message"></div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Description</label>
+                        <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId" required></textarea>
+                        <div id="description-error" class="error-message"></div>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn btn-primary" type="submit">
+                            Create Category
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <% if (messages.length > 0) { %>
+        <div class="messages">
+            <% messages.forEach((message) => { %>
+                <div class="message <%= message.type %>"><%= message.text %></div>
+            <% }) %>
+        </div>
+    <% } %>
+
+    
+    <script>
+        // Function to handle form validation before submitting
+        function handleFormSubmit(event) {
+            // Prevent default form submission
+            event.preventDefault();
+
+            // Clear any previous error messages
+            document.getElementById("name-error").textContent = '';
+            document.getElementById("description-error").textContent = '';
+
+            // Get form values
+            const name = document.getElementById("product_name").value.trim();
+            const description = document.getElementById("descriptionId").value.trim();
+
+            let hasError = false;
+
+            // Name validation
+            if (name.length < 3) {
+                document.getElementById("name-error").textContent = 'Name must be at least 3 characters long.';
+                hasError = true;
+            }
+
+            // Description validation
+            if (description.length < 5) {
+                document.getElementById("description-error").textContent = 'Description must be at least 5 characters long.';
+                hasError = true;
+            }
+
+            // If no validation errors, submit the form
+            if (!hasError) {
+                event.target.submit();
+            }
+        }
+    </script>
+</body>
+</html>

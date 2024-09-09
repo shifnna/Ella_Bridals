@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .breadcrumb {
+            font-size: 18px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .dashboard {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-box {
+            margin-top: 20px;
+        }
+        .table-box input {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        .action-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .action-button:hover {
+            background-color: darkred;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 0; 
+            list-style: none;
+        }
+        .page-item {
+            margin: 0 5px;
+            list-style: none;
+            margin-right: 70px;
+        }
+        .page-link {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+        .active .page-link {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="#"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <h2>Customers</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard">
+                <!-- Table Box -->
+                <div class="table-box">
+                    <form action="/admin/customers/" method="get" class="d-inline">
+                        <input style="width: 93%;" name="search" type="text" placeholder="Search...">
+                        <button style="display: inline;padding: 9.7px;width: 78px;" class="btn border-0" type="submit">submit</button>
+                    </form>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone No.</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (let i = 0; i < data.length; i++) { %>
+                            <tr>
+                                <td><%= i + 1 %></td>
+                                <td><%= data[i].name %></td>
+                                <td><%= data[i].email %></td>
+                                <td><%= data[i].phone %></td>
+                                <td>
+                                    <% if (data[i].isBlocked === false) { %>
+                                        <button class="btn btn-danger" style="background-color: rgb(119, 170, 119); width: 100px;border: none;height: 30px;">
+                                            <a href="/admin/blockCustomer?id=<%= data[i]._id %>" class="text-white" style="text-decoration: none;color: white;">Block</a>
+                                        </button>
+                                    <% } else { %>
+                                        <button class="btn btn-success" style="background-color: rgb(206, 82, 82); width: 100px;border: none;height: 30px;">
+                                            <a href="/admin/unblockCustomer?id=<%= data[i]._id %>" class="text-white" style="text-decoration: none;color: white;">Unblock</a>
+                                        </button>
+                                    <% } %> 
+                                </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination Section -->
+                    <div class="pagination">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= (i === parseInt(currentpage)) ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>&search="><%= i %></a>
+                            </li>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
