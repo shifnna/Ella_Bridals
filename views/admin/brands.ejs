@@ -106,6 +106,9 @@
         .brand-form button:hover {
             background-color: #218838;
         }
+        .blockButton{
+
+        }
         .brand-table {
             background-color: #fff;
             padding: 20px;
@@ -127,7 +130,7 @@
             background-color: #f2f2f2;
         }
         .action-button {
-            background-color: red;
+            background-color: rgb(205, 67, 67);
             color: white;
             border: none;
             padding: 5px 10px;
@@ -137,6 +140,49 @@
         .action-button:hover {
             background-color: darkred;
         }
+        /* General button styling for consistency */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* Remove underline from links inside buttons */
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Red color for danger buttons */
+}
+
+.btn-danger:hover {
+    background-color: #ad212f; /* Darker red for danger buttons */
+}
+
+.btn-success {
+    background-color: #28a745; /* Green color for success buttons */
+}
+
+.btn-success:hover {
+    background-color: #218838; /* Darker green for success buttons */
+}
+
+.btn-block {
+    width: 90px; /* Same width as specified in the inline style */
+    margin-right: 5px; /* Space between buttons */
+}
+button a {
+    text-decoration: none; /* Remove underline from links inside buttons */
+    color: white; /* Set text color to white */
+}
+
+button:hover a {
+    color: white; /* Ensure text color remains white on hover */
+}
     </style>
 </head>
 <body>
@@ -201,24 +247,56 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Loop through your brands (assuming you have an array of brand objects) -->
-                                <% data.forEach(function(brand) { %>
-                                <tr>
-                                    <td><%= brand.brandName %></td>
-                                    <td><img src="/imgs/productImages/<%= brand.brandImage[0] %>" alt="brand logo" style="width: 60px; height: 60px; object-fit: cover;"></td>
-                                    <td><span class="brand-status">Active</span></td>
-                                    <td>
-                                        <button class="action-button">Block</button>
-                                        <button class="action-button">Delete</button>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                            </tbody>
+    <% data.forEach(function(brand) { %>
+    <tr>
+        <td><%= brand.brandName %></td>
+        <td><img src="/imgs/productImages/<%= brand.brandImage[0] %>" alt="brand logo" style="width: 60px; height: 60px; object-fit: cover;"></td>
+        <td>
+            <% if (brand.isBlocked === true) { %>
+                <span class="badge rounded-pill alert-danger" style="width: 60px">Blocked</span>
+            <% } else { %>
+                <span class="badge rounded-pill alert-success" style="width: 60px">Active</span>
+            <% } %>
+        </td>
+        <td>
+            <% if(brand.isBlocked === false){ %>
+                <button class="btn btn-danger btn-block" onclick="return confirmBlock()">
+                    <a href="/admin/blockBrand?id=<%= brand._id %>" class="text-white">Block</a>
+                </button>
+            <% } else { %>
+                <button class="btn btn-success btn-block" onclick="return confirmUnblock()">
+                    <a href="/admin/unBlockBrand?id=<%= brand._id %>" class="text-white">Unblock</a>
+                </button>
+            <% } %>
+            <button class="btn btn-danger btn-block" onclick="return confirmDelete()">
+                <a href="/admin/deleteBrand?id=<%= brand._id %>" class="text-white">Delete</a>
+            </button>
+        </td>
+    </tr>
+    <% }) %>
+</tbody>
+
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+
+        function confirmDelete(){
+          return confirm("are you sure you want to delete this brand?")
+        }
+        
+        function confirmBlock(){
+  return confirm("are you sure you want to Block this brand?")
+}
+
+function confirmUnblock(){
+  return confirm("are you sure you want to UnBlock this brand?")
+}
+    </script>
+
 </body>
 </html>

@@ -138,6 +138,33 @@
         .action-button:hover {
             background-color: darkred;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 0; 
+            list-style: none;
+        }
+        .page-item {
+            margin: 0 5px;
+            list-style: none;
+            margin-right: 70px;
+        }
+        .page-link {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+        .active .page-link {
+            background-color: #007bff;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -167,8 +194,8 @@
 
             <div class="search-add-container">
                 <a href="/admin/addCategory" class="add-category-btn">+ Add Category</a>
-                <form action="/admin/categories/" method="get" class="d-inline">
-                    <input name="search" type="text" placeholder="Search categories...">
+                <form action="/admin/category" method="get" class="d-inline">
+                    <input style="width: 400px;" name="search" type="text" placeholder="Search categories...">
                     <button type="submit">Search</button>
                 </form>
             </div>
@@ -182,7 +209,8 @@
                                 <th>Description</th>
                                 <th>Offer Price</th>
                                 <th>Offer</th>
-                                <th>Status</th>
+                                <th></th>
+                                <th>status</th>
                                 <th>List/Unlist</th>
                                 <th>Edit</th>
                             </tr>
@@ -192,9 +220,10 @@
                                 <tr>
                                     <td><%=category.name %></td>
                                     <td><%=category.description %></td>
+                                    <td></td>
                                     <td> 
                                         <% if(category.categoryOffer){ %>
-                                            <%=category.categoryOffer%>
+                                            <%=category.categoryOffer%>%
                                         <% } else { %>
                                             0%
                                         <% } %>
@@ -219,11 +248,11 @@
                                     </td>
                                     <td>
                                         <% if(category.isListed){ %>
-                                            <button class="btn btn-danger" style="width: 70px">
+                                            <button class="btn btn-danger" style="width: 70px" onclick="return confirmUnlist()">
                                                 <a href="/admin/unlistCategory?id=<%=category._id%>" class="text-white">Unlist</a>
                                             </button>
                                         <% } else { %>
-                                            <button class="btn btn-success" style="width: 70px">
+                                            <button class="btn btn-success" style="width: 70px" onclick="return confirmlist()">
                                                 <a href="/admin/listCategory?id=<%=category._id%>" class="text-white">List</a>
                                             </button>
                                         <% } %>
@@ -235,17 +264,17 @@
                             <% }); %>
                         </tbody>
                     </table>
-                </div>
 
-                <div class="pagination-container">
-                    <% if (currentPage > 1) { %>
-                        <a href="?page=<%= currentPage - 1 %>">Previous</a>
-                    <% } %>
-                    <span>Page <%= currentPage %> of <%= totalPages %></span>
-                    <% if (currentPage < totalPages) { %>
-                        <a href="?page=<%= currentPage + 1 %>">Next</a>
-                    <% } %>
                 </div>
+             <!-- pagination -->
+                <div class="pagination">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= (i === parseInt(currentPage)) ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                    </div>
+                    
             </div>
         </div>
     </div>
@@ -254,50 +283,61 @@
 
     <script>
         
-async function addOffer(categoryId) {
-    const {value:amount} = await Swal.fire({
-        title:"offer in percentage",
-        input:"number",
-        inputLabel:'Percentage',
-        inputPlaceholder:"%",
+        async function addOffer(categoryId) {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to add an offer to this category?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, add offer!',
+        cancelButtonText: 'Cancel'
     });
 
-    if(amount){
-        try {
-            const response = await fetch("/admin/addCategoryOffer",{
-                method:"POST",
-                headers:{
-                    'content-type':"application/json"
-                },
-                body:JSON.stringify({
-                    percentage:amount,
-                    categoryId:categoryId,
-                }),
-            });
+    if (confirmation.isConfirmed) {
+        const { value: amount } = await Swal.fire({
+            title: "Offer in percentage",
+            input: "number",
+            inputLabel: 'Percentage',
+            inputPlaceholder: "%",
+        });
 
-        const data = await response.json();
-            if(response.ok && data.status === true){
+        if (amount) {
+            try {
+                const response = await fetch("/admin/addCategoryOffer", {
+                    method: "POST",
+                    headers: {
+                        'content-type': "application/json"
+                    },
+                    body: JSON.stringify({
+                        percentage: amount,
+                        categoryId: categoryId,
+                    }),
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status === true) {
+                    Swal.fire(
+                        "Offer added",
+                        "The offer has been added successfully",
+                        "success"
+                    ).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire("Failed", data.message || "Adding offer failed", "error");
+                }
+            } catch (error) {
                 Swal.fire(
-                    "offer added",
-                    "the offer has been added",
-                    "success"
-                ).then(()=>{
-                   location.reload()
-                })
-            }else{
-                Swal.fire("failed",data.message || "Adding Offer Failed","error")
+                    "Error",
+                    "An error occurred while adding the offer",
+                    "error"
+                );
+                console.log("Error adding offer:", error);
             }
-        } catch (error) {
-            Swal.fire(
-                "Error",
-                "An error occured while adding the offer",
-                "error"
-            );
-            console.log("error adding offer",error);
-            
         }
     }
 }
+
 
 
 
@@ -339,6 +379,14 @@ async function removeOffer(categoryId){
       }
 
 
+      function confirmUnlist(){
+        return confirm("Are you sure you want to Unlist the products")
+      }
+
+      function confirmlist(){
+        return confirm("Are you sure you want to list the products")
+      }
+      
       
     </script>
 </body>

@@ -44,6 +44,11 @@ router.post("/editCategory/:id",categoryController.editCategory);
 
 
 router.post("/addBrand",uploads.single("brandImage"),brandController.addBrand);
+router.post("/addProducts",uploads.array('images',4),productController.addProducts);
+router.get("/blockBrand",brandController.blockBrand);
+router.get("/unBlockBrand",brandController.unBlockBrand);
+router.get("/deleteBrand",brandController.deleteBrand);
+router.post('/addProducts', uploads.array('images', 4), productController.addProducts);
 
 
 module.exports = router;

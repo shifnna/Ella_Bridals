@@ -11,7 +11,7 @@ const loadCustomers = async (req,res)=>{
         if(req.query.page){
             page=req.query.page;
         }
-        const limit = 3;
+        const limit = 10;
 
         const userData = await User.find({
             isAdmin:false,
@@ -32,7 +32,7 @@ const loadCustomers = async (req,res)=>{
     
     const totalPages = Math.ceil(count / limit);
 
-    res.render("customers", { data: userData,totalPages: totalPages,currentpage: page })
+    res.render("customers", { data: userData, totalPages: totalPages, currentpage: page, search: search });
 
     } catch (error) {
         console.error(error);

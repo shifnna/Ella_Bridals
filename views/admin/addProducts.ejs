@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Womenz Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -173,7 +175,7 @@
             <!-- Product Form -->
             <div class="product-form">
                 <h3>Product Details</h3>
-                <form action="/admin/addProducts" method="POST" enctype="multipart/form-data">
+                <form action="/admin/addProducts" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="productName">Product Name</label>
@@ -188,13 +190,14 @@
                         <div class="form-group">
                             <label for="category">Category</label>
                             <select class="form-control" id="category" name="category" required>
-                                <option value="">Select category</option>
-                                <!-- Add options dynamically here -->
+                                <% for(let i=0; i<cat.length; i++) { %>
+                                <option value="<%=cat[i].name%>"><%=cat[i].name%></option>
+                                <%}%>
                             </select>
                         </div>
                         <div class="form-group full-width">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter description" required></textarea>
+                            <textarea class="form-control" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea>
                         </div>
                     </div>
                     <div class="form-row">
@@ -232,27 +235,158 @@
                         </div>
                     </div>
                     <div class="form-row img-upload">
+                        <% for (let i = 1; i <= 4; i++) { %>
                         <div class="form-group">
                             <label for="image1">Image 1</label>
-                            <input type="file" class="form-control-file" id="image1" name="images[]" accept="image/*">
+                            <img src="" alt="" id="imgView<%= i %>">
+                            <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, `<%= i %>`)">
                         </div>
-                        <div class="form-group">
-                            <label for="image2">Image 2</label>
-                            <input type="file" class="form-control-file" id="image2" name="images[]" accept="image/*">
+                        <div class="image-cropper d-flex align-items-center" style="display:none;">
+                            <img  src="" id="croppedImg<%= i %>" alt="">
+                            <button type="button" id="saveButton<%= i %>" class="btn-sm btn-primary">Save</button>
                         </div>
-                        <div class="form-group">
-                            <label for="image3">Image 3</label>
-                            <input type="file" class="form-control-file" id="image3" name="images[]" accept="image/*">
-                        </div>
-                        <div class="form-group">
-                            <label for="image4">Image 4</label>
-                            <input type="file" class="form-control-file" id="image4" name="images[]" accept="image/*">
-                        </div>
+
+                    <% } %>
                     </div>
-                    <button type="submit">Add Product</button>
+                     <button type="submit" onclick="validateAndSubmit()">Add Product</button>
                 </form>
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+         function validateAndSubmit() {
+        if (validateForm()) {
+            document.forms[0].submit();
+        }
+    }
+
+    function viewImage(event, index) {
+        let input = event.target;
+        let reader = new FileReader();
+
+        reader.onload = function() {
+            let dataURL = reader.result;
+            let image = document.getElementById("imgView" + index);
+            image.src = dataURL;
+
+            let cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                guides: true,
+                background: false,
+                autoCropArea: 1,
+                zoomable: true
+            });
+
+            let cropperContainer = document.querySelector("#croppedImg" + index).parentNode;
+            cropperContainer.style.display = 'block';
+
+            let saveButton = document.querySelector('#saveButton' + index);
+            saveButton.addEventListener("click", async function() {
+                let croppedCanvas = cropper.getCroppedCanvas();
+                let croppedImage = document.getElementById("croppedImg" + index);
+                croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+
+                let timestamp = new Date().getTime();
+                let fileName = `cropped-img-${timestamp}-${index}.png`;
+
+                await croppedCanvas.toBlob(blob => {
+                    let imgFile = new File([blob], fileName, { type: 'image/png' });
+                    const fileList = new DataTransfer();
+                    fileList.items.add(imgFile);
+                    input.files = fileList.files;
+                });
+
+                cropperContainer.style.display = 'none';
+                cropper.destroy();
+            });
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function clearErrorMessages() {
+        document.querySelectorAll('.error-message').forEach(function(el) {
+            el.innerHTML = '';
+        });
+    }
+
+    function displayErrorMessage(id, message) {
+        document.getElementById(id).innerHTML = message;
+    }
+
+    function validateForm() {
+        clearErrorMessages();
+        const name = document.getElementsByName('productName')[0].value;
+        const description = document.getElementById('descriptionid').value;
+        const brand = document.getElementsByName('brand')[0].value;
+        const price = document.getElementsByName('regularPrice')[0].value;
+        const salePrice = document.getElementsByName('salePrice')[0].value;
+        const color = document.getElementsByName('color')[0].value;
+        const category = document.getElementsByName('category')[0].value;
+        const quantity = document.getElementsByName('quantity')[0].value;
+        const images = document.getElementById('input1').files;
+
+        let isValid = true;
+
+        if (name.trim() === "") {
+            displayErrorMessage('productName-error', 'Please enter a product name.');
+            isValid = false;
+        }
+
+        if (description.trim() === "") {
+            displayErrorMessage('description-error', 'Please enter a description.');
+            isValid = false;
+        }
+
+        if (brand.trim() === "") {
+            displayErrorMessage('brand-error', 'Please select a brand.');
+            isValid = false;
+        }
+
+        if (price.trim() === "") {
+            displayErrorMessage('regularPrice-error', 'Please enter a regular price.');
+            isValid = false;
+        } else if (isNaN(price)) {
+            displayErrorMessage('regularPrice-error', 'Regular price should be a numeric value.');
+            isValid = false;
+        }
+
+        if (salePrice.trim() !== "" && isNaN(salePrice)) {
+            displayErrorMessage('salePrice-error', 'Sale price should be a numeric value.');
+            isValid = false;
+        }
+
+        if (color.trim() === "") {
+            displayErrorMessage('color-error', 'Please enter a color.');
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]+$/.test(color.trim())) {
+            displayErrorMessage('color-error', 'Color should contain only alphabetic characters.');
+            isValid = false;
+        }
+
+        if (category.trim() === "") {
+            displayErrorMessage('category-error', 'Please select a category.');
+            isValid = false;
+        }
+
+        if (quantity.trim() === "") {
+            displayErrorMessage('quantity-error', 'Please enter a quantity.');
+            isValid = false;
+        } else if (isNaN(quantity)) {
+            displayErrorMessage('quantity-error', 'Quantity should be a numeric value.');
+            isValid = false;
+        }
+
+        if (images.length === 0) {
+            displayErrorMessage('images-error', 'Please upload at least one image.');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    </script>
+
 </body>
 </html>

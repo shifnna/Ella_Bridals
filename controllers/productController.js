@@ -78,8 +78,8 @@ const addProducts = async (req, res) => {
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
                     // Corrected path: Navigate two levels up to reach project root
-                    const originalImagePath = path.join(__dirname, '../../public/admin-assets/imgs/productImages', req.files[i].filename);
-                    const resizedImagePath = path.join(__dirname, '../../public/uploads/product-images', `resized-${req.files[i].filename}`);
+                    const originalImagePath = path.join(__dirname, '../public/imgs/productImages', req.files[i].filename);
+                    const resizedImagePath = path.join(__dirname, '../public/imgs/re-images', `resized-${req.files[i].filename}`);
 
                     if (!fs.existsSync(originalImagePath)) {
                         console.error("File not found:", originalImagePath);
@@ -102,7 +102,8 @@ const addProducts = async (req, res) => {
             }
 
             const categoryId = await Category.findOne({ name: products.category });
-
+            // const categoryId = await Category.find({ isListed: true });
+            // const brand = await Brand.find({ isBlocked: false });
             if (!categoryId) {
                 return res.status(400).json('Invalid category name');
             }
