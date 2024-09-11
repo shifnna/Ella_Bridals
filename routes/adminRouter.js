@@ -32,7 +32,6 @@ router.post("/addCategory",categoryController.addCategory);
 router.get("/brands",brandController.loadBrands);
 router.get("/addProducts",productController.getProductAddPage);
 router.get("/products",productController.loadProducts);
-router.post("/addProducts",productController.addProducts);
 
 
 router.post("/addCategoryOffer",categoryController.addCategoryOffer);

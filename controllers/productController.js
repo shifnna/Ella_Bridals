@@ -77,13 +77,16 @@ const addProducts = async (req, res) => {
 
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
-                    // Corrected path: Navigate two levels up to reach project root
                     const originalImagePath = path.join(__dirname, '../public/imgs/productImages', req.files[i].filename);
                     const resizedImagePath = path.join(__dirname, '../public/imgs/re-images', `resized-${req.files[i].filename}`);
 
-                    if (!fs.existsSync(originalImagePath)) {
-                        console.error("File not found:", originalImagePath);
-                        return res.status(400).send("File not found");
+                    // Validate image format
+                    const validFormats = ['jpg', 'jpeg', 'png', 'webp', 'tiff', 'gif'];
+                    const fileExtension = path.extname(req.files[i].filename).toLowerCase().replace('.', '');
+
+                    if (!validFormats.includes(fileExtension)) {
+                        console.error("Unsupported image format:", fileExtension);
+                        return res.status(400).send("Unsupported image format");
                     }
 
                     // Ensure the directory for resized images exists
@@ -92,7 +95,7 @@ const addProducts = async (req, res) => {
                         fs.mkdirSync(dir, { recursive: true });
                     }
 
-                    // Resize the image and save it to the resizedImagePath
+                    // Resize the image using sharp
                     await sharp(originalImagePath)
                         .resize({ width: 440, height: 440 })
                         .toFile(resizedImagePath);
@@ -102,8 +105,6 @@ const addProducts = async (req, res) => {
             }
 
             const categoryId = await Category.findOne({ name: products.category });
-            // const categoryId = await Category.find({ isListed: true });
-            // const brand = await Brand.find({ isBlocked: false });
             if (!categoryId) {
                 return res.status(400).json('Invalid category name');
             }
@@ -125,7 +126,6 @@ const addProducts = async (req, res) => {
 
             await newProduct.save();
             return res.redirect("/admin/addProducts");
-
         } else {
             return res.status(400).json("Product already exists. Please try with another name.");
         }
