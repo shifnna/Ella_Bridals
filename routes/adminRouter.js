@@ -49,5 +49,9 @@ router.get("/unBlockBrand",brandController.unBlockBrand);
 router.get("/deleteBrand",brandController.deleteBrand);
 router.post('/addProducts', uploads.array('images', 4), productController.addProducts);
 
+router.post("/removeProductOffer",productController.removeProductOffer)
+router.post("/addProductOffer",productController.addProductOffer);
+router.get("/blockProduct",productController.blockProduct);
+router.get("/unblockProduct",productController.unblockProduct);
 
 module.exports = router;

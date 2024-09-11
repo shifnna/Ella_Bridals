@@ -171,6 +171,33 @@
         .edit-button:hover {
             background-color: #2980b9;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 0; 
+            list-style: none;
+        }
+        .page-item {
+            margin: 0 5px;
+            list-style: none;
+            margin-right: 70px;
+        }
+        .page-link {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+        .active .page-link {
+            background-color: #007bff;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -192,7 +219,7 @@
 
         <div class="main-content">
             <div class="top-header">
-                <h2>Inventory Management</h2>
+                <h2>Products Details</h2>
                 <div class="profile">
                     <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
                 </div>
@@ -208,6 +235,7 @@
                                 <th>Category</th>
                                 <th>Sale Price</th>
                                 <th>Offers %</th>
+                                <th>Offer Price</th>
                                 <th></th>
                                 <th>Quantity</th>
                                 <th>Action</th>
@@ -215,27 +243,133 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <% data.forEach(function(products) { %>
                             <tr>
-                                <td>Caps</td>
-                                <td>Brand A</td>
-                                <td>Accessories</td>
-                                <td>$10</td>
-                                <td>5%</td>
-                                <td><button class="offer-button">Add Offer</button></td>
-                                <td>3</td>
+                                <td><%=products.productName%></td>
+                                <td><%=products.brand%></td>
+                                <td><%=products.category.name%></td>
+                                <td><%=products.salePrice%></td>
+                                <td><%=products.productOffer%>%</td>
+                                <td>offerPrice</td>
                                 <td>
-                                    <button class="edit-button" style="background-color: #d35400;width: 80px;">Block</button>
+                                    <% if(products.productOffer===0){ %>
+                                <button class="offer-button" onclick="addOffer('<%=products._id%>')">
+                                    <a style="color: white;text-decoration: none;" href="#" class="text-white">Add Offer</a>
+                                </button></td>
+                                <% } else { %>
+                                <button class="offer-button" onclick="removeOffer('<%=products._id %>')">
+                                    <a style="color: white;text-decoration: none;" href="#" class="text-white">Remove Offer</a>
+                                </button>
+                                <% } %>
+
+                                <td><%=products.quantity%></td>
+                                <td>
+                                    <%if(products.isBlocked=== false){%>
+                                        <button class="btn btn-danger" style="width: 80px;background: rgb(56, 154, 79);height: 33px;border: none;border-radius: 5px;">
+                                        <a href="/admin/blockProduct?id=<%=products._id%>" class="text-white" style="text-decoration: none;color: white;">Block</a>
+                                    </button>
+                                    <%}else{%> 
+                                        <button class="btn btn-success" style="width: 80px;background: rgb(209, 69, 69);height: 33px;border: none;border-radius: 5px;">
+                                    <a href="/admin/unblockProduct?id=<%=products._id%>" class="text-white" style="text-decoration: none;color: white;">Unblock</a>
+                                    </button>
+                                    <%}%>
                                 </td>
                                 <td>
-                                    <button style="width: 80px;" class="edit-button">Edit</button>
+                                    <button class="btn btn-success" style="width: 80px;background: rgb(209, 69, 69);height: 33px;border: none;border-radius: 5px;">
+                                        <a href="/admin/editProduct?id=<%=products._id%>" class="text-white" style="text-decoration: none;color: white;">Unblock</a>
+                                    </button>
                                 </td>
                             </tr>
+                            <% }); %>
                             <!-- Add more rows as needed -->
                         </tbody>
                     </table>
                 </div>
+            
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    async function addOffer(productId) {
+    const { value: amount } = await Swal.fire({
+        title: "Offer in percentage",
+        input: "number",
+        inputLabel: "Percentage",
+        inputPlaceholder: "%",
+        inputAttributes: {
+            min: 0, // Ensure that negative percentages cannot be entered
+            max: 100, // Ensure that percentages do not exceed 100
+        },
+    });
+
+    if (amount !== null) {
+        $.ajax({
+            url: "/admin/addProductOffer",
+            method: "post",
+            data: {
+                percentage: amount,
+                productId: productId,
+            },
+            success: (response) => {
+                if (response.status === true) {
+                    location.reload();
+                    Swal.fire("Offer added", "The offer has been applied", "success");
+                } else {
+                    Swal.fire("Failed", response.message, "error");
+                }
+            },
+        });
+    }
+}
+
+
+
+
+
+
+async function removeOffer(productId){
+    try {
+        Swal.fire({
+        title:"Remve offer",
+        text:"Are you sure you want to remove this offer",
+        icon:"warning",
+        showCancelButton:true,
+        confirmButtonColor:"#3085d6",
+        cancelButtonColor:'#d33',
+        confirmButtonText:"yes,remove it",
+        timer:5000,
+        timerProgressBar:true,
+
+    }).then(async (result)=>{
+        if(result.isConfirmed){
+            $.ajax({
+                url:"/admin/removeProductOffer",
+        method:"post",
+        data:{
+            productId:productId,
+        },
+        success:(response)=>{
+            if(response.status===true){
+                location.reload();
+                Swal.fire("Offer added","The offer has been removed","success")
+            }else if(response.status===false){
+                Swal.fire("failed")
+            }else{
+                alert("Failed")
+            }
+        }
+            })
+        }
+    })
+    } catch (error) {
+        console.error(error);
+        
+    }
+}
+
+
+    </script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const User = require("../models/userSchema");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const env = require("dotenv").config();
+const Product = require("../models/productSchema")
 
 
 
@@ -243,6 +244,66 @@ const login = async (req,res)=>{
      }
 }
 
+
+
+const loadShopingPage=async(req,res)=>{     //& loading shopping page
+    try {
+        // Check if the user is logged in by checking session
+        const user = req.session.user;
+        let userData = null;
+
+        if (user) {
+            // If the user is logged in, fetch the user data from the database
+            userData = await User.findOne({ _id: user });
+        }
+
+        // Fetch all products and populate the brand and category fields
+        const products = await Product.find();
+        
+       return res.render('shop', { products: products });
+
+    } catch (error) {
+        console.log('Error loading home page:', error.message);
+        res.status(500).send('Internal Server Error');}
+};
+
+
+
+const productDetails = async (req,res)=>{         //& load a product details page
+    const productId = req.params.id;
+  console.log("product id is:",productId);
+
+    const details = await Product.findOne({_id:productId});
+console.log(details);
+
+    if(details){
+        res.render("productDetails",{data:details});
+    }else{
+        console.log("product with that product id is not found");
+        
+    }
+}
+
+
+const getEditProduct = async (req,res)=>{
+    try {
+        const id= req.query.id;
+        const product = await Product.findOne({_id:id});
+        const category = await Category.find({});
+        const brand = await Brand.find({});
+ 
+        
+        res.render("admin/edit-product",{
+            product:product,
+            cat:category,
+            brand:brand
+        })
+    } catch (error) {
+        res.redirect("/pageerror")
+    }
+}
+
+
 module.exports = {
     pageNotFound,
     loadHomePage,
@@ -252,4 +313,7 @@ module.exports = {
     resendOtp,
     loadLogin,
     login,
+    loadShopingPage,
+    productDetails,
+    getEditProduct,
 }
