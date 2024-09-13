@@ -197,6 +197,119 @@ const unblockProduct = async (req, res) => {
     }
 }
 
+
+
+
+
+const getEditProduct = async (req,res)=>{
+    try {
+        const id= req.query.id;
+        const product = await Product.findOne({_id:id});
+        const category = await Category.find({});
+        const brand = await Brand.find({});
+ 
+        
+        res.render("edit-product",{
+            product:product,
+            cat:category,
+            brand:brand
+        })
+    } catch (error) {
+        res.redirect("/pageerror")
+    }
+}
+
+
+
+
+const deleteSingleImage = async (req, res) => {
+    try {
+        const { imageNameToServer, productIdToserver } = req.body;
+        const product = await Product.findByIdAndUpdate(productIdToserver, { $pull: { productImage: imageNameToServer } });
+        
+        // Corrected path: Navigate two levels up to reach project root
+        const imagePath = path.join(__dirname, '../public/imgs/productImages', imageNameToServer);
+
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+            console.log(`Image ${imageNameToServer} deleted successfully`);
+        } else {
+            console.log("Image Path:", imagePath);
+            console.log(`Image ${imageNameToServer} not found`);
+        }
+
+        res.send({ status: true })
+    } catch (error) {
+        res.redirect("/pageerror")
+    }
+}
+
+
+
+
+const editProduct = async (req,res)=>{
+    try {
+        const id = req.params.id;
+        console.log(req.params.id);
+        
+        const product = await Product.findById(req.params.id);
+        
+        const data = req.body;
+
+        const images=[];
+
+        if (req.files && req.files.length > 0) {
+            for (let i = 0; i < req.files.length; i++) {
+                // Corrected path: Navigate two levels up to reach project root
+                const originalImagePath = path.join(__dirname, '../public/imgs/productImages', req.files[i].filename);
+                const resizedImagePath = path.join(__dirname, '../public/imgs/re-images', `resized-${req.files[i].filename}`);
+
+                if (!fs.existsSync(originalImagePath)) {
+                    console.error("File not found:", originalImagePath);
+                    return res.status(400).send("File not found");
+                }
+
+                // Ensure the directory for resized images exists
+                const dir = path.dirname(resizedImagePath);
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true });
+                }
+
+                // Resize the image and save it to the resizedImagePath
+                await sharp(originalImagePath)
+                    .resize({ width: 440, height: 440 })
+                    .toFile(resizedImagePath);
+
+                images.push(`resized-${req.files[i].filename}`);
+            }
+        }
+
+        const updateFields = {
+            productName:data.productName,
+            description:data.description,
+            brand:data.brand,
+            category:data.category,
+            regularPrice:data.regularPrice,
+            salePrice:data.salePrice,
+            quantity:data.quantity,
+            size:data.size,
+            color:data.color,
+        }
+
+        if(req.files.length > 0){
+            updateFields.$push = {productImage:{$each:images}}
+        }
+        
+        await Product.findByIdAndUpdate(id,updateFields,{new:true});
+        res.redirect("/admin/products")
+    } catch (error) {
+        console.error(error);
+        res.redirect("/pageerror")
+        
+    }
+}
+
+
 module.exports = {
     getProductAddPage,
     loadProducts,
@@ -205,4 +318,7 @@ module.exports = {
     removeProductOffer,
     blockProduct,
     unblockProduct,
+    getEditProduct,
+    deleteSingleImage,
+    editProduct,
 }

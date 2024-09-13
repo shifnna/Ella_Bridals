@@ -53,5 +53,7 @@ router.post("/removeProductOffer",productController.removeProductOffer)
 router.post("/addProductOffer",productController.addProductOffer);
 router.get("/blockProduct",productController.blockProduct);
 router.get("/unblockProduct",productController.unblockProduct);
-
+router.get("/editProduct",productController.getEditProduct);
+router.post("/deleteImage",productController.deleteSingleImage);
+router.post("/editProduct/:id", uploads.array("images", 4), productController.editProduct);
 module.exports = router;

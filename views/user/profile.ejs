@@ -1,0 +1,86 @@
+<%-include("../../views/partials/H-profile")%>
+
+            <!-- Profile Section -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">User Profile</h1>
+                </div>
+
+                <div class="profile-header row">
+                    <div class="col-md-2 text-center">
+                        <img src="https://via.placeholder.com/100" alt="Profile Image" class="img-fluid rounded-circle">
+                    </div>
+                    <div class="col-md-10">
+                        <div class="details">
+                            <span>Name: <%= locals.user.name%></span>
+                            <span>Email: <%= locals.user.email%></span>
+                            <span>Mobile: <%= locals.user.phone%></span>
+                            <span>Date of Birth: dd/mm/yyyy</span>
+                            <a style="border-color: #0e0c0d;color: aliceblue;background-color: #0e0c0d;" href="/editProfile?id=<%=locals.user._id%>" class="btn btn-outline-primary btn-sm mt-2">
+                                <i style="color: #ffffff;" class="fas fa-edit"></i> Edit
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Section -->
+                <h3>My Addresses</h3>
+                <div class="row">
+                    <!-- Address Card 1 -->
+                    <!-- Address Card 1 -->
+<% addresses.forEach(function(addr) { %>
+    <% addr.address.forEach(function(address) { %>
+<div class="col-md-6">
+    <div class="address-card mb-3">
+        <h4><%=address.name%></h4>
+        <p><%=address.name%> , <%=address.city%> <br>pin: <%=address.postalCode%> , <%=address.state%> , <%=address.country%></p>
+        <p>Phone: +91-<%=address.phone%></p>
+        <br>
+        <a style="border-color: #0e0c0d;" href="/editAddress?addressId=<%= address._id %>&id=<%= locals.user._id %>" class="btn btn-outline-primary"><i class="fas fa-edit"></i> Edit</a> | 
+        <a style="border-color: #0e0c0d;" href="javascript:void(0);" class="btn btn-outline-danger remove-address" data-address-id="<%= address._id %>" data-user-id="<%= locals.user._id %>">
+            <i class="fas fa-trash"></i> Remove
+        </a>
+    </div>
+</div>
+    <% }); %>
+<% }); %>
+
+                </div>
+
+                <button style="  background-color: #0e0c0d;border-color: #0e0c0d;" class="btn btn-outline-primary">
+                   <a style="text-decoration: none;color: aliceblue;" href="/addAddress?id=<%= locals.user._id %>"><i class="fas fa-plus"></i> Add New Address</a> 
+                </button>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.remove-address').forEach((element) => {
+          element.addEventListener('click', function () {
+            const addressId = this.getAttribute('data-address-id');
+            const userId = this.getAttribute('data-user-id');
+      
+            // Trigger SweetAlert confirmation
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you want to remove this address? This action cannot be undone.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, remove it!',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // If confirmed, redirect to remove address URL
+                window.location.href = `/removeAddress?addressId=${addressId}&id=${userId}`;
+              }
+            });
+          });
+        });
+      </script>
+      
+</body>
+</html>

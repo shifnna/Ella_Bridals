@@ -18,8 +18,13 @@ const pageNotFound = async (req,res) => {
 
 const loadHomePage = async (req,res)=>{
     try {
-        // const user = req.session.user;
-        return res.render("home")
+        const user = req.session.user
+        if(user){
+         const userData = await User.findOne({_id:user});
+         res.render("home",{user:userData})
+        }else{
+         res.render('home')
+        }
     } catch (error) {
         console.log("home page not found",error);
         res.status(500).send("server eror")
@@ -285,24 +290,6 @@ console.log(details);
 }
 
 
-const getEditProduct = async (req,res)=>{
-    try {
-        const id= req.query.id;
-        const product = await Product.findOne({_id:id});
-        const category = await Category.find({});
-        const brand = await Brand.find({});
- 
-        
-        res.render("admin/edit-product",{
-            product:product,
-            cat:category,
-            brand:brand
-        })
-    } catch (error) {
-        res.redirect("/pageerror")
-    }
-}
-
 
 module.exports = {
     pageNotFound,
@@ -315,5 +302,5 @@ module.exports = {
     login,
     loadShopingPage,
     productDetails,
-    getEditProduct,
+
 }

@@ -22,6 +22,48 @@
     <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <style>
+        .dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  display: none;
+}
+
+.dropdown-menu li {
+  margin-bottom: 10px;
+}
+
+.dropdown-menu li a {
+  color: #337ab7;
+  text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+  color: #23527c;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+    </style>
 </head>
 
 <body>
@@ -48,8 +90,21 @@
         </div>
         <div id="mobile-menu-wrap"></div>
         <div class="offcanvas__auth">
+            <%if(locals.user){%>
+                <div class="dropdown">
+                    <a href="" class="sign-in-link"><%=locals.user.name%></a>
+                    <div class="dropdown-content">
+
+                        <a href="/userProfile">Profile</a>
+                        <a href="/logout">Logout</a>
+
+                    </div>
+
+                </div>
+            <%}else {%>
             <a href="/login">Login</a>
             <a href="/signup">Register</a>
+            <%}%>
         </div>
     </div>
     <!-- Offcanvas Menu End -->
@@ -73,7 +128,7 @@
                             <li><a href="#">Pages</a>
                                 <ul class="dropdown">
                                     <li><a href="./product-details.html">Product Details</a></li>
-                                    <li><a href="./shop-cart.html">Shop Cart</a></li>
+                                    <li><a href="/cart">Shop Cart</a></li>
                                     <li><a href="./checkout.html">Checkout</a></li>
                                     <li><a href="./blog-details.html">Blog Details</a></li>
                                 </ul>
@@ -86,15 +141,28 @@
                 <div class="col-lg-3">
                     <div class="header__right">
                         <div class="header__right__auth">
+                            <% if(locals.user){ %>
+                                <!-- Dropdown menu -->
+                    <div class="dropdown">
+                        <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <%-locals.user.name %>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                             <li><a href="/userProfile">Profile</a></li>
+                             <li><a href="/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                            <%}else {%>
                             <a href="/login">Login</a>
                             <a href="/signup">Register</a>
+                            <%}%>
                         </div>
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>
                             <li><a href="#"><span class="icon_heart_alt"></span>
                                 <div class="tip">2</div>
                             </a></li>
-                            <li><a href="#"><span class="icon_bag_alt"></span>
+                            <li><a href="cart"><span class="icon_bag_alt"></span>
                                 <div class="tip">2</div>
                             </a></li>
                         </ul>
@@ -107,3 +175,17 @@
         </div>
     </header>
     <!-- Header Section End -->
+      <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="./index.html"><i class="fa fa-home"></i> Home</a>
+                        <span>Shop</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        input{
+            height: 60px;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+            color: #e7dddd;
+            padding-top: 20px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding-left: 80px;
+            padding-bottom: 80px;
+            padding-right: 80px;
+            padding-top: 20px;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .top-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .product-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .product-form h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 10px;
+        }
+        .product-form .form-group {
+            margin-bottom: 15px;
+        }
+        .product-form .form-control, 
+        .product-form .form-control-file {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .product-form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .product-form button:hover {
+            background-color: #218838;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .form-row .form-group {
+            flex: 1;
+            min-width: calc(50% - 20px);
+        }
+        .form-row .form-group.full-width {
+            flex: 1;
+            min-width: 100%;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+        }
+        .form-row img-upload {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .form-row img-upload .form-group {
+            flex: 1;
+            min-width: calc(50% - 20px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="#"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="#"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="#"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <h2>Edit</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <!-- Product Form -->
+            <div class="product-form">
+                <h3>Edit Product</h3>
+                <form action="/admin/editProduct/<%= product._id %>" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productName">Product Name</label>
+                            <input type="text" class="form-control" value="<%= product.productName %>"  id="productName" name="productName" placeholder="Enter product name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">Brand</label>
+                            <input type="text" class="form-control" value="<%= product.brand %>"  id="brand" name="brand" placeholder="Enter brand" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select class="form-control" id="category" name="category" required>
+                                <% for(let i=0; i< cat.length ; i++) { %>
+                                <option value="<%= cat[i]._id.name %>" ><%=cat[i].name%></option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" value="<%= product.description %>" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea>
+                        <input type="text" value="<%= product.description %>">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regularPrice">Regular Price</label>
+                            <input type="number" class="form-control" value="<%= product.regularPrice %>" id="regularPrice" name="regularPrice" placeholder="Enter regular price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="salePrice">Sale Price</label>
+                            <input type="number" value="<%= product.salePrice %>" class="form-control" id="salePrice" name="salePrice" placeholder="Enter sale price">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" class="form-control" value="<%= product.quantity %>" id="quantity" name="quantity" placeholder="Enter quantity" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="color">Color</label>
+                            <input type="text" class="form-control" value="<%= product.color %>" id="color" name="color" placeholder="Enter color">
+                        </div>
+                        <div class="form-group">
+                            <label for="size">Size</label>
+                            <input type="text" class="form-control" value="<%= product.size %>" id="size" name="size" placeholder="Enter size">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="offerPercentage">Offer Percentage</label>
+                            <input type="number" class="form-control" value="<%= product.offerPercentage %>" id="offerPercentage" name="offerPercentage" placeholder="Enter offer percentage" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="offerPrice">Offer Price</label>
+                            <input type="number" class="form-control" value="<%= product.offerPrice %>" id="offerPrice" name="offerPrice" placeholder="Enter offer price">
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        <h4>Choose images</h4>
+                    </div>
+
+                    <% for (let i = 0; i < product.productImage.length; i++) { %>  
+                        <div class="col-md-12">
+                            <div class="mb-4">
+                                <div class="col-12">
+                                    <input type="hidden" value="<%= product.productImage[i] %>" id="imageDatas">
+                                    <img class="rounded" style="width: 50px; height: 60px;" src="/imgs/re-images/<%= product.productImage[i] %>" alt="">
+                                    <i onclick="deleteSingleImage('<%= product.productImage[i] %>', '<%= product._id %>')" style="position: absolute; margin-left: .5rem; cursor: pointer;" class="fa-thin fa-x">X</i>
+                                </div>
+                            </div>
+                        </div>
+                     <% } %>
+
+                    <div class="form-row img-upload">
+                        <% for (let i = 1; i <= 4; i++) { %>
+                        <div class="form-group">
+                            <label for="image1">Image 1</label>
+                            <img src="" alt="" id="imgView<%= i %>">
+                            <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, `<%= i %>`)">
+                        </div>
+                        <div class="image-cropper d-flex align-items-center" style="display:none;">
+                            <img  src="" id="croppedImg<%= i %>" alt="">
+                            <button type="button" id="saveButton<%= i %>" class="btn-sm btn-primary">Save</button>
+                        </div>
+
+                    <% } %>
+                    </div>
+                     <button type="submit" onclick="validateAndSubmit()">Update Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+       
+
+
+
+    function deleteSingleImage(imageName, productId) {  
+    // Create an object with the imageName and productId
+    const data = {
+        imageNameToServer: imageName,
+        productIdToserver: productId
+    };
+
+    // Send an AJAX POST request to the backend
+    fetch('/admin/deleteImage', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status) {
+            // Successfully deleted the image
+            // Remove the image element from the DOM
+            document.querySelector(`img[src="/uploads/product-images/${imageName}"]`).parentElement.parentElement.remove();
+        } else {
+            // Handle the error (for example, show an alert)
+            alert('Error deleting image.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+    </script>
+
+</body>
+</html>

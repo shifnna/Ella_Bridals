@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Address</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        /* Stepper CSS */
+        .stepper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .step .circle {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background-color: #ff007f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .step .line {
+            width: 50px;
+            height: 3px;
+            background-color: #ccc;
+            margin: 0 5px;
+        }
+
+        .step.active .line {
+            background-color: #ff007f;
+        }
+
+        .step.active .circle {
+            background-color: #ff007f;
+        }
+
+        .step.completed .circle {
+            background-color: #ff007f;
+        }
+
+        .address-card {
+            border: 1px solid #ebebeb;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .address-card .btn {
+            border-radius: 20px;
+        }
+
+        .address-card .default {
+            color: #fff;
+            background-color: #e1effe;
+            padding: 2px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .add-address-card {
+            border: 1px dashed #ebebeb;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 150px;
+            color: #ff007f;
+            cursor: pointer;
+        }
+
+        .add-address-card:hover {
+            border-color: #ff007f;
+        }
+
+        .btn-outline-primary {
+            color: #ff007f;
+            border-color: #ff007f;
+        }
+
+        .btn-outline-primary:hover {
+            color: #fff;
+            background-color: #ff007f;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Stepper -->
+    <div class="stepper">
+        <div class="step completed">
+            <div class="circle">✓</div>
+            <span>Sign Up</span>
+            <div class="line active"></div>
+        </div>
+        <div class="step active">
+            <div class="circle">2</div>
+            <span>Address</span>
+            <div class="line"></div>
+        </div>
+        <div class="step">
+            <div class="circle">3</div>
+            <span>Payment</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <h1>Choose Address</h1>
+    <p>Detailed address will help our delivery partner reach your doorstep quickly</p>
+    
+    <div class="row d-flex justify-content-start flex-wrap">
+        <!-- Add New Address -->
+        <div class="col-md-5 mb-3">
+            <div class="add-address-card">
+               <a style="color: black;text-decoration: none;" href="/addAddress"> <h4>+ Add New Address</h4></a>
+            </div>
+        </div>
+
+        <% addresses.forEach(function(addr) { %>
+            <% addr.address.forEach(function(address) { %>
+        <div class="col-md-5 mb-3">
+            <div class="address-card">
+                <h5><%=address.name%></h5>
+                <p><%=address.name%> , <%=address.city%> <br>pin: <%=address.postalCode%> <br> <%=address.state%> , <%=address.country%></p>
+               <a href="/editAddress?addressId=<%= address._id %>&id=<%= locals.user._id %>"><button class="btn btn-outline-primary btn-sm">Edit</button></a> 
+               <a href="/selectPayment?addressId=<%= address._id %>"><button class="btn btn-primary btn-sm">Deliver here</button></a> 
+            </div>
+        </div>
+        <% }); %>
+<% }); %>
+
+    </div>
+</div>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

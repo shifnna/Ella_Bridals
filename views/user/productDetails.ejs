@@ -11,8 +11,7 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"rel="stylesheet">
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
@@ -23,6 +22,8 @@
     <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
 </head>
 
 <body>
@@ -137,24 +138,25 @@
                                 <img src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
                             </a>
                             <a class="pt" href="#product-2">
-                                <img src="/imgs/re-images/<%=data.productImage[1]%>" alt="">
+                                <img src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
                             </a>
                             <a class="pt" href="#product-3">
-                                <img src="/imgs/re-images/<%=data.productImage[2]%>" alt="">
+                                <img src="/imgs/re-images/<%= data.productImage[2] %>" alt="">
                             </a>
                             <a class="pt" href="#product-4">
-                                <img src="/imgs/re-images/<%=data.productImage[3]%>" alt="">
+                                <img src="/imgs/re-images/<%= data.productImage[3] %>" alt="">
                             </a>
                         </div>
                         <div class="product__details__slider__content">
                             <div class="product__details__pic__slider owl-carousel">
-                                <img data-hash="product-1" class="product__big__img"  src="/imgs/re-images/<%=data.productImage[0]%>"  alt="">
-                                <img data-hash="product-2" class="product__big__img"  src="/imgs/re-images/<%=data.productImage[1]%>"  alt="">
-                                <img data-hash="product-3" class="product__big__img"  src="/imgs/re-images/<%=data.productImage[2]%>"  alt="">
-                                <img data-hash="product-4" class="product__big__img"  src="/imgs/re-images/<%=data.productImage[3]%>" alt="">
+                                <img data-hash="product-1" class="product__big__img" src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
+                                <img data-hash="product-2" class="product__big__img" src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
+                                <img data-hash="product-3" class="product__big__img" src="/imgs/re-images/<%= data.productImage[2] %>" alt="">
+                                <img data-hash="product-4" class="product__big__img" src="/imgs/re-images/<%= data.productImage[3] %>" alt="">
                             </div>
                         </div>
                     </div>
+                
 
                 </div>
                 <div class="col-lg-6">
@@ -539,7 +541,19 @@
         </div>
     </div>
     <!-- Search End -->
-
+    <script>
+        $(document).ready(function() {
+        $(".product__details__pic__slider").owlCarousel({
+            items: 1, // Display one large image at a time
+            loop: true, // Enable infinite loop
+            nav: true, // Add navigation arrows
+            dots: true, // Add dots navigation
+            autoHeight: true, // Adjust height automatically based on content
+            autoplay: false, // Set to true if you want autoplay
+        });
+    });
+    
+    </script>
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -551,6 +565,7 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/jquery.nicescroll.min.js"></script>
     <script src="js/main.js"></script>
+    
 </body>
 
 </html>

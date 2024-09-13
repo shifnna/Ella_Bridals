@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Payment Method</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        /* Stepper CSS */
+        .stepper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .step .circle {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background-color: #ff007f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .step .line {
+            width: 50px;
+            height: 3px;
+            background-color: #ccc;
+            margin: 0 5px;
+        }
+
+        .step.active .line {
+            background-color: #ff007f;
+        }
+
+        .step.active .circle {
+            background-color: #ff007f;
+        }
+
+        .step.completed .circle {
+            background-color: #ff007f;
+        }
+
+        .payment-method-card {
+            border: 1px solid #ebebeb;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .payment-method-card input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #ff007f;
+            border-color: #ff007f;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6006c;
+            border-color: #e6006c;
+        }
+
+        /* Custom style for SweetAlert2 success icon */
+        .swal2-success .swal2-success-ring {
+            border-color: #ff007f !important; /* Pink color for the outer ring */
+        }
+
+        .swal2-success .swal2-success-line {
+            background-color: #ff007f !important; /* Pink color for the tick mark */
+        }
+    </style>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- Stepper -->
+    <div class="stepper">
+        <div class="step completed">
+            <div class="circle">✓</div>
+            <span>Sign Up</span>
+            <div class="line active"></div>
+        </div>
+        <div class="step completed">
+            <div class="circle">✓</div>
+            <span>Address</span>
+            <div class="line active"></div>
+        </div>
+        <div class="step active">
+            <div class="circle">3</div>
+            <span>Payment</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <h1>Choose Payment Method</h1>
+    <p>Select a payment method to proceed with your purchase</p>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Payment Method Options -->
+            <div class="payment-method-card">
+                <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
+                <label for="creditCard">Credit Card</label>
+            </div>
+            <div class="payment-method-card">
+                <input type="radio" id="paypal" name="paymentMethod" value="paypal">
+                <label for="paypal">PayPal</label>
+            </div>
+            <div class="payment-method-card">
+                <input type="radio" id="bankTransfer" name="paymentMethod" value="bankTransfer">
+                <label for="bankTransfer">Bank Transfer</label>
+            </div>
+            <div class="payment-method-card">
+                <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
+                <label for="cashOnDelivery">Cash on Delivery</label>
+            </div>
+            <button id="proceedBtn" style="width: 400px;height: 50px;" class="btn btn-primary btn-lg">Proceed</button>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
+<script>
+    document.getElementById('proceedBtn').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Order Confirmed',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+    });
+</script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

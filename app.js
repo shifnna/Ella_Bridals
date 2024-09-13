@@ -36,6 +36,7 @@ app.use(passport.session());
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null; // Ensure that user data is accessible in views
+  
   next();
 });
 
