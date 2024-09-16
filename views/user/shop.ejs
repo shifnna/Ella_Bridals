@@ -220,7 +220,11 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="/imgs/re-images/<%= product.productImage[0] %>">
-                                    <div class="label new">New</div>
+                                    <% if(product.quantity <= 0){%>
+                                    <div class="label stockout stockblue">Out Of Stock</div>
+                                     <%}else if(product.isBlocked === true){%>
+                                    <div class="label stockout stockblue">Unavailable</div>
+                                    <%}%>
                                 <a href="/productdetails/<%= product._id %>">
                                     <ul class="product__hover">
                                         <li><a src="/imgs/re-images/<%= product.productImage[0] %>" class="image-popup"><span class="arrow_expand"></span></a></li>

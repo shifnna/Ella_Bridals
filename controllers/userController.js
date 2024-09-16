@@ -2,7 +2,7 @@ const User = require("../models/userSchema");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const env = require("dotenv").config();
-const Product = require("../models/productSchema")
+const Product = require("../models/productSchema");
 
 
 
@@ -291,6 +291,64 @@ console.log(details);
 
 
 
+const logout = async (req,res)=>{
+    req.session.destroy((err) => {
+        if (err) {
+            console.log("Error destroying session:", err);
+            return res.redirect("/admin/pageerror"); // Redirect to error page only on session destruction failure
+        }
+        res.clearCookie('connect.sid', { path: '/' }); // Clear the session cookie
+        return res.redirect("/"); // Redirect to the login page after successful logout
+    });
+}
+
+
+
+const loadResetPassword = async (req,res)=>{
+    try {
+        if(req.session.user){
+            res.render("resetPassword");
+        }else{
+            res.redirect("/pageerror")
+        }
+    } catch (error) {
+        console.error("error occure for loading forgottpassword page",error);
+        
+    }
+}
+
+
+const resetPassword = async (req, res) => {
+    const { oldpassword, newpassword, confirmpassword } = req.body;
+  
+    if (newpassword !== confirmpassword) {
+      return res.render('resetPassword', { message3: "Password do not match" });
+    }
+  
+    const userId = req.session.user;
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+  
+      const isPasswordMatch = await bcrypt.compare(oldpassword, user.password);
+      if (!isPasswordMatch) {
+        return res.render("resetPassword", { message1: "Incorrect old password" });
+      }
+  
+      const passwordHash = await securePassword(newpassword);
+      user.password = passwordHash;
+  
+      await user.save();
+      return res.render("resetPassword", { message: "Password updated successfully" });
+  
+    } catch (error) {
+      console.log(error.message);
+      return res.render('profile', { message: "An error occurred. Please try again later." });
+    }
+  }
+
 module.exports = {
     pageNotFound,
     loadHomePage,
@@ -302,5 +360,8 @@ module.exports = {
     login,
     loadShopingPage,
     productDetails,
+    logout,
+    loadResetPassword,
+    resetPassword,
 
 }

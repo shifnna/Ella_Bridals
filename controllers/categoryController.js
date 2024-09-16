@@ -23,7 +23,7 @@ const loadCategories = async (req, res) => {
                 { description: { $regex: ".*" + search + ".*" } }
             ]
         })
-            .sort({ createdAt: -1 })
+            .sort({ name:-1 })
             .skip((page - 1) * limit)
             .limit(limit);
 

@@ -50,12 +50,22 @@ const login = async (req,res)=>{
     }
 }
 
-
+const logout= async (req,res)=>{
+    req.session.destroy((err) => {
+        if (err) {
+            console.log("Error destroying session:", err);
+            return res.redirect("/admin/pageerror"); // Redirect to error page only on session destruction failure
+        }
+        res.clearCookie('connect.sid', { path: '/admin/login' }); // Clear the session cookie
+        return res.redirect("/admin/login"); // Redirect to the login page after successful logout
+    });
+}
 
 
 module.exports = {
     pageerror,
     loadLogin,
     login,
+    logout,
     
 }

@@ -22,7 +22,12 @@ router.get("/auth/google/callback",passport.authenticate('google',{failureRedire
 
 //login
 router.get("/login",userController.loadLogin);
-router.post("/login",userController.login)
+router.post("/login",userController.login);
+router.get("/logout",userController.logout);
+router.get("/reset-password",userController.loadResetPassword);
+router.post("/reset-password",userController.resetPassword);
+
+
 
 
 router.get("/shop",userController.loadShopingPage)
@@ -42,7 +47,13 @@ router.get("/cart",userProfileController.cartPage)
 router.get("/addToCart/:id",userProfileController.addToCart);
 router.get("/removeFromCart",userProfileController.removeFromCart);
 
-router.get("/selectAddress",userProfileController.selectAddress);
-router.get("/selectPayment",userProfileController.selectPayment)
+router.post("/selectAddress",userProfileController.selectAddress);
+router.get("/selectPayment",userProfileController.selectPayment);
+router.get("/proceedOrder",userProfileController.confirmOrder);
+
+router.get("/orderDetails",userProfileController.loadOrderDetails);
+router.get("/cancelOrder",userProfileController.cancelOrder);
+
+
 
 module.exports = router;

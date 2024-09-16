@@ -8,7 +8,9 @@ const adminController = require("../controllers/adminController");
 const customerController = require("../controllers/customerController");
 const categoryController = require("../controllers/categoryController");
 const brandController = require("../controllers/brandController");
-const productController = require("../controllers/productController")
+const productController = require("../controllers/productController");
+const orderController = require("../controllers/orderController");
+
 
 
 
@@ -21,6 +23,7 @@ router.get("/dashboard", (req, res) => {
         res.render("page_404");
     }
 });
+router.get("/logout",adminController.logout)
 
 
 router.get("/customers",customerController.loadCustomers);
@@ -56,4 +59,7 @@ router.get("/unblockProduct",productController.unblockProduct);
 router.get("/editProduct",productController.getEditProduct);
 router.post("/deleteImage",productController.deleteSingleImage);
 router.post("/editProduct/:id", uploads.array("images", 4), productController.editProduct);
+
+router.get("/orderManagement",orderController.loadOrders);
+router.get("/orderDetails",orderController.loadOrderDetails)
 module.exports = router;

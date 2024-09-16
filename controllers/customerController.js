@@ -20,7 +20,7 @@ const loadCustomers = async (req,res)=>{
                 {email:{$regex:".*"+search+".*"}}
             ],
 
-        }).limit(limit*1).skip((page-1)*limit).exec()//chain of promise ne combine cheyyan
+        }).sort({name:1}).limit(limit*1).skip((page-1)*limit).exec()//chain of promise ne combine cheyyan
 
     const count = await User.find({
         isAdmin:false,

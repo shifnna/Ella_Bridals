@@ -14,24 +14,28 @@
     </div>
 
     <!-- Orders List -->
-    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
-       
-        <div class="col-md-8">
-            <h6 class="product-title">Product Name</h6>
-            <p>ORDER NUMBER: 12345678</p>
-            
-            <div>
+    <% orders.forEach(function(order) { %>
+        <% order.products.forEach(function(product) { %>
+          <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
+            <div class="col-md-8">
+              <h6 class="product-title">Status: <%= order.status %></h6>
+              <p>ORDER NUMBER: <%= order._id %></p>
+              
+              <div>
                 <!-- product image -->
-                 <img src="" alt="Product Image" class="img-fluid rounded">
-             </div>
-        </div>
-        <div style="margin-left: 100px;" class="col-md-2 text-end">
-            <a class="btn btn-outline-primary btn-sm">
-                View Details
-            </a>
-        </div>
-    </div>
-
+                <% if (product.productImage && product.productImage.length > 0) { %>
+                  <img style="width: 80px;height: 80px;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
+                <% } %>
+              </div>
+            </div>
+            <div style="margin-left: 100px;" class="col-md-2 text-end">
+                <a href="/orderDetails?orderId=<%= order._id %>" class="btn btn-outline-primary btn-sm">
+                    View Details
+                  </a>
+            </div>
+          </div>
+        <% }); %>
+      <% }); %>
     <!-- Order Actions -->
     <div class="mt-4 text-center">
         <button style="background-color: #0e0c0d; border-color: #0e0c0d;" class="btn btn-outline-primary">

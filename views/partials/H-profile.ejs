@@ -133,7 +133,34 @@ button{
         color: #333;
     }
 
-
+    .order-card {
+            border: 1px solid #ebebeb;
+            background-color: #f9f9f9;
+            max-width: 90%;
+            margin: auto;
+            padding: 16px;
+            font-family: Arial, sans-serif;
+        }
+        .order-card h6 {
+            margin-bottom: 16px;
+        }
+        .row1 {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            line-height: 1.2; /* Adjust this value to control line height */
+        }
+        .row span {
+            display: inline-block;
+        }
+        .row .field {
+            text-align: left;
+        }
+        .row .value {
+            margin-right: 65px;
+            text-align: right;
+            margin-left: auto;
+        }
     </style>
     
 </head>
@@ -175,8 +202,13 @@ button{
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="/logout" id="logout-btn">
                                 <i class="fas fa-sign-out-alt"></i> Log Out
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/reset-password">
+                                <i class="fas fa-sign-out-alt"></i> Rest Password
                             </a>
                         </li>
                     </ul>

@@ -1,68 +1,62 @@
 const mongoose = require('mongoose');
+const orderSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 
-const productSchema = new Schema({
-  productName: { 
-      type: String, 
-      required: true 
+  payment: {
+    type: String,
+    default: 'COD',
   },
-  description: { 
-      type: String, 
-      required: true 
-  }, // Ensure this matches your code
-  brand: { 
-      type: String, 
-      required: true 
-  },
-  category: { 
-      type: Schema.Types.ObjectId, 
-      ref: 'Category', 
-      required: true 
-  },
-  regularPrice: { 
-      type: Number,
-      required: true 
-  },
-  salePrice: { 
-      type: Number 
-  },
-  createdOn: { 
-      type: Date, 
-      default: Date.now 
-  },
-  quantity: { 
-      type: Number, 
-      required: true 
-  },
-  color: { 
-      type: String 
-  },
-  size: { 
-      type: String 
-  },
-  productImage: [{ 
-      type: String 
+  address: [{
+    username: String,
+    mobile: Number,
+    city: String,
+    pincode: Number,
+    state: String,
+    address: String,
   }],
-  status: { 
-      type: String, 
-      default: 'Available' 
+  status: {
+    type: String,
+    enum: ['Pending', 'Returned', 'Delivered', 'Cancelled','cancellation','Shipped'],
+    default: 'Pending',
   },
-  offerPercentage: { 
-      type: Number, 
-      default:0 
-  },
-  offerPrice: { 
-      type: Number, 
-      default:0 
-  },
-  productOffer:{
-      type: Number, 
-      default:0
-  },
-  isBlocked:{
-      type:Boolean,
-      default:false,
-  },
-},{timestamps:true});
+ 
 
+  products: [],
+  totalAmount: {
+    type: Number,
+    default: 0,
+  },
+  cancellation: {
+    isCancelled: {
+      type: Boolean,
+      default: false,
+    },
+    reason: {
+      type: String,
+      default: '',
+    },
+    cancelledByAdmin: {
+      type: Boolean,
+      default: false,
+    },
+  },
+ 
+  discountAmount: {
+    type: Number,
+    default: 0,
+  },
+  orderDate:{
+    type: Date,
+    default:Date.now
+  },
+  deliveredAt: {
+    type: Date,
+    // default: Date.now
+  },
+});
 
 module.exports = mongoose.model('Order', orderSchema);
