@@ -5,6 +5,7 @@
             <div class="col-lg-12">
                 <div class="shop__cart__table">
                     <!-- Form starts here -->
+                     <%if(cart.length > 0){%>
                     <form action="/selectAddress" method="post">
                         <table>
                             <thead>
@@ -38,7 +39,7 @@
                                         <td class="cart__price"><%= cart.price %></td>
                                         <td class="cart__quantity">
                                             <div class="pro-qty">
-                                                <input name="quantity" type="number" class="quantity-input" data-max="<%= cart.product.quantity %>" value="1" min="1" max="<%= cart.product.quantity %>">
+                                                <input name="quantity" type="number" class="quantity-input" data-price="<%= cart.price %>" data-max="<%= cart.product.quantity %>" value="1" min="1" max="<%= cart.product.quantity %>">
                                             </div>
                                         </td>
                                         <td class="cart__total"><%= totalPrice %></td>
@@ -74,7 +75,7 @@
                                 <div class="cart__total__procced">
                                     <h6>Cart total</h6>
                                     <ul>
-                                        <li>Subtotal <span>$ 750.0</span></li>
+                                        <li>Subtotal <span>$<%= cart.price%></span></li>
                                         <li>Total <span>$ 750.0</span></li>
                                     </ul>
                                     <!-- Proceed to checkout button inside the form -->
@@ -83,6 +84,14 @@
                             </div>
                         </div>
                     </form>
+                    <%}else{%>
+                        <div style="height: 400px;text-align: center;">
+                            <img style="width: 150px;height: 150px;" src="/img/cart.png" alt="">
+                            <h3>Your Cart Is Empty</h3><br>
+                            <h6>This feels too light! Go on, Add all your<br> favorites</h6><br>
+                            <a href="/shop"><button type="submit" class="site-btn">Start Shopping</button></a>
+                        </div>
+                        <%}%>
                     <!-- Form ends here -->
                 </div>
             </div>
@@ -248,6 +257,53 @@
         }
       });
     });
+
+
+
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            var max = parseInt(this.getAttribute('data-max'));
+            var price = parseFloat(this.getAttribute('data-price')); // Get the price of the product
+            var value = parseInt(this.value);
+            
+            // Prevent value from exceeding max quantity
+            if (value > max) {
+                alert('Quantity exceeds available stock!');
+                this.value = max;
+                value = max;
+            }
+            
+            // Prevent value from going below the minimum (1)
+            if (value < 1) {
+                this.value = 1;
+                value = 1;
+            }
+
+            // Update the individual product total price
+            var row = this.closest('tr'); // Find the table row of the product
+            var productTotal = row.querySelector('.cart__total');
+            productTotal.textContent = (price * value).toFixed(2); // Update the product's total price
+
+            // Update the cart total price
+            updateCartTotal();
+        });
+    });
+
+    function updateCartTotal() {
+        var total = 0;
+
+        // Loop through each product row and sum the total prices
+        document.querySelectorAll('.cart__total').forEach(function(totalElement) {
+            total += parseFloat(totalElement.textContent);
+        });
+
+        // Update the total price in the cart
+        document.querySelector('.cart__total__procced ul li:last-child span').textContent = '$ ' + total.toFixed(2);
+    }
+
+    // Call updateCartTotal initially to set the correct total when the page loads
+    updateCartTotal();
+
   </script>
 <!-- Js Plugins -->
 <script src="js/jquery-3.3.1.min.js"></script>

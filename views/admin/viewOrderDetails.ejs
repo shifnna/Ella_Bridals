@@ -194,30 +194,69 @@
             flex: 1;
         }
 
-        /* Form Styling */
-        .form-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+        /* Table Styling */
+        .order-table {
+    width: 800px; /* Set the table width to 800px */
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+        .order-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
         }
-        .form-container input, .form-container select, .form-container button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .order-table img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
         }
-        .form-container button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .form-container button:hover {
-            background-color: #0056b3;
-        }
+
+        .address-container {
+    width: 300px; /* Set the address container width to 300px */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-left: 20px; /* Space between the table and address container */
+    margin-top: 20px;
+}
+.dashboard {
+    display: flex; /* Use flexbox to align items side by side */
+    justify-content: space-between; /* Ensure there is space between items */
+    align-items: flex-start; /* Align items to the start of the flex container */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   
+}
+
+.dashboard2 {
+    display: flex;
+    margin-top: 5px;
+    flex-direction: column; /* Ensures elements stack vertically */
+    align-items: flex-start; /* Align items to the start of the flex container */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard h3 {
+    margin: 0;
+    font-size: 18px;
+    margin-bottom: 10px; /* Adds space between the heading and the dropdown */
+}
+
+.dashboard select {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    width: 200px; /* Adjust the width of the dropdown as needed */
+}
+
     </style>
 </head>
 <body>
@@ -229,19 +268,20 @@
                 <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
                 <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
-                <li><a href="#"><i class="fas fa-star"></i> Brands</a></li>
-                <li><a href="#"><i class="fas fa-plus"></i> Add product</a></li>
-                <li><a href="#"><i class="fas fa-box"></i> Products</a></li>
-                <li><a href="#"><i class="fas fa-tags"></i> Coupon</a></li>
-                <li><a href="#"><i class="fas fa-image"></i> Banner</a></li>
-                <li><a href="#"><i class="fas fa-shopping-cart"></i> Orders</a></li>
-                <li><a href="/admin/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="/admin/addProducts"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
+                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
+                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
+
             </ul>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-
             <!-- Top Header -->
             <div class="top-header">
                 <h2>Orders</h2>
@@ -250,21 +290,48 @@
                 </div>
             </div>
 
-            <!-- Table Box -->
-            <% order.products.forEach(function(product) { %>
-                <div  style="padding-top: 40px;padding-bottom: 40px;" class="order-card-container">
-                    <div class="pink-div"></div>
-                    <div class="green-div"></div>
-                    <div class="pink2-div"></div>
-                    <div class="order-card">
-                        <img src="<%= product.img1 %>" alt="<%= product.name %>">
-                        <div class="details">
-                            <h6><%= product.name %></h6>
-                            <p>Price: $<%= product.price %></p>
-                        </div>
-                    </div>
+            <!-- Order Table and Address Details -->
+            <div class="dashboard">
+                <!-- Table for Order Details -->
+                <div class="table-box">
+                    <table class="order-table">
+                        <tbody>
+                            <% order.products.forEach(function(product) { %>
+                            <tr>
+                                <td><%=product.name%></td>
+                                <td><%=order.status%></td>
+                                <td><%= order.orderDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+                                <td><img  src="/imgs/re-images/<%=product.productImage[0] %>" alt="Product Image"></td>
+                            </tr>
+
+                            <% }); %>
+                        </tbody>
+                    </table>
                 </div>
-            <% }); %>
+
+                <!-- Address Details Container -->
+                <div class="address-container">
+                    <h3>Customer Address</h3>
+                    <p><strong>Name:</strong> <%= order.address[0].username %></p>
+                    <p><strong>Address:</strong> <%= order.address[0].address %>, <%= order.address[0].pincode %>,  <%= order.address[0].city %>,  <%= order.address[0].state %></p>
+                    <p><strong>Phone:</strong>  <%= order.address[0].mobile %></p>
+                    <p><strong>Email:</strong> <%= user.email%></p>
+                </div>
+            </div>
+            <form action="/admin/changeStatus/?orderId=<%=order._id%>" method="post">
+            <div class="dashboard2">
+                <h3>Order Status</h3>
+                    <select id="order-status" name="status">
+                        <option value="pending">Pending</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                    </select>            
+            </div>
+            <div>
+                <button style="margin: 15px;padding: 10px;background: green;color: #ebebeb;border: none;border-radius: 5px;" id="update-status">Update Status</button>
+            </div>
+        </form>
         </div>
     </div>
 </body>

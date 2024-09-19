@@ -148,11 +148,11 @@
                             </a>
                         </div>
                         <div class="product__details__slider__content">
-                            <div class="product__details__pic__slider owl-carousel">
-                                <img data-hash="product-1" class="product__big__img" src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
-                                <img data-hash="product-2" class="product__big__img" src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
+                            <div class="product__details__pic__slider">
+                                <img  src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
+                                <!-- <img data-hash="product-2" class="product__big__img" src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
                                 <img data-hash="product-3" class="product__big__img" src="/imgs/re-images/<%= data.productImage[2] %>" alt="">
-                                <img data-hash="product-4" class="product__big__img" src="/imgs/re-images/<%= data.productImage[3] %>" alt="">
+                                <img data-hash="product-4" class="product__big__img" src="/imgs/re-images/<%= data.productImage[3] %>" alt=""> -->
                             </div>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
                                     <input type="text" value="1">
                                 </div>
                             </div>
-                            <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
+                            <a href="/addToCart/<%= data._id %>" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
                             <ul>
                                 <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                                 <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>

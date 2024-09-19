@@ -36,7 +36,7 @@
         <p><%=address.name%> , <%=address.city%> <br>pin: <%=address.postalCode%> , <%=address.state%> , <%=address.country%></p>
         <p>Phone: +91-<%=address.phone%></p>
         <br>
-        <a style="border-color: #0e0c0d;" href="/editAddress?addressId=<%= address._id %>&id=<%= locals.user._id %>" class="btn btn-outline-primary"><i class="fas fa-edit"></i> Edit</a> | 
+        <a style="border-color: #0e0c0d;" href="/editAddress?addressId=<%= address._id %>" class="btn btn-outline-primary"><i class="fas fa-edit"></i> Edit</a> | 
         <a style="border-color: #0e0c0d;" href="javascript:void(0);" class="btn btn-outline-danger remove-address" data-address-id="<%= address._id %>" data-user-id="<%= locals.user._id %>">
             <i class="fas fa-trash"></i> Remove
         </a>

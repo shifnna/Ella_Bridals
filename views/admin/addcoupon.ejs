@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store - Add Coupon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+            color: #e7dddd;
+            padding-top: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .brand-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-form h3 {
+            margin-bottom: 20px;
+        }
+
+        .brand-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .brand-form .form-control {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .brand-form button {
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .brand-form button:hover {
+            background-color: #218838;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-control {
+            flex: 1;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="/admin/addProducts"><i class="fas fa-plus"></i> Add product</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
+                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
+                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
+
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <h2>Coupon Management</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <!-- Coupon Form -->
+            <div class="brand-form">
+                <h3>Add New Coupon</h3>
+                <form action="/admin/addCoupon" method="POST" >
+                    <div class="form-group">
+                        <label for="couponCode">Coupon Code</label>
+                        <input type="text" id="couponCode" name="couponCode" class="form-control" placeholder="Enter coupon code">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="discountType">Discount Type</label>
+                            <select id="discountType" name="discountType" class="form-control">
+                                <option value="percentage">Percentage</option>
+                                <option value="amount">Fixed Amount</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discountValue">Discount Value</label>
+                            <input type="number" id="discountValue" name="discountValue" class="form-control" placeholder="Enter discount value">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="date" id="expiryDate" name="expiryDate" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="minOrderAmount">Min Order Amount</label>
+                            <input type="number" id="minOrderAmount" name="minOrderAmount" class="form-control" placeholder="Enter minimum order amount">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxOrderAmount">Max Order Amount</label>
+                            <input type="number" id="maxOrderAmount" name="maxOrderAmount" class="form-control" placeholder="Enter maximum order amount">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" class="form-control" placeholder="Enter description"></textarea>
+                    </div>
+
+                    <button type="submit">Save Coupon</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function validateForm() {
+  const code = document.getElementById('couponCode').value;
+  if (code.trim() === '') {
+    alert('Coupon Code cannot be empty!');
+    return false;
+  }
+  return true;
+}
+    </script>
+</body>
+
+</html>

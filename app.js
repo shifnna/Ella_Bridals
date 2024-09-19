@@ -52,7 +52,7 @@ app.set('views',[path.join(__dirname,"views/user"),path.join(__dirname,"views/ad
 app.use(express.static("public"));
 
 
-
+app.use("/pageNotfound",()=>{res.render("/pageerror")})
 app.use("/",userRouter);
 app.use('/admin',adminRouter);
 

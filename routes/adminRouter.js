@@ -10,6 +10,8 @@ const categoryController = require("../controllers/categoryController");
 const brandController = require("../controllers/brandController");
 const productController = require("../controllers/productController");
 const orderController = require("../controllers/orderController");
+const offerController = require("../controllers/offerController");
+const couponController = require("../controllers/couponController");
 
 
 
@@ -60,6 +62,26 @@ router.get("/editProduct",productController.getEditProduct);
 router.post("/deleteImage",productController.deleteSingleImage);
 router.post("/editProduct/:id", uploads.array("images", 4), productController.editProduct);
 
-router.get("/orderManagement",orderController.loadOrders);
-router.get("/orderDetails",orderController.loadOrderDetails)
+router.get("/order",orderController.loadOrders);
+router.get("/orderDetails",orderController.loadOrderDetails);
+router.post("/changeStatus",orderController.changeStatus);
+router.get("/offers",offerController.loadOffers);
+router.get("/coupon",couponController.loadCoupons);
+router.get("/addCoupon",couponController.loadAddCoupon);
+router.post("/addCoupon",couponController.addCoupon);
+router.get("/deleteCoupon",couponController.deleteCoupon);
+router.get("/editCoupon",couponController.loadEditCoupon);
+router.post("/editCoupon",couponController.editCoupon);
+router.get("/addOffer",offerController.loadAddOffer);
+router.post("/addOffer",offerController.addOffer);
+router.get("/editOffer",offerController.loadEditOffer);
+router.post("/editOffer",offerController.editOffer);
+router.get("/deleteOffer",offerController.deleteOffer);
+
+
+
+
+
+
+
 module.exports = router;

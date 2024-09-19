@@ -7,13 +7,22 @@
     </div>
 
     <!-- Orders Header -->
+    <%if(orders.length > 0){%>
     <div class="order-header row mb-4">
         <div class="col-md-12">
             <h4 style="margin-top: 3%;" class="order-summary-title">Order Summary</h4>
         </div>
     </div>
+    <%}else{%>
+      <div class="order-header row mb-4">
+        <div class="col-md-12">
+            <h4 style="margin-top: 3%;" class="order-summary-title">No Order Summary</h4>
+        </div>
+    </div>
+      <%}%>
 
     <!-- Orders List -->
+   <%if(orders.length > 0){%>
     <% orders.forEach(function(order) { %>
         <% order.products.forEach(function(product) { %>
           <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
@@ -42,6 +51,7 @@
             <a style="text-decoration: none; color: aliceblue;" href="/shop">Continue Shopping</a>
         </button>
     </div>
+    <%}%>
 </main>
 
 <!-- Bootstrap 5 JS CDN -->

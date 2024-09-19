@@ -159,6 +159,7 @@
                 <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
                 <label for="cashOnDelivery">Cash on Delivery</label>
             </div>
+            <div style="color: #e6006c;"><%= locals.message%></div>
         </div>
         <div class="col-lg-4">
             <div class="checkout__order">
@@ -169,45 +170,38 @@
                             <span class="top__text">Product</span>
                             <span class="top__text__right">Total</span>
                         </li>
-                        <li>01. Chain buck bag <span>$ 300.0</span></li>
-                        <li>02. Zip-pockets pebbled<br /> tote briefcase <span>$ 170.0</span></li>
-                        <li>03. Black jean <span>$ 170.0</span></li>
-                        <li>04. Cotton shirt <span>$ 110.0</span></li>
+                            <% cart.forEach(function(product) { %>
+                              <li>
+                                <%= product.product.productName %>
+                                <span>$ <%= product.price %></span>
+                              </li>
+                            <% }) %>
                     </ul>
                 </div>
                 <div class="checkout__order__total">
                     <ul>
-                        <li>Subtotal <span>$ 750.0</span></li>
-                        <li>Total <span>$ 750.0</span></li>
+                        <li>Subtotal <span>$ <%= totalPrice %></span></li>
+                        <li>Shipping <span>$0.00</span></li>
+                        <li>Total <span>$ <%= totalPrice %></span></li>
                     </ul>
                 </div>
                 <div class="checkout__order__widget">
                     <label for="o-acc">
-                        Create an acount?
+                        Create an account?
                         <input type="checkbox" id="o-acc">
                         <span class="checkmark"></span>
                     </label>
-                   
                 </div>
-                <a href="/proceedOrder"><button id="proceedBtn" style="width: 300px;height: 50px;" class="btn btn-primary btn-lg">Proceed</button></a> 
+                <a href="/proceedOrder"><button id="proceedBtn" style="width: 300px;height: 50px;" class="btn btn-primary btn-lg">Proceed</button></a>
             </div>
+            
         </div>
     </div>
 </div>
 
 <!-- SweetAlert2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
-<script>
-    document.getElementById('proceedBtn').addEventListener('click', function() {
-        Swal.fire({
-            title: 'Order Confirmed',
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
-        });
-    });
-</script>
+
 
 <!-- Bootstrap JS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

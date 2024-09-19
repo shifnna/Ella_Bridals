@@ -215,36 +215,59 @@
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-9">
-                    <div class="row product-row">
+                    <!-- Filter Section -->
+                    <div class="filter-section mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- "Filter" Title with Custom Font -->
+                            <div class="filter-title">
+                                <h5 style="font-family: 'Roboto', sans-serif;">Filter Products</h5>
+                            </div>
+            
+                            <!-- Filter Dropdown -->
+                            <div class="filter-dropdown">
+                                <select class="form-select" aria-label="Filter by" id="productFilter" style="width: 200px;">
+                                    <option value="" selected disabled>Filter by</option>
+                                    <option value="price-low-high">Price: Low to High</option>
+                                    <option value="price-high-low">Price: High to Low</option>
+                                    <option value="name-a-z">Product Name: A to Z</option>
+                                    <option value="name-z-a">Product Name: Z to A</option>
+                                    <option value="new-arrivals">New Arrivals</option> <!-- New option -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <!-- Product Grid -->
+                    <div class="row product-row" id="productList">
                         <% products.forEach(function(product) { %>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="col-lg-4 col-md-6 product-item" data-sale-price="<%= product.salePrice %>" data-product-name="<%= product.productName %>" data-created-at="<%= new Date(product.createdAt).getTime() %>">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="/imgs/re-images/<%= product.productImage[0] %>">
-                                    <% if(product.quantity <= 0){%>
+                                    <% if(product.quantity <= 0) { %>
                                     <div class="label stockout stockblue">Out Of Stock</div>
-                                     <%}else if(product.isBlocked === true){%>
+                                    <% } else if(product.isBlocked === true) { %>
                                     <div class="label stockout stockblue">Unavailable</div>
-                                    <%}%>
-                                <a href="/productdetails/<%= product._id %>">
-                                    <ul class="product__hover">
-                                        <li><a src="/imgs/re-images/<%= product.productImage[0] %>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                        <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                        <li><a href="/addToCart/<%= product._id %>"><span class="icon_bag_alt"></span></a></li>
-                                    </ul>
-                                </a>
+                                    <% } %>
+                                    <a href="/productdetails/<%= product._id %>">
+                                        <ul class="product__hover">
+                                            <li><a src="/imgs/re-images/<%= product.productImage[0] %>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                            <li><a href="/addToCart/<%= product._id %>"><span class="icon_bag_alt"></span></a></li>
+                                        </ul>
+                                    </a>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="#"><%= product.productName%></a></h6>
+                                    <h6><a href="#"><%= product.productName %></a></h6>
                                     <div class="rating">
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                     </div>
-                                    <div class="product__price"><%= product.salePrice%></div>
+                                    <div class="product__price">$ <%= product.salePrice %></div>
                                 </div>
                             </div>
                         </div>
                         <% }) %>
-                    </div>                    
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,7 +413,100 @@
         </div>
     </div>
     <!-- Search End -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Helper function to compare product names (A to Z or Z to A)
+        function compareNames(a, b, order = 'asc') {
+            const nameA = a.dataset.productName.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.dataset.productName.toUpperCase();
 
+            if (nameA < nameB) {
+                return order === 'asc' ? -1 : 1;
+            }
+            if (nameA > nameB) {
+                return order === 'asc' ? 1 : -1;
+            }
+            return 0;
+        }
+
+        // Helper function to compare prices (Low to High or High to Low)
+        function comparePrices(a, b, order = 'asc') {
+            const priceA = parseFloat(a.dataset.salePrice);
+            const priceB = parseFloat(b.dataset.salePrice);
+
+            return order === 'asc' ? priceA - priceB : priceB - priceA;
+        }
+
+        // Helper function to compare by created date (New Arrivals)
+        function compareCreatedAt(a, b, order = 'desc') {
+            const createdAtA = parseInt(a.dataset.createdAt);
+            const createdAtB = parseInt(b.dataset.createdAt);
+
+            return order === 'desc' ? createdAtB - createdAtA : createdAtA - createdAtB;
+        }
+
+        // Function to apply the selected filter
+        function applyFilter() {
+            const filterValue = document.getElementById('productFilter').value;
+            const productList = document.getElementById('productList');
+            const products = Array.from(productList.getElementsByClassName('product-item'));
+
+            let sortedProducts;
+            switch (filterValue) {
+                case 'price-low-high':
+                    sortedProducts = products.sort((a, b) => comparePrices(a, b, 'asc'));
+                    break;
+                case 'price-high-low':
+                    sortedProducts = products.sort((a, b) => comparePrices(a, b, 'desc'));
+                    break;
+                case 'name-a-z':
+                    sortedProducts = products.sort((a, b) => compareNames(a, b, 'asc'));
+                    break;
+                case 'name-z-a':
+                    sortedProducts = products.sort((a, b) => compareNames(a, b, 'desc'));
+                    break;
+                case 'new-arrivals':
+                    sortedProducts = products.sort((a, b) => compareCreatedAt(a, b, 'desc'));
+                    break;
+                default:
+                    sortedProducts = products;
+            }
+
+            // Clear existing products
+            productList.innerHTML = '';
+
+            // Append sorted products
+            sortedProducts.forEach(product => {
+                productList.appendChild(product);
+            });
+        }
+
+        // Event listener for the filter dropdown
+        document.getElementById('productFilter').addEventListener('change', applyFilter);
+
+    
+  // Function to get URL query parameters
+  function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  }
+
+  // Check if the 'orderSuccess' query parameter is present
+  if (getQueryParam('orderSuccess') === 'true') {
+    Swal.fire({
+      title: 'Order Confirmed!',
+      text: 'Your order has been successfully placed.',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      willClose: () => {
+      }
+    });
+  }
+
+
+    </script>
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

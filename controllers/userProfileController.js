@@ -35,10 +35,14 @@ console.log("addresses:",addresses);
 
   const editProfilePage = async (req,res)=>{
     try {
-        const userId = req.query.id;
-        const profile = await User.findOne({_id:userId})
+        const userId = req.session.user;
+        if(userId){
+          const profile = await User.findOne({_id:userId})
+          res.render("edit-profile", { data: profile });
+        }else{
+          res.redirect("/pageerror");
+        }
 
-        res.render("edit-profile", { data: profile });
     } catch (error) {
         console.log("profile edit page not found", error);
       res.status(500).send("server error");
@@ -49,8 +53,9 @@ console.log("addresses:",addresses);
 
   const editProfile = async (req,res)=>{
     try {
-        const id = req.params.id;
-        const userId = await User.findById(id)
+       const user = req.session.user;
+       if(user){
+        const userId = await User.findById(user)
 
         const data = req.body;
 
@@ -62,6 +67,9 @@ console.log("addresses:",addresses);
 
         await User.findByIdAndUpdate(id,updateUserData,{new:true});
         res.redirect("/userProfile");
+       }else{
+        res.redirect("/pageerror")
+       }
 
     } catch (error) {
          console.error(error);
@@ -73,12 +81,13 @@ console.log("addresses:",addresses);
 
   const addAddressPage = async (req,res)=>{
     try {
-      // const userId = req.query.id;
       const userId = req.session.user;
+      if(userId){
+        const usermodel = await User.findOne({_id:userId})
 
-      const usermodel = await User.findOne({_id:userId})
-
-      res.render("add-address", { data: usermodel });
+        res.render("add-address", { data: usermodel });
+      }
+      
   } catch (error) {
       console.log("profile edit page not found", error);
     res.status(500).send("server error");
@@ -90,24 +99,29 @@ console.log("addresses:",addresses);
 
   const addAddress = async (req,res)=>{
     try {
-      const id = req.params.id;
-      const {name,phone,address,city,state,postalCode,country} = req.body;
-
-      const newAddress = new Address({
-        user:id,     //^ as address schema
-        address:[{
-          name,
-          phone,
-          address,
-          city,
-          state,
-          postalCode,
-          country
-        }],
-      });
-
-      await newAddress.save();
-    return res.redirect("/userProfile");
+      if(req.session.user){
+        const id = req.params.id;
+        const {name,phone,address,city,state,postalCode,country} = req.body;
+  
+        const newAddress = new Address({
+          user:id,     //^ as address schema
+          address:[{
+            name,
+            phone,
+            address,
+            city,
+            state,
+            postalCode,
+            country
+          }],
+        });
+  
+        await newAddress.save();
+      return res.redirect("/userProfile");
+      }else{
+        return res.render("/pageerror");
+      }
+     
 
     } catch (error) {
       console.error("Error adding address:", error);
@@ -123,20 +137,22 @@ console.log("addresses:",addresses);
   const editAddressPage = async (req, res) => {
     try {
       const addressId = req.query.addressId;
-      const userId = req.query.id;
-  
-      const address = await Address.findOne({ user: userId });
-      const addr = address.address; // addr is an array of addresses
-  
-      // Access the address in the array
-      const targetAddress = addr.find((address) => address._id.toString() === addressId);
-  
-      console.log(targetAddress);
-  
-      // Now you can render the edit-address template with the targetAddress
-      res.render("edit-address", { address: targetAddress });
+      const userId = req.session.user;
+  if(userId){
+    const address = await Address.findOne({ user: userId });
+    const addr = address.address; // addr is an array of addresses
+    // Access the address in the array
+    const targetAddress = addr.find((address) => address._id.toString() === addressId);
+
+    console.log("target address:",targetAddress);
+     
+    return res.render("edit-address", { address: targetAddress });
+    }else{
+    res.redirect("/pageerror");
+  }
+   
     } catch (error) {
-      // handle error
+      console.error(error.message);
     }
   };
 
@@ -410,30 +426,31 @@ console.log("orders:",orders);
   }
 
 
-  const selectPayment = async (req,res)=>{
+  const selectPayment = async (req, res) => {
     try {
       const userId = req.session.user;
-      // console.log(`User ID: ${userId}`);
       req.session.addressId = req.query.addressId;
-      const addressId =  req.session.addressId
-      console.log(addressId);     
+      const addressId = req.session.addressId;
   
       if (userId) {
-        if(addressId){
-          return res.render("selectPayment");
-        }else{
-          return res.render("/selectAddress",{message:'please select an Address..'})
+        const user = await User.findById(userId);
+        const cart = await Cart.findOne({ user: userId }).populate('products.product');
+  
+        // console.log('Cart:', cart); // Add this line to log the cart object
+        // console.log('Cart products:', cart.products); // Add this line to log the cart products array
+        if (addressId) {
+          return res.render("selectPayment", { user: user, cart: cart ? cart.products : [], totalPrice: cart ? cart.totalPrice : 0 });
+        } else {
+          return res.render("selectAddress", { message: 'please select an Address..' });
         }
-       
       } else {
-       return res.redirect("/pageerror")
+        return res.redirect("/pageerror");
       }
     } catch (error) {
       console.log("profile page not found", error);
       res.status(500).send("server error");
     }
-  
-  }
+  };
 
 
 
@@ -490,26 +507,35 @@ console.log("orders:",orders);
       });
   
       await order.save();
+     console.log('Order saved:', order);
   
       // Update product quantities
       await Promise.all(orderProducts.map(async (product) => {
-        const updatedProduct = await Product.findByIdAndUpdate(product.productId, {
-          $inc: { quantity: -product.quantity }
-        }, { new: true });
-        if (!updatedProduct) {
-          throw new Error(`Failed to update product quantity for product ${product.productId}`);
+        try {
+          console.log(`Attempting to update product: ${product.productId} - reducing quantity by: ${product.quantity}`);
+          console.log('Updating product quantity for:', product.productId, 'with quantity:', -product.quantity);
+
+          const updatedProduct = await Product.findByIdAndUpdate(product.productId, {
+            $inc: { quantity: -product.quantity }
+          }, { new: true });
+      
+          if (!updatedProduct) {
+            throw new Error(`Product ${product.productId} not found or failed to update`);
+          }
+      
+        } catch (err) {
+          console.error(`Error updating product ${product.productId}:`, err);
         }
-      }));
+      }));      
   
       await Cart.findOneAndDelete({ user: userId });
-  res.render("/selectPayment")
-      res.status(200).send({ message: 'Order confirmed successfully', order });
+      return res.redirect("/shop?orderSuccess=true");
+      // res.status(200).send({ message: 'Order confirmed successfully', order });
     } catch (error) {
       console.error('Error confirming order:', error);
       res.status(500).send('Internal Server Error');
     }
   };
-
 
   const loadOrderDetails = async (req,res)=>{
     try {
@@ -541,19 +567,19 @@ console.log("orders:",orders);
     try {
       const userId = req.session.user;
       const orderId = req.query.orderId; 
-  
+    
       if (!orderId) {
         return res.status(400).send('Order ID is required');
       }
-  
+    
       const order = await Order.findByIdAndUpdate(orderId, {
         $set: { status: 'Cancelled' }
       }, { new: true });
-  
+    
       if (!order) {
         return res.status(404).send('Order not found');
       }
-  
+    
       // Update product quantities (reverse the update made during order confirmation)
       await Promise.all(order.products.map(async (product) => {
         const updatedProduct = await Product.findByIdAndUpdate(product.productId, {
@@ -563,10 +589,47 @@ console.log("orders:",orders);
           throw new Error(`Failed to update product quantity for product ${product.productId}`);
         }
       }));
-  
-      return res.render("orderDetails",{message:'Order Cancelled Successfully'});
+    
+      return res.render("orderDetails", { order: order, message: 'Order Cancelled Successfully' });
     } catch (error) {
       console.error('Error cancelling order:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+
+  
+  const returnOrder = async (req, res) => {
+    try {
+      const userId = req.session.user;
+      const orderId = req.query.orderId; 
+    
+      if (!orderId) {
+        return res.status(400).send('Order ID is required');
+      }
+    
+      const order = await Order.findByIdAndUpdate(orderId, {
+        $set: { status: 'Returned' }
+      }, { new: true });
+    
+      if (!order) {
+        return res.render("orderDetails", { order: order, message: 'Order not found' });
+      }
+    
+      
+      // Update product quantities (reverse the update made during order confirmation)
+      await Promise.all(order.products.map(async (product) => {
+        const updatedProduct = await Product.findByIdAndUpdate(product.productId, {
+          $inc: { quantity: product.quantity }
+        }, { new: true });
+        if (!updatedProduct) {
+          throw new Error(`Failed to update product quantity for product ${product.productId}`);
+        }
+      }));
+
+      
+      return res.render("orderDetails", { order: order, message: 'Return Order Successfully' });
+    } catch (error) {
+      console.error('Error returning order:', error);
       res.status(500).send('Internal Server Error');
     }
   };
@@ -589,4 +652,5 @@ module.exports = {
     confirmOrder,
     loadOrderDetails,
     cancelOrder,
+    returnOrder,
 }

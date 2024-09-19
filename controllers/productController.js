@@ -54,7 +54,7 @@ const loadProducts = async (req, res) => {
                 totalPages: Math.ceil(count / limit),
                 cat: category,
                 brand: brand,
-
+                search: search
             })
         } else {
             res.render("page_404")
@@ -199,8 +199,6 @@ const unblockProduct = async (req, res) => {
 
 
 
-
-
 const getEditProduct = async (req,res)=>{
     try {
         const id= req.query.id;
@@ -250,58 +248,62 @@ const deleteSingleImage = async (req, res) => {
 const editProduct = async (req,res)=>{
     try {
         const id = req.params.id;
-        console.log(req.params.id);
+        // console.log(req.params.id);
+        if(req.session.user){
+            const product = await Product.findById(req.params.id);
         
-        const product = await Product.findById(req.params.id);
-        
-        const data = req.body;
-
-        const images=[];
-
-        if (req.files && req.files.length > 0) {
-            for (let i = 0; i < req.files.length; i++) {
-                // Corrected path: Navigate two levels up to reach project root
-                const originalImagePath = path.join(__dirname, '../public/imgs/productImages', req.files[i].filename);
-                const resizedImagePath = path.join(__dirname, '../public/imgs/re-images', `resized-${req.files[i].filename}`);
-
-                if (!fs.existsSync(originalImagePath)) {
-                    console.error("File not found:", originalImagePath);
-                    return res.status(400).send("File not found");
+            const data = req.body;
+    
+            const images=[];
+    
+            if (req.files && req.files.length > 0) {
+                for (let i = 0; i < req.files.length; i++) {
+                    // Corrected path: Navigate two levels up to reach project root
+                    const originalImagePath = path.join(__dirname, '../public/imgs/productImages', req.files[i].filename);
+                    const resizedImagePath = path.join(__dirname, '../public/imgs/re-images', `resized-${req.files[i].filename}`);
+    
+                    if (!fs.existsSync(originalImagePath)) {
+                        console.error("File not found:", originalImagePath);
+                        return res.status(400).send("File not found");
+                    }
+    
+                    // Ensure the directory for resized images exists
+                    const dir = path.dirname(resizedImagePath);
+                    if (!fs.existsSync(dir)) {
+                        fs.mkdirSync(dir, { recursive: true });
+                    }
+    
+                    // Resize the image and save it to the resizedImagePath
+                    await sharp(originalImagePath)
+                        .resize({ width: 440, height: 440 })
+                        .toFile(resizedImagePath);
+    
+                    images.push(`resized-${req.files[i].filename}`);
                 }
-
-                // Ensure the directory for resized images exists
-                const dir = path.dirname(resizedImagePath);
-                if (!fs.existsSync(dir)) {
-                    fs.mkdirSync(dir, { recursive: true });
-                }
-
-                // Resize the image and save it to the resizedImagePath
-                await sharp(originalImagePath)
-                    .resize({ width: 440, height: 440 })
-                    .toFile(resizedImagePath);
-
-                images.push(`resized-${req.files[i].filename}`);
             }
-        }
-
-        const updateFields = {
-            productName:data.productName,
-            description:data.description,
-            brand:data.brand,
-            category:data.category,
-            regularPrice:data.regularPrice,
-            salePrice:data.salePrice,
-            quantity:data.quantity,
-            size:data.size,
-            color:data.color,
-        }
-
-        if(req.files.length > 0){
-            updateFields.$push = {productImage:{$each:images}}
-        }
-        
-        await Product.findByIdAndUpdate(id,updateFields,{new:true});
-        res.redirect("/admin/products")
+    
+            const updateFields = {
+                productName:data.productName,
+                description:data.description,
+                brand:data.brand,
+                category:data.category,
+                regularPrice:data.regularPrice,
+                salePrice:data.salePrice,
+                quantity:data.quantity,
+                size:data.size,
+                color:data.color,
+            }
+    
+            if(req.files.length > 0){
+                updateFields.$push = {productImage:{$each:images}}
+            }
+            
+            await Product.findByIdAndUpdate(id,updateFields,{new:true});
+            res.redirect("/admin/products")
+        }else{
+            res.redirect("/pageerror")
+        }      
+       
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror")

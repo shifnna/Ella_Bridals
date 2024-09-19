@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Womenz Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background-color: #253234;
+            min-height: 100vh;
+            width: 250px;
+            color: #e7dddd;
+            padding-top: 20px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 0;
+        }
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: #e7dddd;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sidebar ul li a:hover {
+            background-color: #6f898d;
+            color: white;
+        }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .top-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .form-container {
+            max-width: 100%; /* Updated to allow form to expand */
+            margin: 0;
+            padding: 20px;
+        }
+        .brand-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px; /* Decreased form width slightly */
+            margin-left: 0; /* Align form to the left */
+        }
+        .brand-form h3 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .brand-form .form-group {
+            margin-bottom: 15px;
+        }
+        .brand-form label {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .brand-form .form-control, .brand-form .form-control-file {
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 50px; /* Increased height for input fields */
+        }
+        .brand-form select, .brand-form input[type="date"] {
+            height: 50px; /* Increased height for select and date input fields */
+            font-size: 16px;
+            padding: 5px;
+        }
+        .brand-form button {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+        .brand-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    
+
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h1 style="margin-left: 18px;">Womenz Store</h1>
+            <ul>
+                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+                <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
+                <li><a href="/admin/addProducts"><i class="fas fa-plus"></i> Add Product</a></li>
+                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
+                <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
+                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li>
+                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li>
+                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <div class="top-header">
+                <h2>Offer Management</h2>
+                <div class="profile">
+                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <div class="brand-form">
+                    <h3>Add New Offer</h3>
+                    <form action="/admin/editOffer?id=<%=offer._id%>" method="POST" >
+                        <div class="form-group">
+                            <label for="offerType">Offer Type</label>
+                            <select id="offerType" name="offerType" class="form-control">
+                                <%if(offer.offerType){%>
+                                    <option value="<%=offer.offerType%>"><%=offer.offerType %></option>
+                                <%}%>
+                                <option value="Category">Discount</option>
+                                <option value="Brand">Buy One Get One</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="entity">Entity</label>
+                            <select id="entity" name="entityId" class="form-control">
+                                <%if(offer.entityId){%>
+                                <option value="<%=offer.entityId%>"><%=offer.entityId%></option>
+                                <%}%>
+                                <option value="Brand">Brand</option>
+                                <option value="Category">Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="offerDiscount">Discount Percentage</label>
+                            <input value="<%=offer.discountPercentage%>" type="number" class="form-control" id="offerDiscount" name="discountPercentage" placeholder="Type discount percentage here" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="validFrom">Valid From</label>
+                            <input value="<%=offer.validFrom%>" type="date" class="form-control" id="validFrom" name="validFrom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="validTo">Valid To</label>
+                            <input value="<%=offer.validTo%>" type="date" class="form-control" id="validTo" name="validTo" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Offer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const offerTypeSelect = document.getElementById('offerType');
+        //     const entitySelect = document.getElementById('entity');
+
+        //     function updateEntityOptions() {
+        //         const selectedOfferType = offerTypeSelect.value;
+        //         let options = [];
+
+        //         if (selectedOfferType === 'Category') {
+        //             options = [
+        //                 { value: 'products', text: 'Products' }
+        //             ];
+        //         } else if (selectedOfferType === 'Brand') {
+        //             options = [
+        //                 { value: 'categories', text: 'Categories' }
+        //             ];
+        //         }
+
+        //         // Clear existing options
+        //         entitySelect.innerHTML = '';
+
+        //         // Add new options
+        //         options.forEach(option => {
+        //             const opt = document.createElement('option');
+        //             opt.value = option.value;
+        //             opt.textContent = option.text;
+        //             entitySelect.appendChild(opt);
+        //         });
+        //     }
+        //     // Initialize entity options on page load
+        //     updateEntityOptions();
+        //     // Update entity options when offer type changes
+        //     offerTypeSelect.addEventListener('change', updateEntityOptions);
+        // });
+    </script>
+</body>
+</html>
