@@ -159,80 +159,83 @@
             <div class="form-container">
                 <div class="brand-form">
                     <h3>Add New Offer</h3>
-                    <form action="/admin/editOffer?id=<%=offer._id%>" method="POST" >
+                    <form action="/admin/editOffer?id=<%= offer._id %>" method="POST">
                         <div class="form-group">
                             <label for="offerType">Offer Type</label>
                             <select id="offerType" name="offerType" class="form-control">
-                                <%if(offer.offerType){%>
-                                    <option value="<%=offer.offerType%>"><%=offer.offerType %></option>
-                                <%}%>
-                                <option value="Category">Discount</option>
-                                <option value="Brand">Buy One Get One</option>
+                                <option value="Brand" <%= offer.offerType === 'Brand' ? 'selected' : '' %>>Brand</option>
+                                <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
                             </select>
                         </div>
+
                         <div class="form-group">
                             <label for="entity">Entity</label>
                             <select id="entity" name="entityId" class="form-control">
-                                <%if(offer.entityId){%>
-                                <option value="<%=offer.entityId%>"><%=offer.entityId%></option>
-                                <%}%>
-                                <option value="Brand">Brand</option>
-                                <option value="Category">Category</option>
+                                <!-- Populate with the correct options from the backend -->
+                                <% if (offer.offerType === 'Brand') { %>
+                                    <% brand.forEach(b => { %>
+                                        <option value="<%= b.brandName %>" <%= offer.entityId == b._id ? 'selected' : '' %>><%= b.brandName %></option>
+                                    <% }); %>
+                                <% } else if (offer.offerType === 'Category') { %>
+                                    <% category.forEach(c => { %>
+                                        <option value="<%= c.name %>" <%= offer.entityId == c._id ? 'selected' : '' %>><%= c.name %></option>
+                                    <% }); %>
+                                <% } %>
                             </select>
                         </div>
+
                         <div class="form-group">
                             <label for="offerDiscount">Discount Percentage</label>
-                            <input value="<%=offer.discountPercentage%>" type="number" class="form-control" id="offerDiscount" name="discountPercentage" placeholder="Type discount percentage here" required>
+                            <input value="<%= offer.discountPercentage %>" type="number" class="form-control" id="offerDiscount" name="discountPercentage" required>
                         </div>
+
                         <div class="form-group">
                             <label for="validFrom">Valid From</label>
-                            <input value="<%=offer.validFrom%>" type="date" class="form-control" id="validFrom" name="validFrom" required>
+                            <input value="<%= offer.validFrom %>" type="date" class="form-control" id="validFrom" name="validFrom" required>
                         </div>
+
                         <div class="form-group">
                             <label for="validTo">Valid To</label>
-                            <input value="<%=offer.validTo%>" type="date" class="form-control" id="validTo" name="validTo" required>
+                            <input value="<%= offer.validTo %>" type="date" class="form-control" id="validTo" name="validTo" required>
                         </div>
+
                         <button type="submit" class="btn btn-primary">Update Offer</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const offerTypeSelect = document.getElementById('offerType');
-        //     const entitySelect = document.getElementById('entity');
+        $(document).ready(function () {
+            $('#offerType').change(function () {
+                var offerType = $(this).val();
+                $.ajax({
+                    url: '/admin/addOffer',
+                    method: 'GET',
+                    data: { offerType: offerType },
+                    success: function (response) {
+                        // Clear and repopulate the entity dropdown
+                        $('#entity').empty();
+                        if (offerType === 'Brand') {
+                            response.brand.forEach(brand => {
+                                $('#entity').append(`<option value="${brand.brandName}">${brand.brandName}</option>`);
+                            });
+                        } else {
+                            response.category.forEach(category => {
+                                $('#entity').append(`<option value="${category.name}">${category.name}</option>`);
+                            });
+                        }
+                    },
+                    error: function (err) {
+                        console.error('Error:', err);
+                    }
+                });
+            });
 
-        //     function updateEntityOptions() {
-        //         const selectedOfferType = offerTypeSelect.value;
-        //         let options = [];
-
-        //         if (selectedOfferType === 'Category') {
-        //             options = [
-        //                 { value: 'products', text: 'Products' }
-        //             ];
-        //         } else if (selectedOfferType === 'Brand') {
-        //             options = [
-        //                 { value: 'categories', text: 'Categories' }
-        //             ];
-        //         }
-
-        //         // Clear existing options
-        //         entitySelect.innerHTML = '';
-
-        //         // Add new options
-        //         options.forEach(option => {
-        //             const opt = document.createElement('option');
-        //             opt.value = option.value;
-        //             opt.textContent = option.text;
-        //             entitySelect.appendChild(opt);
-        //         });
-        //     }
-        //     // Initialize entity options on page load
-        //     updateEntityOptions();
-        //     // Update entity options when offer type changes
-        //     offerTypeSelect.addEventListener('change', updateEntityOptions);
-        // });
+            // Trigger change on page load to ensure correct initialization
+            $('#offerType').trigger('change');
+        });
     </script>
 </body>
 </html>

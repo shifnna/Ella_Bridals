@@ -163,15 +163,22 @@
                         <div class="form-group">
                             <label for="offerType">Offer Type</label>
                             <select id="offerType" name="offerType" class="form-control">
-                                <option value="Category">Discount</option>
-                                <option value="Brand">Buy One Get One</option>
+                                <option value="Category">Category</option>
+                                <option value="Brand">Brand</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="entity">Entity</label>
                             <select id="entity" name="entityId" class="form-control">
-                                <option value="Brand">Brand</option>
-                                <option value="Category">Category</option>
+                                <% if (offerType === 'Brand') { %>
+                                    <% brand.forEach(brand => { %>
+                                        <option value="<%= brand.brandName %>"><%= brand.brandName %></option>
+                                    <% }); %>
+                                <% } else if (offerType === 'Category') { %>
+                                    <% category.forEach(category => { %>
+                                        <option value="<%= category.name %>"><%= category.name %></option>
+                                    <% }); %>
+                                <% } %>
                             </select>
                         </div>
                         <div class="form-group">
@@ -192,41 +199,40 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     const offerTypeSelect = document.getElementById('offerType');
-        //     const entitySelect = document.getElementById('entity');
+       $(document).ready(function() {
+    $('#offerType').change(function() {
+        var offerType = $(this).val();
+        
+        $.ajax({
+            url: '/admin/addOffer', // Make sure this is the correct route
+            method: 'GET',
+            data: { offerType: offerType },
+            success: function(response) {
+                // This will directly set the correct options for the `entity` select
+                $('#entity').empty(); // Clear current options
+                if (offerType === 'Brand') {
+                    response.brand.forEach(brand => {
+                        $('#entity').append(`<option value="${brand.brandName}">${brand.brandName}</option>`);
+                    });
+                } else {
+                    response.category.forEach(category => {
+                        $('#entity').append(`<option value="${category.name}">${category.name}</option>`);
+                    });
+                }
+            },
+            error: function(err) {
+                console.error('Error:', err);
+            }
+        });
+    });
 
-        //     function updateEntityOptions() {
-        //         const selectedOfferType = offerTypeSelect.value;
-        //         let options = [];
-
-        //         if (selectedOfferType === 'Category') {
-        //             options = [
-        //                 { value: 'products', text: 'Products' }
-        //             ];
-        //         } else if (selectedOfferType === 'Brand') {
-        //             options = [
-        //                 { value: 'categories', text: 'Categories' }
-        //             ];
-        //         }
-
-        //         // Clear existing options
-        //         entitySelect.innerHTML = '';
-
-        //         // Add new options
-        //         options.forEach(option => {
-        //             const opt = document.createElement('option');
-        //             opt.value = option.value;
-        //             opt.textContent = option.text;
-        //             entitySelect.appendChild(opt);
-        //         });
-        //     }
-        //     // Initialize entity options on page load
-        //     updateEntityOptions();
-        //     // Update entity options when offer type changes
-        //     offerTypeSelect.addEventListener('change', updateEntityOptions);
-        // });
-    </script>
+    // Trigger change on page load to ensure correct initialization
+    $('#offerType').trigger('change');
+});
+        </script>
+        
 </body>
 </html>

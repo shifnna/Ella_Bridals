@@ -178,6 +178,7 @@
             text-decoration: none;
             display: inline-block;
             transition: background-color 0.3s, box-shadow 0.3s;
+            width: 50px;
         }
 
         .btn-edit:hover {
@@ -198,6 +199,7 @@
             text-decoration: none;
             display: inline-block;
             transition: background-color 0.3s, box-shadow 0.3s;
+            width: 80px;
         }
 
         .btn-delete:hover {
@@ -279,7 +281,7 @@
                                 <th>Valid From</th>
                                 <th>Valid To</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                            
                             </tr>
                         </thead>
                         <tbody>
@@ -290,7 +292,7 @@
                                 <td><%=data[i].discountPercentage %>%</td>
                                 <td><%=data[i].validFrom.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })  %></td>
                                 <td><%=data[i].validTo.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })  %></td>
-                                <td><%=data[i].status %></td>
+                               
                                 <td>
                                     <a href="/admin/editOffer?id=<%=data[i]._id%>" class="btn-edit">Edit</a>
                                     <a href="/admin/deleteOffer?id=<%=data[i]._id %>"><button class="btn-delete" onclick="return confirm('Are sure You want to Delete this offer')">Delete</button></a>

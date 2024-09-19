@@ -8,13 +8,13 @@ const offerSchema = new mongoose.Schema({
     entityId: {
          type:String,  // mongoose.Schema.Types.ObjectId, // This refers to the product, brand, or occasion ID
         required: true,
-        enum: ['Brand', 'Category'],
+        // enum: ['Brand', 'Category'],
         // refPath: 'onModel' // Dynamic reference based on the offer type
     },
     // onModel: {
     //     type: String,
     //     required: true,
-    //     enum: ['Product', 'Brand', 'Category'] // Reference models
+    //     enum: ['Brand', 'Category'] // Reference models
     // },
     discountPercentage: {
         type: Number,
