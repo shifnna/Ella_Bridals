@@ -195,15 +195,14 @@
                             <label for="category">Category</label>
                             <select class="form-control" id="category" name="category" required>
                                 <% for(let i=0; i< cat.length ; i++) { %>
-                                <option value="<%= cat[i]._id.name %>" ><%=cat[i].name%></option>
+                                    <option value="<%= cat[i]._id %>" <%= (cat[i]._id === product.category) ? 'selected' : '' %> ><%=cat[i].name%></option>
                                 <%}%>
                             </select>
                         </div>
                         <div class="form-group full-width">
                             <label for="description">Description</label>
-                            <textarea class="form-control" value="<%= product.description %>" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea>
-                        <input type="text" value="<%= product.description %>">
-                        </div>
+                            <!-- <textarea class="form-control" value="<%= product.description %>" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea> -->
+                            <textarea class="form-control" id="descriptionid" name="description" rows="4" placeholder="Enter description" required><%= product.description %></textarea>                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -269,15 +268,35 @@
 
                     <% } %>
                     </div>
-                     <button type="submit" onclick="validateAndSubmit()">Update Product</button>
+                    <button type="submit" onclick="return validateForm()">Update Product</button>
                 </form>
             </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
     <script>
        
+       function validateForm() {
+    // Get field values
+    const productName = document.getElementById('productName').value.trim();
+    const brand = document.getElementById('brand').value.trim();
+    const category = document.getElementById('category').value;
+    const description = document.getElementById('descriptionid').value.trim();
 
+    // Check if category is a valid MongoDB ID
+    const isValidCategoryId = /^[a-f\d]{24}$/i.test(category);
+
+    console.log("Validation result:", !productName || !brand || !isValidCategoryId || !description);
+
+    // Check if any of the required fields are empty
+    if (!productName || !brand || !isValidCategoryId || !description) {
+        alert('Please fill out all required fields');
+        return false;  // Block form submission if validation fails
+    }
+
+    return true;  // Allow form submission
+}
 
 
     function deleteSingleImage(imageName, productId) {  

@@ -208,10 +208,12 @@
 
                     <!-- Pagination Section -->
                     <div class="pagination">
-                        <li class="page-item active">
-                            <a class="page-link" href="?page=1&search=">1</a>
-                        </li>
-                    </div>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                          <li class="page-item <%= (i === parseInt(currentPage)) ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                          </li>
+                        <% } %>
+                      </div>
                 </div>
             </div>
         </div>

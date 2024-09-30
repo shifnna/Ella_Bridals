@@ -187,12 +187,11 @@
                         </div>
                         <div class="form-group">
                             <label for="brand">Brand</label>
-                            <input type="text" class="form-control" id="brand" name="brand" placeholder="Enter brand" required>
-                            <!-- <select class="form-control" id="brand" name="brand" required>
-                                <% for(let i=0; i< brand.length; i++) { %>
-                                <option value="<%=brand[i].name%>"><%=brand[i].name%></option>
+                            <select style="height: 60px;" class="form-control" id="brand" name="brand" required>
+                                <% for(let i=0; i< brand.length ; i++) { %>
+                                <option value="<%=brand[i].brandName%>"><%=brand[i].brandName%></option>
                                 <%}%>
-                            </select> -->
+                            </select>                          
                         </div>
                     </div>
                     <div class="form-row">

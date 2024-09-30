@@ -1,0 +1,114 @@
+<%-include("../../views/partials/H-profile")%>
+<style>
+  .close-tag {
+    position: absolute;
+    top: 10px; /* Adjust the position as needed */
+    right: 10px; /* Adjust the position as needed */
+    width: 40px; /* Adjust size */
+    height: 40px; /* Adjust size */
+    border-color: #0e0c0d; /* Background color */
+    color: rgb(0, 0, 0); /* Font color */
+    border-radius: 50%; /* Round shape */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer; /* Show pointer cursor on hover */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold; /* Make the close symbol bold */
+}
+
+.close-tag a {
+    color: rgb(10, 0, 0); /* Set the color of the close symbol */
+    text-decoration: none; /* Remove underline from the link */
+}
+
+.close-tag a:hover {
+    color: rgb(164, 153, 153); /* Set the color of the close symbol */
+    text-decoration: none; /* Remove underline from the link */
+}
+
+.close-tag:hover {
+    background-color: rgb(235, 225, 225); /* Change background on hover */
+}
+</style>
+
+<!-- Wallet Section -->
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2 class="h2">My Wallet</h2>
+    </div>
+
+    <!-- Wallet Balance -->
+    <div class="wallet-balance mb-4">
+        <h4>Your Wallet Balance: <span class="text-success">$<%= walletBalance%></span></h4>
+    </div>
+
+    <!-- Recent Transactions -->
+    <h5>Recent Transactions</h5>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2024-09-20</td>
+                    <td>Order #12345 - Refund</td>
+                    <td class="text-success">+$25.00</td>
+                </tr>
+                <tr>
+                    <td>2024-09-15</td>
+                    <td>Order #12344 - Purchase</td>
+                    <td class="text-danger">-$50.00</td>
+                </tr>
+                <tr>
+                    <td>2024-09-10</td>
+                    <td>Order #12343 - Purchase</td>
+                    <td class="text-danger">-$25.00</td>
+                </tr>
+                <tr>
+                    <td>2024-09-05</td>
+                    <td>Order #12342 - Refund</td>
+                    <td class="text-success">+$30.00</td>
+                </tr>
+                <tr>
+                    <td>2024-09-01</td>
+                    <td>Order #12341 - Purchase</td>
+                    <td class="text-danger">-$15.00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Continue Shopping -->
+    <div class="mt-4">
+        <button style="background-color: #0e0c0d; border-color: #0e0c0d; width: 32%;" class="btn btn-outline-primary">
+            <a style="text-decoration: none; color: aliceblue;" href="/shop">Continue Shopping</a>
+        </button>
+    </div>
+</main>
+
+<!-- Bootstrap 5 JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.dropdown-toggle').dropdown();
+    });
+</script>
+<!-- Js Plugins -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/mixitup.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

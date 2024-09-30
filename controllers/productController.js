@@ -149,11 +149,12 @@ const addProductOffer = async (req, res) => {
             return res.json({ status: false, message: "This product's category already has a category offer" })
         }
 
-        findProduct.salePrice = findProduct.salePrice - Math.floor(findProduct.regularPrice * (percentage / 100));
-        findProduct.productOffer = parseInt(percentage);
+        findProduct.offerPrice = findProduct.salePrice - Math.floor(findProduct.regularPrice * (percentage / 100));
+        findProduct.offerPercentage = parseInt(percentage);
 
         await findProduct.save();
         findCategory.categoryOffer = 0;
+        await findCategory.save();
         res.json({ status: true });
     } catch (error) {
         res.redirect("/pageerror");
@@ -244,72 +245,75 @@ const deleteSingleImage = async (req, res) => {
 
 
 
-
-const editProduct = async (req,res)=>{
+const editProduct = async (req, res) => {
     try {
         const id = req.params.id;
-        // console.log(req.params.id);
-        if(req.session.user){
-            const product = await Product.findById(req.params.id);
-        
+        // if (req.session.admin) {
+            const product = await Product.findById(id);
             const data = req.body;
-    
-            const images=[];
-    
+
+            const images = [];
+
+            // If files are provided, process the uploaded images
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
-                    // Corrected path: Navigate two levels up to reach project root
                     const originalImagePath = path.join(__dirname, '../public/imgs/productImages', req.files[i].filename);
                     const resizedImagePath = path.join(__dirname, '../public/imgs/re-images', `resized-${req.files[i].filename}`);
-    
+
                     if (!fs.existsSync(originalImagePath)) {
                         console.error("File not found:", originalImagePath);
                         return res.status(400).send("File not found");
                     }
-    
-                    // Ensure the directory for resized images exists
+
+                    // Ensure directory for resized images exists
                     const dir = path.dirname(resizedImagePath);
                     if (!fs.existsSync(dir)) {
                         fs.mkdirSync(dir, { recursive: true });
                     }
-    
-                    // Resize the image and save it to the resizedImagePath
+
+                    // Resize the image
                     await sharp(originalImagePath)
                         .resize({ width: 440, height: 440 })
                         .toFile(resizedImagePath);
-    
+
                     images.push(`resized-${req.files[i].filename}`);
                 }
             }
-    
+
+            // Update fields
             const updateFields = {
-                productName:data.productName,
-                description:data.description,
-                brand:data.brand,
-                category:data.category,
-                regularPrice:data.regularPrice,
-                salePrice:data.salePrice,
-                quantity:data.quantity,
-                size:data.size,
-                color:data.color,
+                productName: data.productName,
+                description: data.description,
+                brand: data.brand,
+                category: data.category,
+                regularPrice: data.regularPrice,
+                salePrice: data.salePrice,
+                quantity: data.quantity,
+                size: data.size,
+                color: data.color,
+                offerPercentage: data.offerPercentage,
+                offerPrice: data.offerPrice,
+            };
+
+            // If new images are uploaded, add them to the update object
+            if (images.length > 0) {
+                updateFields.$push = { productImage: { $each: images } };
             }
-    
-            if(req.files.length > 0){
-                updateFields.$push = {productImage:{$each:images}}
-            }
+
+            // Update product details
+            await Product.findByIdAndUpdate(id, updateFields, { new: true });
+            res.redirect("/admin/products");
+        // } else {
             
-            await Product.findByIdAndUpdate(id,updateFields,{new:true});
-            res.redirect("/admin/products")
-        }else{
-            res.redirect("/pageerror")
-        }      
-       
+        //     res.redirect("/pageerror");
+        // }
+
     } catch (error) {
         console.error(error);
-        res.redirect("/pageerror")
-        
+        res.status(500).send("Internal Server Error");
     }
-}
+};
+
 
 
 module.exports = {

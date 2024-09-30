@@ -1,6 +1,14 @@
 const mongoose=require("mongoose");
 const {Schema} = mongoose;
 
+
+// const transactionSchema = new mongoose.Schema({
+//     date: { type: Date, default: Date.now },
+//     description: { type: String, required: true },
+//     amount: { type: Number, required: true } // Positive for credits, negative for debits
+// });
+
+
 const userSchema=new Schema({
     name:{
         type:String,
@@ -43,9 +51,11 @@ const userSchema=new Schema({
         type:Number,
         default:0,
     },
-    wishlist:[{
-        type:Number,
-        ref:"Wishlist",
+    // transactions: [transactionSchema] ,
+
+    wishlist: [{
+        type: Schema.Types.ObjectId,
+        ref: "Product",
     }],
     orderHistory:[{
         type:Schema.Types.ObjectId,

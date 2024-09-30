@@ -64,6 +64,16 @@
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+.wishlist-icon {
+    color: red; /* Set heart icon color to red */
+    font-size: 24px; /* Adjust size if necessary */
+    transition: color 0.3s; /* Optional: Adds a transition effect */
+}
+
+/* Optional: Change color on hover */
+.wishlist-icon:hover {
+    color: darkred; /* Change to a darker red on hover */
+}
     </style>
 </head>
 
@@ -160,11 +170,15 @@
                         </div>
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>
-                            <li><a href="#"><span class="icon_heart_alt"></span>
-                                <div class="tip">2</div>
+                            <li><a href="/wishlist"><span class="icon_heart_alt"></span>
+                                <!-- <% if(1==1)  { %>         //for wishlist count
+                                <div class="tip"><%=  %></div>   
+                                <% } %> -->
                             </a></li>
-                            <li><a href="cart"><span class="icon_bag_alt"></span>
-                                <div class="tip">2</div>
+                            <li><a href="/cart"><span class="icon_bag_alt"></span>
+                                <!-- <% if(1==1) { %>
+                                <div class="tip"><%=  %></div>           //for cart count
+                                <% } %> -->
                             </a></li>
                         </ul>
                     </div>

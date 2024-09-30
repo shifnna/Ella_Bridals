@@ -38,7 +38,8 @@ const couponSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now,
-  }
+  },
+  usedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 couponSchema.pre('save', function (next) {

@@ -1,0 +1,268 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <h2>Total Amount: ₹<%= amount %></h2>
+    
+    <button id="rzp-button">Pay Now</button>
+
+    <script>
+        document.getElementById('rzp-button').onclick = function (e) {
+            var options = {
+                "key": "<%= key_id %>", // Razorpay public key
+                "amount": "<%= amount * 100 %>", // Amount in paise
+                "currency": "INR",
+                "name": "Your Company Name",
+                "description": "Order Payment",
+                "order_id": "<%= order_id %>", // Razorpay Order ID
+                "handler": function (response) {
+                    fetch('/verifyPayment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    })
+                    .then(verifyResponse => verifyResponse.json())
+                    .then(verifyData => {
+                        if (verifyResponse.ok) {
+                            alert("Payment Successful!");
+                            window.location.href = "/shop?orderSuccess=true"; // Redirect on success
+                        } else {
+                            alert('Payment verification failed: ' + verifyData.message);
+                        }
+                    });
+                },
+                "prefill": {
+                    "name": "<%= user.name %>",
+                    "email": "<%= user.email %>",
+                    "contact": "<%= user.phone %>"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp = new Razorpay(options);
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Payment Method</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p {
+            text-align: center;
+            color: #6c757d;
+        }
+
+        /* Stepper CSS */
+        .stepper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .step .circle {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            background-color: #ff007f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .step .line {
+            width: 50px;
+            height: 3px;
+            background-color: #ccc;
+            margin: 0 5px;
+        }
+
+        .step.active .line {
+            background-color: #ff007f;
+        }
+
+        .step.active .circle {
+            background-color: #ff007f;
+        }
+
+        .step.completed .circle {
+            background-color: #ff007f;
+        }
+
+        .payment-method-card {
+            border: 1px solid #ebebeb;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .payment-method-card input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background-color: #ff007f;
+            border-color: #ff007f;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6006c;
+            border-color: #e6006c;
+        }
+
+        /* Custom style for SweetAlert2 success icon */
+        .swal2-success .swal2-success-ring {
+            border-color: #ff007f !important; /* Pink color for the outer ring */
+        }
+
+        .swal2-success .swal2-success-line {
+            background-color: #ff007f !important; /* Pink color for the tick mark */
+        }
+    </style>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- Stepper -->
+    <div class="stepper">
+        <div class="step completed">
+            <div class="circle">✓</div>
+            <span>Sign Up</span>
+            <div class="line active"></div>
+        </div>
+        <div class="step completed">
+            <div class="circle">✓</div>
+            <span>Address</span>
+            <div class="line active"></div>
+        </div>
+        <div class="step active">
+            <div class="circle">3</div>
+            <span>Payment</span>
+        </div>
+    </div>
+
+    
+    <div style="text-align: center;padding: 60px;width: 500px;margin-left: 310px;" class="checkout__order">
+        <h2>Total Amount: ₹<%= amount %></h2>
+    
+        <button style="background-color: #000000;color: #ebebeb;" id="rzp-button">Pay Now</button>
+    </div>
+        
+    </div>
+</div>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
+<!-- Bootstrap JS CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('rzp-button').onclick = function (e) {
+        var options = {
+            "key": "<%= key_id %>",
+            "amount": "<%= amount * 100 %>",
+            "currency": "INR",
+            "name": "Your Company Name",
+            "description": "Order Payment",
+            "order_id": "<%= order_id %>",
+            "handler": function (response) {
+                fetch('/verifyPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                 .then(verifyResponse => {
+        if (verifyResponse.ok) {
+            // Redirect to the shop page without showing an alert
+            window.location.href = "/shop?orderSuccess2=true"; // Redirect on success
+        } else {
+            return verifyResponse.json().then(verifyData => {
+                console.error('Payment verification failed:', verifyData.message);
+                // Handle error if needed, e.g., show a notification or redirect to an error page
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error during payment verification:', error);
+        // Handle fetch error if needed
+    }) },
+            "prefill": {
+                "name": "<%= user.name %>",
+                "email": "<%= user.email %>",
+                "contact": "<%= user.phone %>"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+        e.preventDefault();
+    }
+</script>
+
+</body>
+</html>

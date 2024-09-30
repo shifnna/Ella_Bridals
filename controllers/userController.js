@@ -3,8 +3,7 @@ const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const env = require("dotenv").config();
 const Product = require("../models/productSchema");
-
-
+const Category = require("../models/categorySchema");
 
 
 const pageNotFound = async (req,res) => {
@@ -18,12 +17,16 @@ const pageNotFound = async (req,res) => {
 
 const loadHomePage = async (req,res)=>{
     try {
-        const user = req.session.user
+        const user = req.session.user ;
+
         if(user){
          const userData = await User.findOne({_id:user});
-         res.render("home",{user:userData})
+         const c = userData.cart.length;
+         const w = userData.wishlist.length;
+
+         res.render("home",{user:userData,c,w});
         }else{
-         res.render('home')
+        res.render('home', { c: 0, w: 0 });
         }
     } catch (error) {
         console.log("home page not found",error);
@@ -56,83 +59,79 @@ function generateOtp(length) {
 }
 
 
-async function sendVerificationEmail(email,otp){
-     try {
+async function sendVerificationEmail(email, otp) {
+    try {
         const transporter = nodemailer.createTransport({
             service: "gmail",
-            // port: 587,
-            // secure: false, // true for 465, false for other ports
             auth: {
-                user: process.env.NODEMAILER_EMAIL, // Your email
-                pass: process.env.NODEMAILER_PASSWORD, // Your email password or app password
+                user: process.env.NODEMAILER_EMAIL,
+                pass: process.env.NODEMAILER_PASSWORD,
             },
             tls: {
                 rejectUnauthorized: false,
             },
-        });        
-        
-        const info = await transporter.sendMail({
-            from: process.env.NODEMAILER_EMAIL,
-            to: email,//email parameter
-            subject:"verify your account",
-            text:`Your OTP is ${otp}`,
-            // html:`<b> Your OTP ${otp} </b>`
         });
 
-        if(info.accepted.length >0){
-            console.log("successfully sent to a email");           
+        const info = await transporter.sendMail({
+            from: process.env.NODEMAILER_EMAIL,
+            to: email,
+            subject: "Verify Your Account",
+            text: `Your OTP is ${otp}`,
+        });
+
+        if (info.accepted.length > 0) {
+            console.log("Successfully sent to email");
         }
 
-        return info.accepted.length >0 //& important 
-        // console.log("info:",info);
-
-
-      } catch (error) {
-            console.error('error sending email',error);
-            return false;
-            
-      }
-}
-
-
-
-const signup = async (req,res)=>{
-   
-    try {
-
-        const {name,email,phone,password,cpassword} = req.body;
-
-        if(password!=cpassword){
-            return res.render("signup",{message:"passwords do not match"});
-          }
-    
-          const findUser = await User.findOne({email});
-    
-          if(findUser){
-            return res.render("signup",{message:"User with this email already exists"});
-          }
-
-          const otp = generateOtp(6);
-          
-          const emailSend = await sendVerificationEmail(email,otp);
-
-          if(!emailSend){
-          return res.json("email-error");
-          }
-
-          req.session.userOtp=otp;
-          req.session.userData={name,phone,email,password}
-
-
-          res.render("verify-otp");
-          console.log("OTP sent :",otp);
-
-
+        return info.accepted.length > 0;
     } catch (error) {
-        console.error("error for save user",error);
-        res.status(500).send("internal server error")
+        console.error('Error sending email:', error);
+        return false;
     }
 }
+
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+}
+
+
+const signup = async (req, res) => {
+    try {
+        const { name, email, phone, password, cpassword } = req.body;
+
+        if (password !== cpassword) {
+            return res.render("signup", { message: "Passwords do not match" });
+        }
+
+        if (!validateEmail(email)) { // Add this function to validate email format
+            return res.render("signup", { message: "Invalid email format" });
+        }
+
+        const findUser = await User.findOne({ email });
+        if (findUser) {
+            return res.render("signup", { message: "User with this email already exists" });
+        }
+
+        const otp = generateOtp(6);
+        const emailSend = await sendVerificationEmail(email, otp);
+
+        if (!emailSend) {
+            return res.json("email-error");
+        }
+
+        req.session.userOtp = otp;
+        req.session.userData = { name, phone, email, password };
+
+        res.render("verify-otp");
+        console.log("OTP sent:", otp);
+    } catch (error) {
+        console.error("Error saving user:", error);
+        res.status(500).send("Internal server error");
+    }
+};
+
 
 
 
@@ -251,27 +250,64 @@ const login = async (req,res)=>{
 }
 
 
-
-const loadShopingPage=async(req,res)=>{     //& loading shopping page
+const loadShopingPage = async (req, res) => {
     try {
-        // Check if the user is logged in by checking session
-        const user = req.session.user;
-        let userData = null;
+      const user = req.session.user;
+      let userData = null;
+      let wishlist = [];
+  
+      if (user) {
+        userData = await User.findOne({ _id: user });
+        wishlist = userData.wishlist;
+      }
 
-        if (user) {
-            // If the user is logged in, fetch the user data from the database
-            userData = await User.findOne({ _id: user });
+      const searchQuery = req.query.search;
+      const categoryId = req.query.category;
+      let products;
+    //   console.log("search : ",searchQuery);
+
+      if (categoryId) {
+        const category = await Category.findById(categoryId);
+        if (!category) {
+          return res.status(404).send('Category not found');
         }
+  
+        // If a search query is present, filter products by name or description
+        if (searchQuery) {
+          products = await Product.find({
+            category: category._id,
+            $or: [
+              { productName: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
+              { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+          });
+        } else {
+          products = await Product.find({ category: category._id });
+        }
+  
+      } else {
+        // If no category is selected but there's a search query
+        if (searchQuery) {
+          products = await Product.find({
+            $or: [
+              { productName: { $regex: searchQuery, $options: 'i' } },
+              { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+          });
+        } else {
+          products = await Product.find();
+        }
+      }
+  
+      const message = req.query.message || 'none';
 
-        // Fetch all products and populate the brand and category fields
-        const products = await Product.find();
-        
-       return res.render('shop', { products: products });
-
+      const categories = await Category.find({isListed:true});
+      return res.render('shop', { products, wishlist, user: userData, categories,message });
     } catch (error) {
-        console.log('Error loading home page:', error.message);
-        res.status(500).send('Internal Server Error');}
-};
+      console.log('Error loading home page:', error.message);
+      res.status(500).send('Internal Server Error');
+    }
+  };
 
 
 
@@ -350,6 +386,102 @@ const resetPassword = async (req, res) => {
     }
   }
 
+
+  const addwishlist = async (req,res)=>{
+    try {
+        const userId = req.session.user;
+        const productId = req.params.id; 
+
+        const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).send('Product not found');
+      }
+      if (product.isBlocked===true) {
+        return res.status(404).send('Product not available');
+      }
+      if (product.quantity < 1) {
+        return res.status(404).send('Stocks Left');
+      }
+
+        const user = await User.findById(userId);
+        if (!user) {
+           res.redirect("/login");
+        }
+
+        if (user.wishlist.includes(productId)) {
+            return res.status(400).json({ message: 'Product already in wishlist' });
+        }
+
+        user.wishlist.push(productId);
+        await user.save();
+
+        res.redirect("/shop");
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+  }
+
+  const loadwishlist = async (req, res) => {
+    try {
+        const userId = req.session.user;
+
+        const user = await User.findById(userId).populate('wishlist'); // Populate the wishlist with product details
+
+        if (!user) {
+            return res.redirect("/login"); 
+        }
+        res.render("wishlist", {
+            wishlist: user.wishlist,// Pass the populated wishlist to the template
+           
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+};
+
+const removeFromWishlist = async (req,res)=>{
+    try {
+        const productId = req.query.id;
+        const userId = req.session.user;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+           res.redirect("/login");
+        }
+
+        user.wishlist.pull(productId);
+        user.save();
+
+        res.redirect("/wishlist")
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+}
+
+const loadWallet = async (req,res)=>{
+    try {
+        const userId = req.session.user; // Assuming user ID is stored in session
+        const user = await User.findById(userId).select('wallet transactions'); // Adjust the field names as necessary
+    
+        if (!user) {
+          return res.status(404).send('User not found');
+        }
+    
+        // Render the wallet page and pass the user data
+        res.render('wallet', {
+          walletBalance: user.wallet,
+        //   transactions: user.transactions || [] // Assuming transactions is an array of transaction details
+        });
+      } catch (error) {
+        console.error('Error retrieving wallet information:', error);
+        res.status(500).send('Internal Server Error');
+      }
+}
 module.exports = {
     pageNotFound,
     loadHomePage,
@@ -364,5 +496,8 @@ module.exports = {
     logout,
     loadResetPassword,
     resetPassword,
-
+    addwishlist,
+    loadwishlist,
+    removeFromWishlist,
+    loadWallet,
 }

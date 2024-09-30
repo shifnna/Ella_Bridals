@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Master</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- You can link any calendar plugin for date selection -->
+     <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #2f4050;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar .logo {
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar ul li {
+    margin: 20px 0;
+}
+
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    background-color: #3b4c5a;
+    border-radius: 4px;
+}
+
+.sidebar ul li a:hover {
+    background-color: #1ab394;
+}
+
+.main-content {
+    flex-grow: 1;
+    background-color: #f3f3f4;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #3b4c5a;
+    color: white;
+    padding: 10px 20px;
+}
+
+.content {
+    margin-top: 20px;
+}
+
+.filter-bar {
+    margin-bottom: 20px;
+}
+
+.filter-bar label, .filter-bar input, .filter-bar button {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.filter-bar button {
+    background-color: #1ab394;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.filter-bar button.clear-search {
+    background-color: #ff7f50;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+table th {
+    background-color: #2f4050;
+    color: white;
+}
+
+     </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>PHP IMS</h2>
+            </div>
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Add New User</a></li>
+                <li><a href="#">Add New Unit</a></li>
+                <li><a href="#">Add New Company</a></li>
+                <li><a href="#">Add New Products</a></li>
+                <li><a href="#">Add New Party</a></li>
+                <li><a href="#">Purchase Master</a></li>
+                <li><a href="#">Sales Master</a></li>
+                <li><a href="#">Reports</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="welcome">Welcome User</div>
+                <a class="logout" href="#">LogOut</a>
+            </header>
+
+            <section class="content">
+                <h2>Stock Master</h2>
+                <div class="filter-bar">
+                    <label for="start-date">Select Start Date:</label>
+                    <input type="text" id="start-date" placeholder="click here to open calendar">
+                    <label for="end-date">Select End Date:</label>
+                    <input type="text" id="end-date" placeholder="click here to open calendar">
+                    <button class="show-purchase">Show Purchase From These Dates</button>
+                    <button class="clear-search">Clear Search</button>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sr No</th>
+                            <th>Purchase By</th>
+                            <th>Product Company</th>
+                            <th>Product Name</th>
+                            <th>Product Unit</th>
+                            <th>Packing Size</th>
+                            <th>Product Qty</th>
+                            <th>Price</th>
+                            <th>Party Name</th>
+                            <th>Purchase Type</th>
+                            <th>Expiry Date</th>
+                            <th>Purchase Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example row, populate dynamically with PHP -->
+                        <tr>
+                            <td>1</td>
+                            <td>admin</td>
+                            <td>amul</td>
+                            <td>milk</td>
+                            <td>ml</td>
+                            <td>500</td>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>noble infotech</td>
+                            <td>Cash</td>
+                            <td>2020-07-01</td>
+                            <td>0000-00-00</td>
+                        </tr>
+                        <!-- Add more rows dynamically -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

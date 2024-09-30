@@ -250,46 +250,46 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% data.forEach(function(products) { %>
+                            <% data.reverse().forEach((products, index) => { %>
                             <tr>
-                                <td><%=products.productName%></td>
-                                <td><%=products.brand%></td>
-                                <td><%=products.category.name%></td>
-                                <td><%=products.salePrice%></td>
-                                <td><%=products.productOffer%>%</td>
-                                <td>offerPrice</td>
+                                <td><%= products.productName %></td>
+                                <td><%= products.brand %></td>
+                                <td><%= products.category.name %></td>
+                                <td><%= products.salePrice %></td>
+                                <td><%= products.offerPercentage %>%</td>
+                                <td><%= products.offerPrice %></td>
                                 <td>
-                                    <% if(products.productOffer===0){ %>
-                                <button class="offer-button" onclick="addOffer('<%=products._id%>')">
-                                    <a style="color: white;text-decoration: none;" href="#" class="text-white">Add Offer</a>
-                                </button></td>
-                                <% } else { %>
-                                <button class="offer-button" onclick="removeOffer('<%=products._id %>')">
-                                    <a style="color: white;text-decoration: none;" href="#" class="text-white">Remove Offer</a>
-                                </button>
-                                <% } %>
-
-                                <td><%=products.quantity%></td>
+                                    <% if(products.offerPercentage === 0) { %>
+                                    <button class="offer-button" onclick="addOffer('<%= products._id %>')">
+                                        <a style="color: white;text-decoration: none;" href="#" class="text-white">Add Offer</a>
+                                    </button>
+                                    </td>
+                                    <% } else { %>
+                                    <button class="offer-button" onclick="removeOffer('<%= products._id %>')">
+                                        <a style="color: white;text-decoration: none;" href="#" class="text-white">Remove Offer</a>
+                                    </button>
+                                    <% } %>
+                                </td>
+                                <td><%= products.quantity %></td>
                                 <td>
-                                    <%if(products.isBlocked=== false){%>
-                                        <button class="btn btn-danger" style="width: 80px;background: rgb(56, 154, 79);height: 33px;border: none;border-radius: 5px;">
-                                        <a href="/admin/blockProduct?id=<%=products._id%>" class="text-white" style="text-decoration: none;color: white;">Block</a>
+                                    <% if(products.isBlocked === false) { %>
+                                    <button class="btn btn-danger" style="width: 80px;background: rgb(56, 154, 79);height: 33px;border: none;border-radius: 5px;">
+                                        <a href="/admin/blockProduct?id=<%= products._id %>" class="text-white" style="text-decoration: none;color: white;">Block</a>
                                     </button>
-                                    <%}else{%> 
-                                        <button class="btn btn-success" style="width: 80px;background: rgb(209, 69, 69);height: 33px;border: none;border-radius: 5px;">
-                                    <a href="/admin/unblockProduct?id=<%=products._id%>" class="text-white" style="text-decoration: none;color: white;">Unblock</a>
+                                    <% } else { %> 
+                                    <button class="btn btn-success" style="width: 80px;background: rgb(209, 69, 69);height: 33px;border: none;border-radius: 5px;">
+                                        <a href="/admin/unblockProduct?id=<%= products._id %>" class="text-white" style="text-decoration: none;color: white;">Unblock</a>
                                     </button>
-                                    <%}%>
+                                    <% } %>
                                 </td>
                                 <td>
                                     <button class="btn btn-success" style="width: 80px;background: rgb(27, 81, 134);height: 33px;border: none;border-radius: 5px;">
-                                        <a href="/admin/editProduct?id=<%=products._id%>" class="text-white" style="text-decoration: none;color: white;">Edit</a>
+                                        <a href="/admin/editProduct?id=<%= products._id %>" class="text-white" style="text-decoration: none;color: white;">Edit</a>
                                     </button>
                                 </td>
                             </tr>
-                            <% }); %>
-                            <!-- Add more rows as needed -->
-                        </tbody>
+                            <% }); %> <!-- Closing the forEach loop -->
+                        </tbody>                        
                     </table>
                      <!-- Pagination Section -->
                      <div class="pagination">
@@ -337,7 +337,7 @@
             },
         });
     }
-}
+ }
 
 
 

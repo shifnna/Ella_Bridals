@@ -3,6 +3,9 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const passport = require("../config/passport")
 const userProfileController = require("../controllers/userProfileController");
+const orderController = require("../controllers/orderController");
+
+
 
 router.get("/pageerror",userController.pageNotFound);
 
@@ -30,7 +33,7 @@ router.post("/reset-password",userController.resetPassword);
 
 
 
-router.get("/shop",userController.loadShopingPage)
+router.get("/shop",userController.loadShopingPage);
 router.get('/productdetails/:id',userController.productDetails);
 router.get("/userProfile",userProfileController.loadUserProfile);
 router.get("/editProfile",userProfileController.editProfilePage);
@@ -43,17 +46,27 @@ router.get("/removeAddress",userProfileController.removeAddress);
 router.post("/editAddress/:id",userProfileController.editAddress);
 
 router.get("/orders",userProfileController.loadOrders);
-router.get("/cart",userProfileController.cartPage)
-router.get("/addToCart/:id",userProfileController.addToCart);
+router.get("/cart",userProfileController.cartPage);
+router.get("/addToCart/:id/:id2",userProfileController.addToCart);
 router.get("/removeFromCart",userProfileController.removeFromCart);
+router.post("/updateCart/:id",userProfileController.updateCart)
 
 router.post("/selectAddress",userProfileController.selectAddress);
 router.get("/selectPayment",userProfileController.selectPayment);
-router.get("/proceedOrder",userProfileController.confirmOrder);
+router.post("/applyCoupon",userProfileController.applyCoupon)
+router.post("/proceedOrder",userProfileController.confirmOrder);
+router.post("/verifyPayment",userProfileController.verifyPayment);
+router.post("/verifyPayment",userProfileController.verifyPayment);
 
 router.get("/orderDetails",userProfileController.loadOrderDetails);
 router.get("/cancelOrder",userProfileController.cancelOrder);
 router.get("/returnOrder",userProfileController.returnOrder);
+
+router.get("/addwishlist/:id",userController.addwishlist);
+router.get("/wishlist",userController.loadwishlist);
+router.get("/removeFromWishlist",userController.removeFromWishlist);
+router.get("/wallet",userController.loadWallet);
+
 
 
 

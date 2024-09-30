@@ -75,6 +75,13 @@ const addOffer = async (req,res)=>{
        })
        
        newOffer.save();
+
+       if(offerType== 'Category'){
+        await Category.findOneAndUpdate({name: entityId},{$set:{categoryOffer:discountPercentage}});
+       }else if(offerType== 'Brand'){
+        await Brand.findOneAndUpdate({brandName: entityId},{$set:{brandOffer:discountPercentage}})
+       }
+
        console.log("Offer created Successfully");
        
        res.redirect("/admin/offers")
@@ -126,6 +133,13 @@ const editOffer = async (req,res)=>{
         },{new:true});
 
         if(updateOffer){
+            
+            if(offerType== 'Category'){
+                await Category.findOneAndUpdate({name: entityId},{$set:{categoryOffer:discountPercentage}});
+               }else if(offerType== 'Brand'){
+                await Brand.findOneAndUpdate({brandName: entityId},{$set:{brandOffer:discountPercentage}})
+               }
+
             res.redirect("/admin/offers")
         }else{
             res.status(404).json({error:"Offer not found"})
@@ -139,16 +153,32 @@ const editOffer = async (req,res)=>{
 
 
 
-const deleteOffer = async (req,res)=>{
+const deleteOffer = async (req, res) => {
     try {
-        let id=req.query.id;
-        await Offer.deleteOne({_id:id})
-        res.redirect("/admin/offers");
-    } catch (error) {
-        console.log("error deleting offer",error);
+        const id = req.query.id;
 
+        const offer = await Offer.findById(id);
+
+        if (offer) {
+            await Offer.deleteOne({ _id: id });
+
+            if (offer.offerType === 'Category') {
+                await Category.findOneAndDelete({name:offer.entityId})
+            } else if (offer.offerType === 'Brand') {
+                await Category.findOneAndDelete({name:offer.entityId})
+            }
+
+            console.log("Offer deleted and updated successfully.");
+            res.redirect("/admin/offers");
+        } else {
+            res.status(404).json({ error: "Offer not found" });
+        }
+    } catch (error) {
+        console.log("Error deleting offer", error);
+        res.redirect("/pageerror");
     }
-}
+};
+
 
 module.exports = {
     loadOffers,

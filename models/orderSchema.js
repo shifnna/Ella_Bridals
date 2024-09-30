@@ -57,6 +57,13 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     // default: Date.now
   },
+  couponDiscount:{
+    type: Number,
+
+  },
+  offerDiscount:{
+    type: Number,
+  }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

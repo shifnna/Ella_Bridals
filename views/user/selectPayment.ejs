@@ -140,70 +140,78 @@
     <h1>Choose Payment Method</h1>
     <p>Select a payment method to proceed with your purchase</p>
     
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Payment Method Options -->
-            <div class="payment-method-card">
-                <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
-                <label for="creditCard">Credit Card</label>
+    <form action="/proceedOrder" method="post">
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Payment Method Options -->
+                <div class="payment-method-card">
+                    <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
+                    <label for="creditCard">Credit Card</label>
+                </div>
+                <div class="payment-method-card">
+                    <input type="radio" id="razorpay" name="paymentMethod" value="razorpay">
+                    <label for="razorpay">Razorpay</label>
+                </div>
+                <div class="payment-method-card">
+                    <input type="radio" id="bankTransfer" name="paymentMethod" value="bankTransfer">
+                    <label for="bankTransfer">Bank Transfer</label>
+                </div>
+                <div class="payment-method-card">
+                    <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
+                    <label for="cashOnDelivery">Cash on Delivery</label>
+                </div>
+                <div style="color: #e6006c;"><%= locals.message%></div>
             </div>
-            <div class="payment-method-card">
-                <input type="radio" id="paypal" name="paymentMethod" value="paypal">
-                <label for="paypal">PayPal</label>
-            </div>
-            <div class="payment-method-card">
-                <input type="radio" id="bankTransfer" name="paymentMethod" value="bankTransfer">
-                <label for="bankTransfer">Bank Transfer</label>
-            </div>
-            <div class="payment-method-card">
-                <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
-                <label for="cashOnDelivery">Cash on Delivery</label>
-            </div>
-            <div style="color: #e6006c;"><%= locals.message%></div>
-        </div>
-        <div class="col-lg-4">
-            <div class="checkout__order">
-                <h5>Your order</h5>
-                <div class="checkout__order__product">
-                    <ul>
-                        <li>
-                            <span class="top__text">Product</span>
-                            <span class="top__text__right">Total</span>
-                        </li>
+            <div class="col-lg-4">
+                <div class="checkout__order">
+                    <h5>Your order</h5>
+                    <div class="checkout__order__product">
+                        <ul>
+                            <li>
+                                <span class="top__text">Product</span>
+                                <span class="top__text__right">Price</span>
+                            </li>
                             <% cart.forEach(function(product) { %>
                               <li>
                                 <%= product.product.productName %>
+                                <% if(product.offerPrice > 0){%>
+                                <span>$ <%= product.offerPrice %></span>
+                                <%}else{%>
                                 <span>$ <%= product.price %></span>
+                                <%}%>
                               </li>
                             <% }) %>
-                    </ul>
+                        </ul>
+                    </div>
+                    <div class="checkout__order__total">
+                        <ul>
+                            <li>Subtotal <span>$ <%= totalPrice %></span></li>
+                            <li>Discount <span><%= dis %></span></li>
+                            <li>Shipping <span>$0.00</span></li>
+                            <li>Total <span>$ <%= totalPrice-dis %></span></li>
+                        </ul>
+                    </div>
+                    <div class="checkout__order__widget">
+                        <label for="o-acc">
+                            Create an account?
+                            <input type="checkbox" id="o-acc">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <button type="submit" id="proceedBtn" style="width: 300px;height: 50px;" class="btn btn-primary btn-lg">Proceed</button>
                 </div>
-                <div class="checkout__order__total">
-                    <ul>
-                        <li>Subtotal <span>$ <%= totalPrice %></span></li>
-                        <li>Shipping <span>$0.00</span></li>
-                        <li>Total <span>$ <%= totalPrice %></span></li>
-                    </ul>
-                </div>
-                <div class="checkout__order__widget">
-                    <label for="o-acc">
-                        Create an account?
-                        <input type="checkbox" id="o-acc">
-                        <span class="checkmark"></span>
-                    </label>
-                </div>
-                <a href="/proceedOrder"><button id="proceedBtn" style="width: 300px;height: 50px;" class="btn btn-primary btn-lg">Proceed</button></a>
             </div>
-            
         </div>
+    </form>
+        
     </div>
 </div>
 
 <!-- SweetAlert2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
-
-
 <!-- Bootstrap JS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
 </body>
 </html>

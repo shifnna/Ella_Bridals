@@ -15,17 +15,24 @@ const couponController = require("../controllers/couponController");
 
 
 
-
 router.get("/login",adminController.loadLogin);
 router.post("/login",adminController.login);
-router.get("/dashboard", (req, res) => {
-    if (req.session.admin) {
-        res.render("dashboard");
-    } else {
-        res.render("page_404");
-    }
-});
-router.get("/logout",adminController.logout)
+// router.get("/dashboard", (req, res) => {
+//     if (req.session.admin) {
+//         const orders = [];
+//         const grandTotal = 0;
+//         const totalDiscount = 0;
+//         const offerDiscount = 0;
+//         console.log('yes');
+        
+//         res.render("dashboard",orders,grandTotal,totalDiscount,offerDiscount);
+//     } else {
+//         res.render("page_404");
+//     }
+// });
+router.get("/dashboard",adminController.login)
+
+router.get("/logout",adminController.logout);
 
 
 router.get("/customers",customerController.loadCustomers);
@@ -77,8 +84,9 @@ router.post("/addOffer",offerController.addOffer);
 router.get("/editOffer",offerController.loadEditOffer);
 router.post("/editOffer",offerController.editOffer);
 router.get("/deleteOffer",offerController.deleteOffer);
-
-
+router.post('/generate-report',adminController.generateReport);
+router.post('/download-pdf',adminController.generatePDFReport);
+router.post('/download-excel', adminController.generateExcelReport);
 
 
 

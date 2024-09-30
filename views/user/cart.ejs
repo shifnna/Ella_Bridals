@@ -6,7 +6,7 @@
                 <div class="shop__cart__table">
                     <!-- Form starts here -->
                      <%if(cart.length > 0){%>
-                    <form action="/selectAddress" method="post">
+                    
                         <table>
                             <thead>
                                 <tr>
@@ -18,12 +18,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% cart.forEach(function(cart) { %>
+                                <% cart.forEach(function(cartItem) { %>
                                     <tr>
                                         <td class="cart__product__item">
-                                            <img style="width: 100px;height: 100px;" src="/imgs/re-images/<%= cart.product.productImage[0] %>" alt="Product Image">
+                                            <% if (cartItem.product && cartItem.product.productImage && cartItem.product.productImage.length > 0) { %>
+                                                <img style="width: 100px;height: 100px;" src="/imgs/re-images/<%= cartItem.product.productImage[0] %>" alt="Product Image">
+                                            <% } else { %>
+                                                <p>No image available</p>
+                                            <% } %>
                                             <div class="cart__product__item__title">
-                                                <h6>Chain bucket bag</h6>
+                                                <h6><%= cartItem.product ? cartItem.product.name : 'Unknown Product' %></h6>
                                                 <div class="rating">
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
@@ -31,23 +35,38 @@
                                                     <i class="fa fa-star"></i>
                                                     <i class="fa fa-star"></i>
                                                 </div>
-                                                <% if (cart.product.stock === 0) { %>
-                                                <p style="color: red; font-size: 12px;">Out of stock</p>
+                                                <% if (cartItem.product && cartItem.product.stock === 0) { %>
+                                                    <p style="color: red; font-size: 12px;">Out of stock</p>
                                                 <% } %>
                                             </div>
                                         </td>
-                                        <td class="cart__price"><%= cart.price %></td>
+                                        <% if (cartItem.offerPrice > 0){%>
+                                            <td class="cart__price"><%= cartItem.offerPrice %></td>
+                                        <%}else{%>
+                                        <td class="cart__price"><%= cartItem.price %></td>
+                                        <%}%>
                                         <td class="cart__quantity">
                                             <div class="pro-qty">
-                                                <input name="quantity" type="number" class="quantity-input" data-price="<%= cart.price %>" data-max="<%= cart.product.quantity %>" value="1" min="1" max="<%= cart.product.quantity %>">
+                                                <% if (cartItem.offerPrice > 0){%>
+                                                <input name="quantities[<%= cartItem._id %>]" type="number" class="quantity-input" data-price="<%= cartItem.offerPrice %>" data-max="<%= cartItem.product ? cartItem.product.quantity : 1 %>" value="<%= cartItem.quantity %>" min="1" max="<%= cartItem.product ? cartItem.product.quantity : 1 %>">
+                                                <%}else{%>
+                                                <input name="quantities[<%= cartItem._id %>]" type="number" class="quantity-input" data-price="<%= cartItem.price %>" data-max="<%= cartItem.product ? cartItem.product.quantity : 1 %>" value="<%= cartItem.quantity %>" min="1" max="<%= cartItem.product ? cartItem.product.quantity : 1 %>">
+                                                <%}%>
                                             </div>
                                         </td>
-                                        <td class="cart__total"><%= totalPrice %></td>
+                                        <% if (cartItem.offerPrice > 0){%>
+                                        <td class="cart__total"><%= cartItem.offerPrice * cartItem.quantity %></td>
+                                        <%}else{%>                                            
+                                        <td class="cart__total"><%= cartItem.price * cartItem.quantity %></td>
+                                        <%}%>
+
+
+
                                         <td class="cart__close">
-                                            <a href="/removeFromCart?productId=<%=cart._id%>"><span class="icon_close"></span></a>
+                                            <a href="/removeFromCart?productId=<%=cartItem._id%>"><span class="icon_close"></span></a>
                                         </td>
                                     </tr>
-                                <% }) %>
+                                <% }) %>                                
                             </tbody>
                         </table>
 
@@ -66,24 +85,37 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="discount__content">
+                                <form action="/applyCoupon" method="post" onsubmit="updateCartDataBeforeSubmit()">
                                     <h6>Discount codes</h6>
-                                    <input type="text" placeholder="Enter your coupon code">
-                                    <button type="submit" class="site-btn">Apply</button>
+                                    <input type="text" name="couponCode" placeholder="Enter your coupon code" value="<%= couponCode || '' %>">
+                                    <button style="margin-top: 25px;" type="submit" class="site-btn">Apply</button>
+                                </form>
+                                <% if (errorMessage) { %>
+                                    <div style="width:400px;" class="alert alert-danger">
+                                        <%= errorMessage %>
+                                    </div>
+                                <% } %>
                                 </div>
                             </div>
                             <div class="col-lg-4 offset-lg-2">
-                                <div class="cart__total__procced">
-                                    <h6>Cart total</h6>
-                                    <ul>
-                                        <li>Subtotal <span>$<%= cart.price%></span></li>
-                                        <li>Total <span>$ 750.0</span></li>
-                                    </ul>
-                                    <!-- Proceed to checkout button inside the form -->
-                                    <button type="submit" class="primary-btn">Proceed to checkout</button>
-                                </div>
-                            </div>
+                                <form action="/selectAddress" method="post">
+                                    <div class="cart__total__procced">
+                                      <h6>Cart total</h6>
+                                      <ul>
+                                        <li>Subtotal <span>$<%= totalPrice.toFixed(2) %></span></li>
+                                        <% if (discountValue && discountValue > 0) { %>
+                                            <li>Discount <span>-$<%= discountValue.toFixed(2) %></span></li>
+                                            <li>Total <span>$<%= (totalPrice - discountValue).toFixed(2) %></span></li>
+                                        <% } else { %>
+                                            <li>Total <span>$<%= totalPrice.toFixed(2) %></span></li>
+                                        <% } %>
+                                    </ul>                                                                           
+                                      <button type="submit" class="primary-btn">Proceed to checkout</button>
+                                    </div>
+                                  </form>
+                            </div>                            
                         </div>
-                    </form>
+                   
                     <%}else{%>
                         <div style="height: 400px;text-align: center;">
                             <img style="width: 150px;height: 150px;" src="/img/cart.png" alt="">
@@ -240,71 +272,123 @@
 </div>
 <!-- Search End -->
 <script>
-    // Handle quantity change
-    document.querySelectorAll('.quantity-input').forEach(function(input) {
-      input.addEventListener('change', function() {
-        var max = parseInt(this.getAttribute('data-max'));
-        var value = parseInt(this.value);
-        
-        // Prevent value from exceeding max quantity
-        if (value > max) {
-          alert('Quantity exceeds available stock!');
-          this.value = max;
-        }
-        // Prevent value from going below the minimum (1)
-        if (value < 1) {
-          this.value = 1;
-        }
-      });
-    });
-
-
-
+    // Function to update cart totals
+    function updateCartTotal() {
+        let subtotal = 0;
+        document.querySelectorAll('.cart__total').forEach(function(totalElement) {
+            subtotal += parseFloat(totalElement.textContent);
+        });
+    
+        // Retrieve discount value from backend
+        const discountValue = parseFloat('<%= discountValue || 0 %>'); 
+        const total = subtotal - discountValue; // Apply discount to subtotal
+    
+        // Update subtotal and total in the UI
+        document.querySelector('.cart__total__procced ul li:nth-child(1) span').textContent = '$ ' + subtotal.toFixed(2);
+        document.querySelector('.cart__total__procced ul li:last-child span').textContent = '$ ' + total.toFixed(2);
+    }
+    
+    // Function to save cart data to localStorage
+    function saveCartToLocalStorage() {
+        let cartData = [];
+        document.querySelectorAll('.quantity-input').forEach(function(input) {
+            const cartItemId = input.name.split('[')[1].split(']')[0];
+            const quantity = input.value;
+    
+            // Save each cart item's ID and updated quantity
+            cartData.push({ id: cartItemId, quantity: quantity });
+        });
+    
+        // Save cart data array as JSON in localStorage
+        localStorage.setItem('cartData', JSON.stringify(cartData));
+    }
+    
+    // Event listener to handle quantity change and update the cart
     document.querySelectorAll('.quantity-input').forEach(function(input) {
         input.addEventListener('change', function() {
             var max = parseInt(this.getAttribute('data-max'));
-            var price = parseFloat(this.getAttribute('data-price')); // Get the price of the product
+            var price = parseFloat(this.getAttribute('data-price'));
             var value = parseInt(this.value);
-            
+    
             // Prevent value from exceeding max quantity
             if (value > max) {
                 alert('Quantity exceeds available stock!');
                 this.value = max;
                 value = max;
             }
-            
-            // Prevent value from going below the minimum (1)
+    
+            // Prevent value from going below 1
             if (value < 1) {
                 this.value = 1;
                 value = 1;
             }
-
-            // Update the individual product total price
-            var row = this.closest('tr'); // Find the table row of the product
+    
+            // Update the individual product total price in the UI
+            var row = this.closest('tr');
             var productTotal = row.querySelector('.cart__total');
-            productTotal.textContent = (price * value).toFixed(2); // Update the product's total price
-
+            productTotal.textContent = (price * value).toFixed(2); 
+    
             // Update the cart total price
             updateCartTotal();
+    
+            // Save the updated cart data to localStorage
+            saveCartToLocalStorage();
+    
+            // Only send the update to the backend if the quantity changed
+            const cartItemId = this.name.split('[')[1].split(']')[0];
+            const updatedQuantity = value;
+    
+            // Send the update to the backend
+            fetch(`/updateCart/${cartItemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ quantity: updatedQuantity }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI with new total price from the backend if needed
+                    updateCartTotal();
+                } else {
+                    console.error('Error:', data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
         });
     });
-
-    function updateCartTotal() {
-        var total = 0;
-
-        // Loop through each product row and sum the total prices
-        document.querySelectorAll('.cart__total').forEach(function(totalElement) {
-            total += parseFloat(totalElement.textContent);
+    
+    // Function to load cart data from localStorage on page load
+    window.onload = function() {
+        const savedCartData = JSON.parse(localStorage.getItem('cartData')) || [];
+        
+        // Update the cart UI with the saved data
+        savedCartData.forEach(function(item) {
+            const quantityInput = document.querySelector(`input[name="quantities[${item.id}]"]`);
+            if (quantityInput) {
+                quantityInput.value = item.quantity; // Update quantity input field
+            }
         });
-
-        // Update the total price in the cart
-        document.querySelector('.cart__total__procced ul li:last-child span').textContent = '$ ' + total.toFixed(2);
+    
+        // Update subtotal and total in UI
+        updateCartTotal(); // Call this to ensure totals are updated on load
+    };
+    
+    // Function to update cart data in form submission when applying coupon
+    function updateCartDataBeforeSubmit() {
+        const cartData = localStorage.getItem('cartData');
+        const discountValue = parseFloat('<%= discountValue || 0 %>'); 
+        updateCartTotal(); // Ensure the totals are updated before submission
+    
+        // Assuming you have an input to send this value to the backend if necessary
+        document.getElementById('cartDataInput').value = cartData; 
+        document.getElementById('discountValueInput').value = discountValue; // Set the discount value to be sent
     }
+    
+    </script>
+    
 
-    // Call updateCartTotal initially to set the correct total when the page loads
-    updateCartTotal();
-
-  </script>
 <!-- Js Plugins -->
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>

@@ -24,6 +24,36 @@
     <link rel="stylesheet" href="/css/style.css" type="text/css">
 
     <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <style>
+        
+    .product-image {
+        transition: transform 0.5s ease;
+        cursor: pointer;
+        position: relative; /* Added for proper positioning */
+    }
+
+    .product-image:hover {
+        transform: scale(1.2);
+        z-index: 10;
+    }
+
+    #zoom-lens {
+        display: none;
+        position: absolute;
+        border: 1px solid #000;
+        border-radius: 50%;
+        pointer-events: none;
+        /* Ensure it stays above other elements */
+        z-index: 1000;
+    }
+    .zoom-lens {
+    position: absolute;
+    border: 1px solid #ccc; /* Lens border */
+    display: none; /* Hidden by default */
+    border-radius: 50%; /* Make it circular */
+    pointer-events: none; /* Prevent mouse events on lens */
+}
+    </style>
 </head>
 
 <body>
@@ -131,34 +161,35 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6">
-
                     <div class="product__details__pic">
                         <div class="product__details__pic__left product__thumb nice-scroll">
                             <a class="pt active" href="#product-1">
-                                <img src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
+                                <img class="product-image" src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
                             </a>
                             <a class="pt" href="#product-2">
-                                <img src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
+                                <img class="product-image" src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
                             </a>
                             <a class="pt" href="#product-3">
-                                <img src="/imgs/re-images/<%= data.productImage[2] %>" alt="">
+                                <img class="product-image" src="/imgs/re-images/<%= data.productImage[2] %>" alt="">
                             </a>
                             <a class="pt" href="#product-4">
-                                <img src="/imgs/re-images/<%= data.productImage[3] %>" alt="">
+                                <img class="product-image" src="/imgs/re-images/<%= data.productImage[3] %>" alt="">
                             </a>
                         </div>
                         <div class="product__details__slider__content">
                             <div class="product__details__pic__slider">
-                                <img  src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
-                                <!-- <img data-hash="product-2" class="product__big__img" src="/imgs/re-images/<%= data.productImage[1] %>" alt="">
-                                <img data-hash="product-3" class="product__big__img" src="/imgs/re-images/<%= data.productImage[2] %>" alt="">
-                                <img data-hash="product-4" class="product__big__img" src="/imgs/re-images/<%= data.productImage[3] %>" alt=""> -->
+                                <% if(data.quantity <= 0) { %>
+                                    <div class="label stockout stockblue">Out Of Stock</div>
+                                <% } else if(data.isBlocked === true) { %>
+                                    <div class="label stockout stockblue">Unavailable</div>
+                                <% } %>
+                                <img id="mainImage" class="product-image" src="/imgs/re-images/<%= data.productImage[0] %>" alt="">
                             </div>
                         </div>
+                        <div class="zoom-lens" id="zoom-lens"></div> <!-- Zoom lens element -->
                     </div>
-                
-
                 </div>
+                
                 <div class="col-lg-6">
                     <div class="product__details__text">
                         <h3>Essential structured blazer <span>Brand: SKMEIMore Men Watches from SKMEI</span></h3>
@@ -182,7 +213,7 @@
                             </div>
                             <a href="/addToCart/<%= data._id %>" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
                             <ul>
-                                <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                <li><a href="/addwishlist/<%= data._id %>"><span class="icon_heart_alt"></span></a></li>
                                 <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
                             </ul>
                         </div>
@@ -369,6 +400,7 @@
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="img/product/related/rp-4.jpg">
+                            
                             <ul class="product__hover">
                                 <li><a href="img/product/related/rp-4.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
                                 <li><a href="#"><span class="icon_heart_alt"></span></a></li>
@@ -556,7 +588,45 @@
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/jquery.nicescroll.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.product-image');
+            const lens = document.getElementById('zoom-lens');
+            const mainImage = document.getElementById('mainImage');
     
+            images.forEach(image => {
+                image.addEventListener('mouseover', function() {
+                    lens.style.display = 'block';
+                    lens.style.width = '150px'; // Adjust size as needed
+                    lens.style.height = '150px'; // Adjust size as needed
+    
+                    // Set the background image of the lens
+                    lens.style.backgroundImage = `url(${this.src})`;
+                    lens.style.backgroundSize = `${this.offsetWidth * 2}px ${this.offsetHeight * 2}px`;
+                });
+    
+                image.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    let x = e.clientX - rect.left - lens.offsetWidth / 2;
+                    let y = e.clientY - rect.top - lens.offsetHeight / 2;
+    
+                    // Bound the lens position
+                    if (x < 0) x = 0;
+                    if (y < 0) y = 0;
+                    if (x > rect.width - lens.offsetWidth) x = rect.width - lens.offsetWidth;
+                    if (y > rect.height - lens.offsetHeight) y = rect.height - lens.offsetHeight;
+    
+                    lens.style.left = `${x}px`;
+                    lens.style.top = `${y}px`;
+                    lens.style.backgroundPosition = `-${x * 2}px -${y * 2}px`;
+                });
+    
+                image.addEventListener('mouseout', function() {
+                    lens.style.display = 'none';
+                });
+            });
+        });
+    </script>    
 </body>
 
 </html>

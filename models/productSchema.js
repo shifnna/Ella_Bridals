@@ -60,11 +60,11 @@ const productSchema = new Schema({
         type: String, 
         required: true 
     },
-    category: { 
-        type: Schema.Types.ObjectId, 
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Category', 
-        required: true 
-    },
+        required: true,
+      },
     regularPrice: { 
         type: Number,
         required: true 

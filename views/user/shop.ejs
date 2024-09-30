@@ -1,5 +1,53 @@
 <%-include("../../views/partials/userHeader")%>
-   
+<style>
+    
+    .search-form {
+        display: flex;
+        width: 60%;
+        /* max-width: 600px; */
+    }
+    
+    .search-input {
+        flex: 1;
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+    
+    .search-button {
+        border-top-right-radius: 30px;
+        border-bottom-right-radius: 30px;
+        padding: 10px 25px;
+        background-color: #141313;
+        color: white;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        height: 37.5px;
+    }
+    
+    .search-button:hover {
+        background-color: #191a1a;
+    }
+    .search-input:focus {
+    outline: none; /* Ensure no blue outline on focus */
+    border-color: #ccc; /* You can customize the border color on focus if needed */
+    box-shadow: none; /* Remove any potential shadow on focus */
+}
+</style>
+
+    <div class="container">
+        <div class="d-flex justify-content-center align-items-center">
+            <form action="/shop" method="get" class="search-form">
+                <input class="form-control search-input" name="search" type="text" placeholder="Search products..." required>
+                <button type="submit" class="btn btn-primary search-button">Search</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Shop Section Begin -->
     <section class="shop spad">
@@ -13,91 +61,13 @@
                             </div>
                             <div class="categories__accordion">
                                 <div class="accordion" id="accordionExample">
-                                    <div class="card">
+                                    <% categories.forEach(function(category) { %>
+                                        <div class="card">
                                         <div class="card-heading active">
-                                            <a data-toggle="collapse" data-target="#collapseOne">Women</a>
-                                        </div>
-                                        <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                                <ul>
-                                                    <li><a href="#">Coats</a></li>
-                                                    <li><a href="#">Jackets</a></li>
-                                                    <li><a href="#">Dresses</a></li>
-                                                    <li><a href="#">Shirts</a></li>
-                                                    <li><a href="#">T-shirts</a></li>
-                                                    <li><a href="#">Jeans</a></li>
-                                                </ul>
-                                            </div>
+                                            <a href="/shop?category=<%= category._id %>"><%= category.name %></a>
                                         </div>
                                     </div>
-                                    <div class="card">
-                                        <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseTwo">Men</a>
-                                        </div>
-                                        <div id="collapseTwo" class="collapse" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                                <ul>
-                                                    <li><a href="#">Coats</a></li>
-                                                    <li><a href="#">Jackets</a></li>
-                                                    <li><a href="#">Dresses</a></li>
-                                                    <li><a href="#">Shirts</a></li>
-                                                    <li><a href="#">T-shirts</a></li>
-                                                    <li><a href="#">Jeans</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseThree">Kids</a>
-                                        </div>
-                                        <div id="collapseThree" class="collapse" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                                <ul>
-                                                    <li><a href="#">Coats</a></li>
-                                                    <li><a href="#">Jackets</a></li>
-                                                    <li><a href="#">Dresses</a></li>
-                                                    <li><a href="#">Shirts</a></li>
-                                                    <li><a href="#">T-shirts</a></li>
-                                                    <li><a href="#">Jeans</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseFour">Accessories</a>
-                                        </div>
-                                        <div id="collapseFour" class="collapse" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                                <ul>
-                                                    <li><a href="#">Coats</a></li>
-                                                    <li><a href="#">Jackets</a></li>
-                                                    <li><a href="#">Dresses</a></li>
-                                                    <li><a href="#">Shirts</a></li>
-                                                    <li><a href="#">T-shirts</a></li>
-                                                    <li><a href="#">Jeans</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card">
-                                        <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseFive">Cosmetic</a>
-                                        </div>
-                                        <div id="collapseFive" class="collapse" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                                <ul>
-                                                    <li><a href="#">Coats</a></li>
-                                                    <li><a href="#">Jackets</a></li>
-                                                    <li><a href="#">Dresses</a></li>
-                                                    <li><a href="#">Shirts</a></li>
-                                                    <li><a href="#">T-shirts</a></li>
-                                                    <li><a href="#">Jeans</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <%})%>                                                                                                       
                                 </div>
                             </div>
                         </div>
@@ -132,37 +102,13 @@
                                     xs
                                     <input type="checkbox" id="xs">
                                     <span class="checkmark"></span>
-                                </label>
-                                <label for="xss">
-                                    xs-s
-                                    <input type="checkbox" id="xss">
-                                    <span class="checkmark"></span>
-                                </label>
+                                </label>                              
                                 <label for="s">
                                     s
                                     <input type="checkbox" id="s">
                                     <span class="checkmark"></span>
                                 </label>
-                                <label for="m">
-                                    m
-                                    <input type="checkbox" id="m">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label for="ml">
-                                    m-l
-                                    <input type="checkbox" id="ml">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label for="l">
-                                    l
-                                    <input type="checkbox" id="l">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label for="xl">
-                                    xl
-                                    <input type="checkbox" id="xl">
-                                    <span class="checkmark"></span>
-                                </label>
+                               
                             </div>
                         </div>
                         <div class="sidebar__color">
@@ -184,27 +130,7 @@
                                     Reds
                                     <input type="checkbox" id="reds">
                                     <span class="checkmark"></span>
-                                </label>
-                                <label for="greys">
-                                    Greys
-                                    <input type="checkbox" id="greys">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label for="blues">
-                                    Blues
-                                    <input type="checkbox" id="blues">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label for="beige">
-                                    Beige Tones
-                                    <input type="checkbox" id="beige">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <label for="greens">
-                                    Greens
-                                    <input type="checkbox" id="greens">
-                                    <span class="checkmark"></span>
-                                </label>
+                                </label>                              
                                 <label for="yellows">
                                     Yellows
                                     <input type="checkbox" id="yellows">
@@ -218,11 +144,8 @@
                     <!-- Filter Section -->
                     <div class="filter-section mb-3">
                         <div class="d-flex align-items-center justify-content-between">
-                            <!-- "Filter" Title with Custom Font -->
-                            <div class="filter-title">
-                                <h5 style="font-family: 'Roboto', sans-serif;">Filter Products</h5>
-                            </div>
-            
+                            <!-- Search Bar Section -->
+                   
                             <!-- Filter Dropdown -->
                             <div class="filter-dropdown">
                                 <select class="form-select" aria-label="Filter by" id="productFilter" style="width: 200px;">
@@ -240,34 +163,51 @@
                     <!-- Product Grid -->
                     <div class="row product-row" id="productList">
                         <% products.forEach(function(product) { %>
-                        <div class="col-lg-4 col-md-6 product-item" data-sale-price="<%= product.salePrice %>" data-product-name="<%= product.productName %>" data-created-at="<%= new Date(product.createdAt).getTime() %>">
+                          <div class="col-lg-4 col-md-6 product-item" data-sale-price="<%= product.salePrice %>" data-product-name="<%= product.productName %>" data-created-at="<%= new Date(product.createdAt).getTime() %>">
                             <div class="product__item">
-                                <div class="product__item__pic set-bg" data-setbg="/imgs/re-images/<%= product.productImage[0] %>">
-                                    <% if(product.quantity <= 0) { %>
-                                    <div class="label stockout stockblue">Out Of Stock</div>
-                                    <% } else if(product.isBlocked === true) { %>
-                                    <div class="label stockout stockblue">Unavailable</div>
-                                    <% } %>
-                                    <a href="/productdetails/<%= product._id %>">
-                                        <ul class="product__hover">
-                                            <li><a src="/imgs/re-images/<%= product.productImage[0] %>" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                            <li><a href="/addToCart/<%= product._id %>"><span class="icon_bag_alt"></span></a></li>
-                                        </ul>
-                                    </a>
-                                </div>
-                                <div class="product__item__text">
-                                    <h6><a href="#"><%= product.productName %></a></h6>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
+                              <div class="product__item__pic set-bg" data-setbg="/imgs/re-images/<%= product.productImage[0] %>">
+                                <% if(product.quantity <= 0) { %>
+                                  <div class="label stockout stockblue">Out Of Stock</div>
+                                <% } else if(product.isBlocked === true) { %>
+                                  <div class="label stockout stockblue">Unavailable</div>
+                                <% } %>
+                                <a href="/productdetails/<%= product._id %>">
+                                  <ul class="product__hover">
+                                    <li><a src="/imgs/re-images/<%= product.productImage[0] %>" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                    <li><a href="/addwishlist/<%= product._id %>"><span class="icon_heart_alt  <% if (wishlist.includes(product._id.toString())) { %> wishlist-icon <% } %>"></span></a></li>
+                                    <li><a href="/addToCart/<%= product._id %>/10"><span class="icon_bag_alt"></span></a></li>
+                                  </ul>
+                                </a>
+                              </div>
+                              <div class="product__item__text">
+                                <% if(product.quantity <=0 || product.isBlocked == true){%>
+                                <% if( message && message !== 'none'){%>
+                                    <div style="font-size: small;color: red;"><%= message %></div>
+                                <%}%>
+                                <%}%>    
+                                <h6><a href="#"><%= product.productName %></a></h6>
+                                <div class="rating">
+                                  <i class="fa fa-star"></i>
+                                  <i class="fa fa-star"></i>
+                                </div>                                
+                                <% if (product.offerPrice && product.offerPrice > 0) { %>
+                                  <div class="price-container" style="display: flex; align-items: center;">
+                                    <div class="sale-price" style="text-decoration: line-through; margin-right: 10px;margin-left: 25%;font-weight: 600;color: dimgray;">
+                                      $ <%= product.salePrice %>
                                     </div>
-                                    <div class="product__price">$ <%= product.salePrice %></div>
-                                </div>
+                                    <div class="offer-price" style="color:black;text-align: center;font-weight: 600;">
+                                      $ <%= product.offerPrice %>
+                                    </div>
+                                  </div>
+                                <% } else { %>
+                                  <div class="product__price">$ <%= product.salePrice %></div>
+                                <% } %>
+                              </div>
                             </div>
-                        </div>
+                          </div>
                         <% }) %>
-                    </div>
+                      </div>
+                      
                 </div>
             </div>
         </div>
@@ -492,19 +432,32 @@
   }
 
   // Check if the 'orderSuccess' query parameter is present
-  if (getQueryParam('orderSuccess') === 'true') {
+  if (getQueryParam('orderSuccess2') === 'true') {
     Swal.fire({
-      title: 'Order Confirmed!',
+      title: 'Payment Confirmed!',
       text: 'Your order has been successfully placed.',
       icon: 'success',
       showConfirmButton: false,
-      timer: 2000,
+      timer: 4000,
       timerProgressBar: true,
       willClose: () => {
       }
     });
   }
 
+
+  if (getQueryParam('orderSuccess') === 'true') {
+    Swal.fire({
+      title: 'Order Confirmed!',
+      text: 'Your order has been successfully placed.',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      willClose: () => {
+      }
+    });
+  }
 
     </script>
     <!-- Js Plugins -->

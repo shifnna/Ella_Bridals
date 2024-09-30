@@ -1,19 +1,129 @@
 <%- include("../../views/partials/adminHeader") %>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <h2>Dashboard</h4>
-                <div class="profile">
-                    <img src="/img/avatar2.png" alt="" class="profile-pic">
-                </div>
-            </div>
+<!-- Main Content -->
+<div class="main-content" style="padding: 20px; background-color: #f5f7fa; font-family: Arial, sans-serif; width: 100%;">
+
+    <!-- Top Header -->
+    <div class="top-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="font-size: 24px; color: #333;">Dashboard</h2>
+        <div class="profile">
+            <img src="/img/avatar2.png" alt="" class="profile-pic" style="border-radius: 50%; width: 40px; height: 40px;">
         </div>
     </div>
-</body>
-</html>
 
+    <!-- Sales Report Section -->
+    <div class="sales-report" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); width: 100%;">
+        <h2 style="color: #003366; font-size: 22px; margin-bottom: 20px;text-align: center;">Sales Report</h2>
+        
+        <!-- Date Filters -->
+        <form id="report-form" style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-bottom: 20px;" action="/admin/generate-report" method="POST">
+            <div style="width: 50%;">
+                <label for="start-date" style="display: block; font-weight: bold;">Start Date:</label>
+                <input type="text" id="start-date" name="start-date" placeholder="dd-mm-yyyy" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <div style="width: 50%;">
+                <label for="end-date" style="display: block; font-weight: bold;">End Date:</label>
+                <input type="text" id="end-date" name="end-date" placeholder="dd-mm-yyyy" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            </div>
+            <!-- Centered Generate Report Button -->
+            <div>
+                <button type="submit" class="generate-report-btn" style="padding: 10px 20px; background-color: #d9534f; color: white; border: none; border-radius: 5px; margin: 10px auto; display: block;">Generate Report</button>
+            </div>
+        </form>
+
+        <!-- Report Options -->
+        <div class="report-options" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+            <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Daily</button>
+            <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Weekly</button>
+            <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Monthly</button>
+            <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Yearly</button>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary" style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+            <div class="summary-box" style="text-align: center; background-color: #e9ecef; padding: 15px; border-radius: 10px; width: 30%;">
+                <h3 style="color: #333; margin-bottom: 10px;">Total Sales Count</h3>
+                <p style="font-size: 24px; color: #003366;"><%= orders.length %></p>
+            </div>
+            <div class="summary-box" style="text-align: center; background-color: #e9ecef; padding: 15px; border-radius: 10px; width: 30%;">
+                <h3 style="color: #333; margin-bottom: 10px;">Total Order Amount</h3>
+                <p style="font-size: 24px; color: #003366;"><%=grandTotal%></p>
+            </div>
+            <div class="summary-box" style="text-align: center; background-color: #e9ecef; padding: 15px; border-radius: 10px; width: 30%;">
+                <h3 style="color: #333; margin-bottom: 10px;">Total Discount</h3>
+                <p style="font-size: 24px; color: #003366;"><%=totalDiscount%></p>
+            </div>
+        </div>
+
+        <!-- Sales Report Table -->
+<h2 style="color: #003366; font-size: 22px; margin-bottom: 10px;">Sales Report</h2>
+<table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+        <tr style="background-color: #f8d7da; color: #721c24;">
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Order ID</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Order Date</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Customer</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Product Name</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Brand</th>
+            <!-- <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Category</th> -->
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Total Quantity</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Discount</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Grand Total</th>
+            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (orders.length > 0) { %>
+            <% orders.forEach((order) => { %>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ccc;">#<%= order._id %></td>
+            <td style="padding: 8px; border: 1px solid #ccc;"><%= order.orderDate.toLocaleDateString() %></td>
+            <td style="padding: 8px; border: 1px solid #ccc;"><%= order.address[0].username %></td>
+            <td style="padding: 8px; border: 1px solid #ccc;">
+                <% order.products.forEach((product) => { %>
+                    <div><%= product.name %> (<%= product.quantity %>)</div>
+                <% }) %>
+            </td>
+            <td style="padding: 8px; border: 1px solid #ccc;">
+                <% order.products.forEach((product) => { %>
+                    <div><%= product.brand %></div>
+                <% }) %>
+            </td>
+            <!-- <td style="padding: 8px; border: 1px solid #ccc;">
+                <% order.products.forEach((product) => { %>
+                    <div><%= product.category %></div>
+                <% }) %>
+            </td> -->
+            <td style="padding: 8px; border: 1px solid #ccc;">
+                <%= order.products.reduce((total, product) => total + product.quantity, 0) %>
+            </td>
+            <td style="padding: 8px; border: 1px solid #ccc;">Rs.0</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">
+                <%= order.products.reduce((total, product) => total + product.price, 0) %>
+            </td>
+            <td style="padding: 8px; border: 1px solid #ccc;">
+                <%= order.status %>
+            </td>
+        </tr>
+        <%})%>
+        <%}else{%>
+            <tr>
+
+            </tr>
+        <%}%>    
+    </tbody>
+</table>
+
+
+<div class="report-options" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;margin-right: 75%;margin-top: 10px;">
+    <button type="button" style="padding: 10px 20px; background-color: #d85656; color: white; border: none; border-radius: 5px;" onclick="downloadPDF()">Download PDF</button>
+    <button type="button" style="padding: 10px 20px; background-color: #1e7154; color: white; border: none; border-radius: 5px;" onclick="downloadExcel()">Download Excel</button>
+</div>
+
+    </div>
+</div>
+
+<!-- Logout Script -->
 <script>
     document.getElementById('logout-btn').addEventListener('click', function(event) {
         event.preventDefault(); // Prevent the default link behavior
@@ -30,4 +140,120 @@
             }
         });
     });
+
+    // Function to format date as dd-mm-yyyy
+    function formatDate(date) {
+        let day = String(date.getDate()).padStart(2, '0');
+        let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        let year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+
+    // Function to set dates based on button click
+    function setDateInputs(period) {
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const today = new Date();
+
+        switch (period) {
+            case 'daily':
+                startDateInput.value = formatDate(today);
+                endDateInput.value = formatDate(today);
+                break;
+
+            case 'weekly':
+                const firstDayOfWeek = new Date(today);
+                const lastDayOfWeek = new Date(today);
+                firstDayOfWeek.setDate(today.getDate() - today.getDay()); // Sunday
+                lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6); // Saturday
+                startDateInput.value = formatDate(firstDayOfWeek);
+                endDateInput.value = formatDate(lastDayOfWeek);
+                break;
+
+            case 'monthly':
+                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                startDateInput.value = formatDate(firstDayOfMonth);
+                endDateInput.value = formatDate(lastDayOfMonth);
+                break;
+
+            case 'yearly':
+                const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+                const lastDayOfYear = new Date(today.getFullYear(), 11, 31);
+                startDateInput.value = formatDate(firstDayOfYear);
+                endDateInput.value = formatDate(lastDayOfYear);
+                break;
+
+            default:
+                startDateInput.value = '';
+                endDateInput.value = '';
+        }
+    }
+
+    // Add event listeners to buttons
+    document.querySelector('.report-options').addEventListener('click', function(event) {
+        if (event.target.tagName === 'BUTTON') {
+            const period = event.target.textContent.toLowerCase();
+            setDateInputs(period);
+        }
+    });
+
+
+
+    function downloadPDF() {
+    const reportForm = document.getElementById('report-form');
+    const formData = new FormData(reportForm);
+    
+    fetch('/admin/download-pdf', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'sales_report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => console.error('Error downloading the PDF:', error));
+}
+
+
+
+function downloadExcel() {
+    const reportForm = document.getElementById('report-form');
+    const formData = new FormData(reportForm);
+    
+    fetch('/admin/download-excel', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Network response was not ok.');
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'sales_report.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => console.error('Error downloading the Excel:', error));
+}
 </script>
+

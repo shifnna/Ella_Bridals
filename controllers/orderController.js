@@ -5,6 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const Order = require("../models/orderSchema");
 const User = require("../models/userSchema")
+const Coupon = require("../models/couponSchema");
+
 
 
 const loadOrders = async (req, res) => {
@@ -26,7 +28,7 @@ const loadOrders = async (req, res) => {
         { status: { $regex: ".*" + search + ".*", $options: "i" } }
       ]
     })
-      .sort({ "address.username": -1 })
+      .sort({ "address.username": 1 })
       .skip((page - 1) * limit)
       .limit(limit);
 
@@ -130,6 +132,7 @@ const changeStatus = async (req,res)=>{
   });
   
 }
+
 
   module.exports = {
     loadOrders,
