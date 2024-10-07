@@ -1740,14 +1740,14 @@ ol {
 	margin-bottom: 10px;
 }
 
-.quantity>span {
+/* .quantity>span {
 	font-size: 14px;
 	color: #111111;
 	font-weight: 600;
 	float: left;
 	margin-top: 14px;
 	margin-right: 15px;
-}
+} */
 
 .pro-qty {
 	height: 50px;
@@ -1759,14 +1759,14 @@ ol {
 	display: inline-block;
 }
 
-.pro-qty .qtybtn {
+/* .pro-qty .qtybtn {
 	font-size: 14px;
 	color: #666666;
 	cursor: pointer;
 	float: left;
 	width: 12px;
 	line-height: 46px;
-}
+} */
 
 .pro-qty input {
 	font-size: 14px;

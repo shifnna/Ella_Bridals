@@ -11,7 +11,7 @@
 html, body {
 	position: relative;
 	min-height: 100vh;
-	background-color: #E1E8EE;
+	background-color: #ffffff;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -40,19 +40,20 @@ html, body {
 	background-repeat: no-repeat;
 	background-position: left bottom;
 	background-size: 500px;
-	background-image: url('https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100');
+	background-color: #89c2ca;
+	/* background-image: url('https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100'); */
 }
 
 .signup {
 	position: absolute;
-	top: 50%;
+	top: 43%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 65%;
 	z-index: 5;
 	transition: all .3s ease;
 }
-
+/* 
 .signup.slide-up {
 	top: 5%;
 	transform: translate(-50%, 0%);
@@ -75,7 +76,7 @@ html, body {
 	opacity: 1;
 	visibility: visible;
 	transition: all .3s ease;
-}
+} */
 
 .signup .form-title {
 	color: #fff;
@@ -289,7 +290,7 @@ html, body {
 </head>
 <body>
 	<form id="signform" action="/signup" method="post">
-    <div class="form-structor">
+    <div  class="form-structor">
         <div class="signup">
             <h2 class="form-title" id="signup"><span>or</span>Sign up</h2>
 			<% if (locals.message) { %>
@@ -297,7 +298,7 @@ html, body {
 				  <%= message %>
 				</div>
 			  <% } %>
-            <div class="form-holder">
+            <div style="margin-top: 0;" class="form-holder">
                 <input type="text" name="name" id="name" class="input" placeholder="Name" />
 				<div id="error1" class="error-message"></div>
                 <input type="email" name="email" id="email" class="input" placeholder="Email" />
@@ -308,22 +309,25 @@ html, body {
 				<div id="error4" class="error-message"></div>
                 <input type="password" name="cpassword" id="cpassword" class="input" placeholder="confirm Password" />
 				<div id="error5" class="error-message"></div>
+				<input type="referalCode" name="referalCode" id="referalCode" class="input" placeholder="Referal Code (optional)" />
             </div>
-            <button type="submit" class="submit-btn">Sign up</button>
-        </div>
+            <button  style="margin-bottom: 100px;" type="submit" class="submit-btn">Sign up</button>
 
-        <div class="login slide-up">
-            <div class="center">
-				<span style="color: rgb(37, 37, 159);">  or use your google account</span>
-				<a href="/auth/google"> <img style="height: 28px;width: 34px;margin-left: 85px;" src="img/google.png"></a>
-                <h2 class="form-title" id="login"><span>or</span>Log in</h2>
-                <div class="form-holder">
-                    <input type="email" class="input" placeholder="Email" />
-                    <input type="password" class="input" placeholder="Password" />
+			<div class="login slide-up">
+				<div style="align-items: center; margin-top: 0px;" class="center">
+					<a href="/auth/google" style="text-decoration: none; margin-top: 0px;">
+						<img style="height: 28px; width: 34px; margin-left: 58px; margin-bottom: 5px;" src="img/google.png"><br>
+						<p style="color: rgb(37, 37, 159); width: 200px; margin: 0; line-height: 1; margin-bottom: 5px;">or use Google account</p>
+					</a>
+					<div class="form-holder" style="margin-top: 10px;">
+						<input type="email" class="input" placeholder="Email" style="margin-bottom: 5px;" />
+						<input type="password" class="input" placeholder="Password" style="margin-bottom: 5px;" />
+					</div>
+                         <button class="submit-btn" style="margin-top: 5px;" href="">Login</button>				
                 </div>
-                <button class="submit-btn">Log in</button>
-            </div>
-        </div>
+			</div>
+			
+	</div>
 
     </div>
   </form>

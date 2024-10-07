@@ -55,8 +55,11 @@ router.post("/selectAddress",userProfileController.selectAddress);
 router.get("/selectPayment",userProfileController.selectPayment);
 router.post("/applyCoupon",userProfileController.applyCoupon)
 router.post("/proceedOrder",userProfileController.confirmOrder);
+//for retry payment
+router.get("/proceedOrder",userProfileController.confirmOrder2);
 router.post("/verifyPayment",userProfileController.verifyPayment);
-router.post("/verifyPayment",userProfileController.verifyPayment);
+router.get("/orderSuccess",userProfileController.orderSuccess);
+router.get("/orderFailed",userProfileController.orderFailed);
 
 router.get("/orderDetails",userProfileController.loadOrderDetails);
 router.get("/cancelOrder",userProfileController.cancelOrder);
@@ -66,9 +69,9 @@ router.get("/addwishlist/:id",userController.addwishlist);
 router.get("/wishlist",userController.loadwishlist);
 router.get("/removeFromWishlist",userController.removeFromWishlist);
 router.get("/wallet",userController.loadWallet);
+router.get('/downloadInvoice/:orderId',userController.downloadInvoice)
 
-
-
+router.get("/share-refer",userController.share_refer)
 
 
 

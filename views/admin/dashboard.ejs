@@ -1,4 +1,76 @@
 <%- include("../../views/partials/adminHeader") %>
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    max-width: 900px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-sections {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.section {
+    flex: 1;
+    margin: 0 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.section h3 {
+    margin-top: 0;
+}
+.section p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0; /* Adds a small gap between items */
+}
+
+
+.total-sold {
+    margin-left: auto; /* Pushes total sold to the right end */
+}
+
+
+</style>
 
 <!-- Main Content -->
 <div class="main-content" style="padding: 20px; background-color: #f5f7fa; font-family: Arial, sans-serif; width: 100%;">
@@ -11,10 +83,56 @@
         </div>
     </div>
 
+
     <!-- Sales Report Section -->
     <div class="sales-report" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); width: 100%;">
         <h2 style="color: #003366; font-size: 22px; margin-bottom: 20px;text-align: center;">Sales Report</h2>
         
+        <button type="button" style="right: 20px; padding: 10px 20px; background-color: #53805a; color: white; border: none; border-radius: 5px;" id="openModal" >Top 10 Sellings</button>
+
+        <!-- modal -->
+        <div  id="myModal" class="modal fade">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Top 10 Sellings</h2>
+                
+                <div class="modal-sections">
+                    <div class="section">
+                        <h3>Top Selling Products</h3><br>
+                        <% topSellingProducts.forEach((product) => { %>
+                            <p>
+                                <span class="product-name"><%= product.productName %></span>
+                                <span class="total-sold"><%= product.totalSold %></span>
+                            </p>
+                        <% }) %>    
+                    </div>
+        
+                    <div class="section">
+                        <h3>Top Selling Categories</h3><br>
+                        <% topSellingCategories.forEach((category) => { %>
+                            <p>
+                                <span class="category-name"><%= category.categoryName %></span>
+                                <span class="total-sold"><%= category.totalSold %></span>
+                            </p>
+                        <% }) %>    
+                    </div>
+        
+                    <div class="section">
+                        <h3>Top Selling Brands</h3><br>
+                        <% topSellingBrands.forEach((brand) => { %>
+                            <p>
+                                <span class="brand-name"><%= brand.brandName %></span>
+                                <span class="total-sold"><%= brand.totalSold %></span>
+                            </p>
+                        <% }) %>
+                    </div>  
+                </div>                     
+            </div>
+        </div>
+        
+        <!-- Chart Section -->
+        <canvas id="myChart" width="400" height="200"></canvas>
+
         <!-- Date Filters -->
         <form id="report-form" style="display: flex; flex-direction: column; gap: 20px; align-items: center; margin-bottom: 20px;" action="/admin/generate-report" method="POST">
             <div style="width: 50%;">
@@ -37,6 +155,7 @@
             <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Weekly</button>
             <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Monthly</button>
             <button type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Yearly</button>
+            <button  id="customButton" type="button" style="padding: 10px 20px; background-color: #5bc0de; color: white; border: none; border-radius: 5px;">Custom</button>
         </div>
 
         <!-- Summary Section -->
@@ -76,7 +195,8 @@
         <% if (orders.length > 0) { %>
             <% orders.forEach((order) => { %>
         <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;">#<%= order._id %></td>
+            <td style="padding: 8px; border: 1px solid #ccc;">    ORD-<%= order._id.toString().slice(-8).toUpperCase() %>
+            </td>
             <td style="padding: 8px; border: 1px solid #ccc;"><%= order.orderDate.toLocaleDateString() %></td>
             <td style="padding: 8px; border: 1px solid #ccc;"><%= order.address[0].username %></td>
             <td style="padding: 8px; border: 1px solid #ccc;">
@@ -97,7 +217,9 @@
             <td style="padding: 8px; border: 1px solid #ccc;">
                 <%= order.products.reduce((total, product) => total + product.quantity, 0) %>
             </td>
-            <td style="padding: 8px; border: 1px solid #ccc;">Rs.0</td>
+            <td style="padding: 8px; border: 1px solid #ccc;">
+                Rs.<%= order.products[0].couponDiscount %>
+            </td>
             <td style="padding: 8px; border: 1px solid #ccc;">
                 <%= order.products.reduce((total, product) => total + product.price, 0) %>
             </td>
@@ -123,10 +245,63 @@
     </div>
 </div>
 
-<!-- Logout Script -->
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    // Ensure the chart is generated only after the DOM is loaded and chart data is available
+    const chartData = <%- JSON.stringify(chartData) %>;     
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar', // Choose 'bar' or 'line' as needed
+        data: {
+            labels: chartData.labels, // Month names or dates
+            datasets: [{
+                label: 'Total Sales Amount',
+                data: chartData.totals, // Total sales amounts
+                backgroundColor: 'rgba(255, 105, 180, 0.2)', // Pink background
+                borderColor: 'rgba(255, 105, 180, 1)', // Pink border
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Total Sales Amount'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Months'
+                    }
+                }
+            }
+        }
+    });
+
+        
+// Modal functionality
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("openModal");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    window.onclick = function(event) { 
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Logout functionality
     document.getElementById('logout-btn').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent the default link behavior
+        event.preventDefault(); 
         Swal.fire({
             title: 'Are you sure?',
             text: 'You will be logged out of your account.',
@@ -141,27 +316,105 @@
         });
     });
 
-    // Function to format date as dd-mm-yyyy
-    function formatDate(date) {
+    // Button event listeners for date filtering
+    document.querySelector('.report-options').addEventListener('click', function(event) {
+        if (event.target.tagName === 'BUTTON') {
+            const period = event.target.textContent.toLowerCase();
+            setDateInputs(period);
+        }
+    });
+
+    // Download functions
+    document.getElementById('downloadPDFBtn').onclick = downloadPDF;
+    document.getElementById('downloadExcelBtn').onclick = downloadExcel;
+});
+
+
+
+
+
+
+// function generateChart(labels, data) {
+//         const ctx = document.getElementById("myChart").getContext("2d");
+//         new Chart(ctx, {
+//             type: "bar", // or "line" if you prefer
+//             data: {
+//                 labels: labels,
+//                 datasets: [{
+//                     label: "Sales Revenue",
+//                     data: data,
+//                     backgroundColor: "rgba(75, 192, 192, 0.5)",
+//                     borderColor: "rgba(75, 192, 192, 1)",
+//                     borderWidth: 1,
+//                     fill: true
+//                 }]
+//             },
+//             options: {
+//                 scales: {
+//                     y: {
+//                         beginAtZero: true,
+//                         title: {
+//                             display: true,
+//                             text: 'Total Revenue'
+//                         }
+//                     },
+//                     x: {
+//                         title: {
+//                             display: true,
+//                             text: 'Dates'
+//                         }
+//                     }
+//                 }
+//             }
+//         });
+//     }
+
+
+//modal  
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("openModal");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+span.onclick = function() {
+    modal.style.display = "none";
+}
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) { 
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+ 
+ 
+// Function to format date as dd-mm-yyyy
+function formatDate(date) {
         let day = String(date.getDate()).padStart(2, '0');
         let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         let year = date.getFullYear();
         return `${day}-${month}-${year}`;
     }
 
-    // Function to set dates based on button click
-    function setDateInputs(period) {
+// Function to set dates based on button click
+function setDateInputs(period) {
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         const today = new Date();
 
         switch (period) {
             case 'daily':
+            endDateInput.type = 'text' 
+            startDateInput.type = 'text'
+
                 startDateInput.value = formatDate(today);
                 endDateInput.value = formatDate(today);
                 break;
 
             case 'weekly':
+            endDateInput.type = 'text'
+            startDateInput.type = 'text' 
                 const firstDayOfWeek = new Date(today);
                 const lastDayOfWeek = new Date(today);
                 firstDayOfWeek.setDate(today.getDate() - today.getDay()); // Sunday
@@ -171,6 +424,8 @@
                 break;
 
             case 'monthly':
+            endDateInput.type = 'text' 
+            startDateInput.type = 'text'
                 const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
                 const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
                 startDateInput.value = formatDate(firstDayOfMonth);
@@ -178,19 +433,27 @@
                 break;
 
             case 'yearly':
+            endDateInput.type = 'text' 
+            startDateInput.type = 'text'
                 const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
                 const lastDayOfYear = new Date(today.getFullYear(), 11, 31);
                 startDateInput.value = formatDate(firstDayOfYear);
                 endDateInput.value = formatDate(lastDayOfYear);
                 break;
 
+            case 'custom': 
+                startDateInput.type = 'date'
+                endDateInput.type = 'date' 
+                startDateInput.value = ''
+                endDateInput.value = '' 
+                break;   
+
             default:
                 startDateInput.value = '';
                 endDateInput.value = '';
         }
-    }
-
-    // Add event listeners to buttons
+ }
+ // Add event listeners to buttons
     document.querySelector('.report-options').addEventListener('click', function(event) {
         if (event.target.tagName === 'BUTTON') {
             const period = event.target.textContent.toLowerCase();
@@ -200,6 +463,7 @@
 
 
 
+// download pdf
     function downloadPDF() {
     const reportForm = document.getElementById('report-form');
     const formData = new FormData(reportForm);
@@ -228,7 +492,7 @@
 }
 
 
-
+// download excel
 function downloadExcel() {
     const reportForm = document.getElementById('report-form');
     const formData = new FormData(reportForm);
@@ -255,5 +519,17 @@ function downloadExcel() {
     })
     .catch(error => console.error('Error downloading the Excel:', error));
 }
-</script>
 
+</script>
+</main>
+<script src="/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="/js/vendors/select2.min.js"></script>
+<script src="/js/vendors/perfect-scrollbar.js"></script>
+<script src="/js/vendors/jquery.fullscreen.min.js"></script>
+<script src="/js/vendors/chart.js"></script>
+<script src="/js/vendors/main.js" type="text/javascript"></script>
+<script src="/js/vendors/custom-chart.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

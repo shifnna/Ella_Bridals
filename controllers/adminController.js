@@ -5,7 +5,8 @@ const Order = require("../models/orderSchema");
 const XLSX = require('exceljs');
 const { jsPDF } = require('jspdf'); // Importing correctly based on the version
 require("jspdf-autotable"); // Import autotable plugin
-
+const Product = require("../models/productSchema");
+const Category = require("../models/categorySchema")
 
 
 
@@ -26,42 +27,123 @@ const loadLogin =  (req,res)=>{
 
 
 
+
 const login = async (req,res)=>{
     try {
-        
-        const {email,password} = req.body;
+        if(!req.session.admin){
+            const {email,password} = req.body;
 
-        const admins =await User.findOne({email,isAdmin:true});
-        
-        if(req.session.admin){
-            const orders = [];
-            const grandTotal = 0;
-            const totalDiscount = 0;
-            const offerDiscount = 0;
-            
-         return res.render("dashboard", {orders,grandTotal,totalDiscount,offerDiscount});
-          
-            }else if(admins){
-                req.session.admin = true;
-                const passwordMatch = bcrypt.compare(password,admins.password);
-
-                if(passwordMatch){
-                    req.session.admin = true;
-                    const orders = [];
-                    const grandTotal = 0;
-                    const totalDiscount = 0;
-                    const offerDiscount = 0;
-                    
-                 return res.render("dashboard", {orders,grandTotal,totalDiscount,offerDiscount});    
-                
+            const admins =await User.findOne({email,isAdmin:true});
+    
+            if (!admins) {
+                return res.render("loginPage", { message: "Incorrect email or password" });
             }
-            else{
-                return res.render("loginPage",{message:"incorrect email or password "});
+    
+            const passwordMatch = await bcrypt.compare(password, admins.password);
+    
+            if (!passwordMatch) {
+                return res.render("loginPage", { message: "Incorrect email or password" });
             }
+    
+            req.session.admin = true;
+        }        
 
-        }else{
-            return res.render("loginPage",{message:"incorrect email or password "});
+ //^ Step 1: Aggregate orders to find total quantity sold for each product
+ const salesData = await Order.aggregate([
+    { $unwind: "$products" }, 
+    {
+        $group: {
+            _id: "$products.productId", 
+            totalSold: { $sum: "$products.quantity" } // Sum the quantities
         }
+    },
+    { $sort: { totalSold: -1 } }, 
+    { $limit: 10 } 
+]);
+
+// Step 2: Retrieve product details based on the product IDs
+const productIds = salesData.map(item => item._id);
+const products = await Product.find({ _id: { $in: productIds } });
+
+// Step 3: Combine the sales data with product details
+const topSellingProducts = salesData.map(sale => {
+    const product = products.find(p => p._id.equals(sale._id));
+    return {
+        productName: product ? product.productName : 'Unknown',
+        totalSold: sale.totalSold,
+    };
+});
+
+
+//^ Step 1: Aggregate for Categories
+const categorySalesData = await Order.aggregate([
+    { $unwind: "$products" },
+    {
+        $lookup: {
+            from: "products",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productDetails"
+        }
+    },
+    { $unwind: "$productDetails" },
+    {
+        $group: {
+            _id: "$productDetails.category",
+            totalSold: { $sum: "$products.quantity" }
+        }
+    },
+    { $sort: { totalSold: -1 } },
+    { $limit: 10 }
+]);
+
+const categoryIds = categorySalesData.map(item => item._id);
+const categories = await Category.find({ _id: { $in: categoryIds } });
+
+const topSellingCategories = categorySalesData.map(sale => {
+    const category = categories.find(c => c._id.equals(sale._id));
+    return {
+        categoryName: category ? category.name : 'Unknown',
+        totalSold: sale.totalSold,
+    };
+});
+
+//^ Get top-selling brands
+const brandSalesData = await Order.aggregate([
+    { $unwind: "$products" },
+    {
+        $lookup: {
+            from: "products",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productDetails"
+        }
+    },
+    { $unwind: "$productDetails" },
+    {
+        $group: {
+            _id: "$productDetails.brand",
+            totalSold: { $sum: "$products.quantity" }
+        }
+    },
+    { $sort: { totalSold: -1 } },
+    { $limit: 10 }
+]);
+
+const topSellingBrands = brandSalesData.map(sale => ({
+    brandName: sale._id || 'Unknown',
+    totalSold: sale.totalSold,
+}));
+
+
+        const orders = [];
+        const grandTotal = 0;
+        const totalDiscount = 0;
+        const offerDiscount = 0;
+        const labels = [];
+        const chartData = [];
+        
+        return res.render("dashboard", { orders, grandTotal, totalDiscount, offerDiscount ,topSellingProducts,topSellingCategories,topSellingBrands,chartData});
 
     } catch (error) {
         console.log("login error",error);
@@ -70,8 +152,11 @@ const login = async (req,res)=>{
     }
 }
 
+
+
 const logout= async (req,res)=>{
     req.session.destroy((err) => {
+        req.session.admin=false;
         if (err) {
             console.log("Error destroying session:", err);
             return res.redirect("admin/pageerror"); // Redirect to error page only on session destruction failure
@@ -82,14 +167,36 @@ const logout= async (req,res)=>{
 }
 
 
+
 const generateReport = async (req, res) => {
-    const startDateString = req.body['start-date'];
-    const endDateString = req.body['end-date'];
+    const formatDateString = (dateString) => {
+        // Check if the date is in the yyyy-mm-dd format
+        if (dateString.includes('-') && dateString.split('-')[0].length === 4) {
+            // Convert from yyyy-mm-dd to dd-mm-yyyy
+            const parts = dateString.split('-');
+            return `${parts[2]}-${parts[1]}-${parts[0]}`; // Convert to dd-mm-yyyy
+        }
+        // If it's already in dd-mm-yyyy format, return as is
+        return dateString;
+    };
+
+    const startDateString = formatDateString(req.body['start-date']);
+    const endDateString = formatDateString(req.body['end-date']);
+
+    const interval = req.body['interval'];
+
+    console.log('req body :',req.body);
+    
+    // console.log(startDateString);
+    // console.log(endDateString);
 
     // Convert the date strings to Date objects
     const startDate = new Date(startDateString.split('-').reverse().join('-')); // Converts dd-mm-yyyy to yyyy-mm-dd
     const endDate = new Date(endDateString.split('-').reverse().join('-'));
 
+    // console.log(startDate);
+    // console.log(endDate);
+       
     // Set the time for endDate to the end of the day
     endDate.setHours(23, 59, 59, 999);
 
@@ -104,7 +211,7 @@ const generateReport = async (req, res) => {
                 const orderTotal = order.products.reduce((orderSum, product) => orderSum + product.price, 0);
                 return total + orderTotal;
             }, 0);
-
+            
 
             let totalDiscount = 0;
 
@@ -112,7 +219,7 @@ const generateReport = async (req, res) => {
 
             // Calculate total deductions from all user carts
             const offerDiscount = users.reduce((total, user) => {
-                const userCart = user.cart || []; // Get the user's cart, default to empty array if undefined
+                const userCart = user.cart || []; 
                 const deductions = userCart.reduce((deductionSum, cart) => {
                     return deductionSum + (cart.Amount - cart.totalPrice); // Calculate deduction for each cart
                 }, 0);
@@ -120,16 +227,193 @@ const generateReport = async (req, res) => {
             }, 0);
 
 
-             totalDiscount = orders.reduce((discountTotal, order) => {
-                const orderDiscount = order.products.reduce((productDiscountSum, product) => {
-                    // Calculate the discount for each product as (salePrice - offerPrice)
-                    const discount = (product.salePrice || 0) - (product.offerPrice || 0);
-                    return productDiscountSum + (discount > 0 ? discount : 0); // Ensure only positive discounts
-                }, 0);
-                return discountTotal + orderDiscount;
-            }, 0);
+            orders.forEach((order)=>{
+                totalDiscount += order.products[0].couponDiscount 
+            })
 
-            res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount});
+//^ Step 1: Aggregate orders to find total quantity sold for each product
+ const salesData = await Order.aggregate([
+    { $unwind: "$products" }, 
+    {
+        $group: {
+            _id: "$products.productId", 
+            totalSold: { $sum: "$products.quantity" } // Sum the quantities
+        }
+    },
+    { $sort: { totalSold: -1 } }, 
+    { $limit: 10 } 
+]);
+
+// Step 2: Retrieve product details based on the product IDs
+const productIds = salesData.map(item => item._id);
+const products = await Product.find({ _id: { $in: productIds } });
+
+// Step 3: Combine the sales data with product details
+const topSellingProducts = salesData.map(sale => {
+    const product = products.find(p => p._id.equals(sale._id));
+    return {
+        productName: product ? product.productName : 'Unknown',
+        totalSold: sale.totalSold,
+    };
+});
+
+
+//^ Step 1: Aggregate for Categories
+const categorySalesData = await Order.aggregate([
+    { $unwind: "$products" },
+    {
+        $lookup: {
+            from: "products",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productDetails"
+        }
+    },
+    { $unwind: "$productDetails" },
+    {
+        $group: {
+            _id: "$productDetails.category",
+            totalSold: { $sum: "$products.quantity" }
+        }
+    },
+    { $sort: { totalSold: -1 } },
+    { $limit: 10 }
+]);
+
+const categoryIds = categorySalesData.map(item => item._id);
+const categories = await Category.find({ _id: { $in: categoryIds } });
+
+const topSellingCategories = categorySalesData.map(sale => {
+    const category = categories.find(c => c._id.equals(sale._id));
+    return {
+        categoryName: category ? category.name : 'Unknown',
+        totalSold: sale.totalSold,
+    };
+});
+
+//^ Get top-selling brands
+const brandSalesData = await Order.aggregate([
+    { $unwind: "$products" },
+    {
+        $lookup: {
+            from: "products",
+            localField: "products.productId",
+            foreignField: "_id",
+            as: "productDetails"
+        }
+    },
+    { $unwind: "$productDetails" },
+    {
+        $group: {
+            _id: "$productDetails.brand",
+            totalSold: { $sum: "$products.quantity" }
+        }
+    },
+    { $sort: { totalSold: -1 } },
+    { $limit: 10 }
+]);
+
+const topSellingBrands = brandSalesData.map(sale => ({
+    brandName: sale._id || 'Unknown',
+    totalSold: sale.totalSold,
+}));
+
+//^for chart
+  // Check the difference in months between the start and end dates
+  const diffInMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+
+  let chartData;
+
+  if (diffInMonths >= 11) {
+    // Aggregate sales data by month
+    const monthlySalesData = await Order.aggregate([
+        {
+            $match: {
+                orderDate: { $gte: startDate, $lte: endDate }
+            }
+        },
+        {
+            $unwind: "$products" // Unwind products to access individual items
+        },
+        {
+            $group: {
+                _id: { 
+                    $dateToString: { format: "%Y-%m", date: "$orderDate" } // Group by year and month
+                },
+                totalSales: { $sum: "$products.price" }
+            }
+        },
+        { $sort: { _id: 1 } } // Sort by date
+    ]);
+
+    // Prepare month labels and totals
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Initialize labels and totals
+    const labels = [];
+    const totals = [];
+
+    let currentDate = new Date(startDate.getFullYear(), startDate.getMonth());
+    const endMonth = new Date(endDate.getFullYear(), endDate.getMonth() + 1); // Include end month
+
+    while (currentDate < endMonth) {
+        const monthKey = currentDate.toISOString().slice(0, 7); // Format YYYY-MM
+        labels.push(monthNames[currentDate.getMonth()]); // Get month name
+
+        // Find the total sales for the current month
+        const monthlySales = monthlySalesData.find(data => data._id === monthKey);
+        totals.push(monthlySales ? monthlySales.totalSales : 0); // Default to 0 if no sales
+
+        currentDate.setMonth(currentDate.getMonth() + 1); // Move to next month
+    }
+
+    chartData = {
+        labels,
+        totals
+    };
+}
+ else {
+      // Previous daily sales aggregation logic
+      const dailySalesData = await Order.aggregate([
+          {
+              $match: {
+                  orderDate: { $gte: startDate, $lte: endDate }
+              }
+          },
+          {
+              $unwind: "$products"
+          },
+          {
+              $group: {
+                  _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
+                  totalSales: { $sum: "$products.price" }
+              }
+          },
+          { $sort: { _id: 1 } }
+      ]);
+
+      const allDates = [];
+      let currentDate = new Date(startDate);
+      while (currentDate <= endDate) {
+          allDates.push(currentDate.toISOString().split('T')[0]); // Format YYYY-MM-DD
+          currentDate.setDate(currentDate.getDate() + 1); // Move to next day
+      }
+
+      const salesMap = {};
+      dailySalesData.forEach(data => {
+          salesMap[data._id] = data.totalSales; // Map date to total sales
+      });
+
+      chartData = {
+          labels: allDates,
+          totals: allDates.map(date => salesMap[date] || 0)
+      };
+  }
+
+res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount,topSellingBrands,topSellingCategories,topSellingProducts,chartData});
             console.log('Report generated successfully..');
         } else {
             return res.redirect("/login"); 

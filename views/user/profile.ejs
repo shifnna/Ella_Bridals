@@ -16,8 +16,11 @@
                             <span>Email: <%= locals.user.email%></span>
                             <span>Mobile: <%= locals.user.phone%></span>
                             <span>Date of Birth: dd/mm/yyyy</span>
-                            <a style="border-color: #0e0c0d;color: aliceblue;background-color: #0e0c0d;" href="/editProfile?id=<%=locals.user._id%>" class="btn btn-outline-primary btn-sm mt-2">
-                                <i style="color: #ffffff;" class="fas fa-edit"></i> Edit
+                            <a style="border-color: #0e0c0d;color: aliceblue;background-color: #0e0c0d;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;font-size: small;" href="/editProfile?id=<%=locals.user._id%>" class="btn btn-outline-primary btn-sm mt-2">
+                                <i style="color: #ffffff;" class="fas fa-edit">Edit</i> 
+                            </a>
+                            <a href="/share-refer" style="border: none;color: aliceblue;background-color: #589963;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;" class="btn btn-outline-primary btn-sm mt-2">
+                                <i style="color: #ffffff;" >Refer Now</i>                             
                             </a>
                         </div>
                     </div>

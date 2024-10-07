@@ -5,7 +5,9 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-
+  razorpayOrderId: {
+    type:String,
+  },
   payment: {
     type: String,
     default: 'COD',
@@ -20,7 +22,7 @@ const orderSchema = new mongoose.Schema({
   }],
   status: {
     type: String,
-    enum: ['Pending', 'Returned', 'Delivered', 'Cancelled','cancellation','Shipped'],
+    enum: ['Pending', 'Returned', 'Delivered', 'Cancelled','cancellation','Shipped', 'failed'],
     default: 'Pending',
   },
  
@@ -63,7 +65,12 @@ const orderSchema = new mongoose.Schema({
   },
   offerDiscount:{
     type: Number,
-  }
+  },
+  orderNumber: { 
+    type: String, 
+    // unique: true 
+  },
+
 });
 
 module.exports = mongoose.model('Order', orderSchema);

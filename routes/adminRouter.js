@@ -17,19 +17,6 @@ const couponController = require("../controllers/couponController");
 
 router.get("/login",adminController.loadLogin);
 router.post("/login",adminController.login);
-// router.get("/dashboard", (req, res) => {
-//     if (req.session.admin) {
-//         const orders = [];
-//         const grandTotal = 0;
-//         const totalDiscount = 0;
-//         const offerDiscount = 0;
-//         console.log('yes');
-        
-//         res.render("dashboard",orders,grandTotal,totalDiscount,offerDiscount);
-//     } else {
-//         res.render("page_404");
-//     }
-// });
 router.get("/dashboard",adminController.login)
 
 router.get("/logout",adminController.logout);

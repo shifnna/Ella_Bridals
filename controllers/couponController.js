@@ -65,6 +65,10 @@ const addCoupon = async (req, res) => {
         // console.log("body is :",req.body);
         
         const { couponCode, discountType, discountValue, expiryDate, minOrderAmount, maxOrderAmount, description } = req.body;
+        console.log(req.body);
+        
+        console.log('expiry',expiryDate);
+        
 if (!couponCode || !discountType || !discountValue || !expiryDate || !minOrderAmount) {
             throw new Error("All required fields must be filled."); //render cheyth error kanikkanam
         }
@@ -77,6 +81,9 @@ if (!couponCode || !discountType || !discountValue || !expiryDate || !minOrderAm
             maxOrderAmount :maxOrderAmount,
             description :description,
         });
+
+        console.log(newCoupon);
+        
 
         await newCoupon.save();
         console.log("coupon created successfully");       

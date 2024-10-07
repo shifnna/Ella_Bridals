@@ -136,21 +136,18 @@
                 <div class="line active"></div>
             </div>
             <div class="step active">
-                <div class="circle">✓</div>
+                <div class="circle">3</div>
                 <span>Payment</span>
             </div>
         </div>
 
-        <div style="text-align: center;padding: 0px;width: 500px;margin-left: 310px;background: #ffffff;border-color: #000000;border-radius: 5px;margin-top: 50px;" class="checkout__order">
+        <div style="text-align: center;padding: 60px;width: 500px;margin-left: 310px;background: #ffffff;border-color: #000000;border-radius: 5px;margin-top: 50px;" class="checkout__order">
                 <!-- <i class="fas fa-check-circle"></i> -->
                  <img style="width: 200px;height: 200px;" src="/imgs/success.png" alt="">
             <h2>Your Order is Successfully placed</h2>
             <br>
-            <a style="text-decoration: none;" href="/shop">
-                <button style="background-color: #000000;color: #ebebeb;height: 40px;border-radius: 5px;margin-bottom: 30px;" id="rzp-button">Continue Shopping</button>
-            </a>
-            <a href="/orders">
-                <button style="background-color: #000000;color: #ebebeb;height: 40px;border-radius: 5px;margin-bottom: 30px;" id="rzp-button">View Orders</button>
+            <a href="/confirmOrder2?orderId=<%= orderId %>">
+                <button style="background-color: #000000;color: #ebebeb;height: 40px;border-radius: 5px;" id="rzp-button">Try Again</button>
             </a>
         </div>
     </div>
@@ -159,5 +156,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
     <!-- Bootstrap JS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+   
 </body>
 </html>

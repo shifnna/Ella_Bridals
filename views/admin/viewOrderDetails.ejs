@@ -322,10 +322,14 @@
             <div class="dashboard2">
                 <h3>Order Status</h3>
                     <select id="order-status" name="status">
-                        <option value="pending">Pending</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="delivered">Delivered</option>
+                        <% if(order.status !== "Delivered"){%>
+                        <option style="color: #007bff;" value="pending">Pending</option>
+                        <option style="color: orangered;" value="Cancelled">Cancelled</option>
+                        <option style="color: #007bff;" value="shipped">Shipped</option>
+                        <option style="color: #007bff;" value="Return">Return</option>
+                        <%}%>
+                        <option style="color: green;" value="delivered">Delivered</option>
+
                     </select>            
             </div>
             <div>

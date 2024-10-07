@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
@@ -36,7 +35,6 @@
             color: #6c757d;
         }
 
-        /* Stepper CSS */
         .stepper {
             display: flex;
             justify-content: center;
@@ -94,31 +92,54 @@
         }
 
         .btn-primary {
-            background-color: #ff007f;
-            border-color: #ff007f;
-        }
+    background-color: #e6a4c0 !important; /* Light Pink when button is enabled */
+    border-color: #e4adc5 !important;
+    color: #fff !important;
+    transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
+}
 
-        .btn-primary:hover {
-            background-color: #e6006c;
-            border-color: #e6006c;
-        }
+.btn-primary:disabled {
+    background-color: #e6a4c0  !important; /* Gray when button is disabled */
+    border-color: #dc94c7 !important;
+    color: #fff !important; /* Ensures text color is white */
+    cursor: not-allowed !important; /* Show that button is not clickable */
+    opacity: 1 !important; /* Ensure visibility */
+}
 
-        /* Custom style for SweetAlert2 success icon */
-        .swal2-success .swal2-success-ring {
-            border-color: #ff007f !important; /* Pink color for the outer ring */
-        }
+.btn-primary.active {
+    background-color: #ff007f !important; /* Dark Pink when button is active */
+    border-color: #ff007f !important;
+    color: #fff !important;
+}
 
-        .swal2-success .swal2-success-line {
-            background-color: #ff007f !important; /* Pink color for the tick mark */
-        }
+
+ 
+/* #proceedBtn.btn-primary {
+    background-color: #f9c1d9; 
+    border-color: #f9c1d9;
+    color: #fff;
+    transition: background-color 0.3s, border-color 0.3s; 
+}
+
+#proceedBtn.btn-primary:disabled {
+    background-color: #ccc; 
+    border-color: #ccc;
+    color: #fff; 
+    cursor: not-allowed; 
+    opacity: 1; 
+}
+
+#proceedBtn.btn-primary.active {
+    background-color: #ff007f; 
+    border-color: #ff007f;
+    color: #fff;
+}  */
     </style>
-    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
 </head>
 <body>
 
 <div class="container">
-    <!-- Stepper -->
     <div class="stepper">
         <div class="step completed">
             <div class="circle">✓</div>
@@ -136,14 +157,12 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <h1>Choose Payment Method</h1>
     <p>Select a payment method to proceed with your purchase</p>
     
-    <form action="/proceedOrder" method="post">
+    <form action="/proceedOrder?subtotal=<%= totalPrice%>" method="post">
         <div class="row">
             <div class="col-md-8">
-                <!-- Payment Method Options -->
                 <div class="payment-method-card">
                     <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
                     <label for="creditCard">Credit Card</label>
@@ -160,8 +179,15 @@
                     <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
                     <label for="cashOnDelivery">Cash on Delivery</label>
                 </div>
-                <div style="color: #e6006c;"><%= locals.message%></div>
+                <div>
+                    <% if (message !== 'none') { %>
+                        <div class="alert alert-danger">
+                            <%= message %>
+                        </div>
+                    <% } %>
+                </div>
             </div>
+
             <div class="col-lg-4">
                 <div class="checkout__order">
                     <h5>Your order</h5>
@@ -198,20 +224,33 @@
                             <span class="checkmark"></span>
                         </label>
                     </div>
-                    <button type="submit" id="proceedBtn" style="width: 300px;height: 50px;" class="btn btn-primary btn-lg">Proceed</button>
+                    <button type="submit" id="proceedBtn" style="width: 300px; height: 50px;" class="btn btn-primary btn-lg" disabled>Proceed</button>
                 </div>
             </div>
         </div>
     </form>
         
-    </div>
 </div>
 
-<!-- SweetAlert2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
-<!-- Bootstrap JS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
+<script>
+    const radioButtons = document.querySelectorAll('input[name="paymentMethod"]');
+    const proceedBtn = document.getElementById('proceedBtn');
 
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.checked) {
+                proceedBtn.disabled = false;
+                proceedBtn.classList.add('active'); // Add 'active' class when enabled
+            }
+        });
+    });
+
+    // Initial state
+    proceedBtn.disabled = true;
+    proceedBtn.classList.remove('active'); // Ensure 'active' class is removed when disabled
+</script>
 </body>
 </html>
