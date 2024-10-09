@@ -1,25 +1,53 @@
 <%-include("../../views/partials/userHeader")%>
 <style>
-    /* Semi-transparent modal background */
-    .custom-translucent-modal {
-        background-color: rgba(255, 255, 255, 0.8); /* White with 80% opacity */
-        color: #000; /* Ensure the text is visible */
-        backdrop-filter: blur(5px); /* Optional: blur the background for a frosted-glass effect */
-    }
-    
-    .custom-translucent-modal .modal-header {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Soft border to separate header */
+    /* Lighter semi-transparent modal background */
+    .custom-light-modal {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #000;
+        backdrop-filter: blur(3px);
     }
 
-    .custom-translucent-modal .modal-body {
+    .custom-light-modal .modal-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-light-modal .modal-body {
         padding: 20px;
     }
 
-    /* Optional: to adjust the modal backdrop */
+    /* Coupon container to hold the coupon boxes */
+    .coupon-container {
+        display: flex;
+        flex-wrap: wrap; /* Allows the boxes to wrap to the next line */
+        justify-content: center; /* Center-aligns the boxes */
+    }
+
+    /* Style for each coupon box */
+    .coupon-box {
+        border: 1px solid black; /* Black border */
+        margin: 10px; /* Space between boxes */
+        padding: 10px; /* Padding inside the box */
+        width: calc(45% - 20px); /* Two boxes per row with space */
+        text-align: center; /* Center-align text */
+    }
+
+    /* Styles for coupon name and description */
+    .coupon-name {
+        font-weight: bold;
+        font-size: large; /* Adjust size as needed */
+    }
+
+    .coupon-description {
+        font-size: medium; /* Adjust size as needed */
+        color: #555; /* Slightly lighter color for description */
+    }
+
+    /* Lighter modal backdrop */
     .modal-backdrop {
-        background-color: rgba(0, 0, 0, 0.5); /* Darken the rest of the page with 50% opacity */
+        background-color: rgba(0, 0, 0, 0.3);
     }
 </style>
+
 
 
 <section class="shop-cart spad">
@@ -115,7 +143,7 @@
                                     <button style="margin-top: 30px;" type="submit" class="site-btn">Apply</button>
                                 </form>                                          
                                 <% if (errorMessage) { %>
-                                    <div style="width:400px;" class="alert alert-danger">
+                                    <div class="error-message" id="couponError" style="color: red; font-size: 12px;">
                                         <%= errorMessage %>
                                     </div>
                                 <% } %>
@@ -125,48 +153,52 @@
                                 </i><!-- <p style="color: rgb(209, 9, 109);">Collect Now And Save Extra</p> -->
                                </div>
 
-                                <!-- Coupon Modal with light background -->
-                                <div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content custom-light-modal"> <!-- Add custom class here -->
-                                            <div style="text-align: center;" class="modal-header">
-                                                <h5 style="margin-left: 33%;font-weight: bold;" class="modal-title" id="couponModalLabel">Copy To Use </h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <ul id="couponList" style="list-style-type: none;">
-                                                    <% availableCoupons.forEach(function(coupon) { %>
-                                                        <li style="text-align: center;">
-                                                            <p style="color: #2a2828;font-size: large;"><%= coupon.couponCode %></p>
-                                                        </li>
-                                                    <% }) %>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                               <!-- Coupon Modal with light background -->
+<div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content custom-light-modal">
+            <div style="text-align: center;" class="modal-header">
+                <h5 style="margin-left: 33%; font-weight: bold;" class="modal-title" id="couponModalLabel">Copy To Use <span class="fas fa-tag"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="coupon-container">
+                    <% availableCoupons.forEach(function(coupon) { %>
+                        <div class="coupon-box">
+                            <p class="coupon-name"><span style="font-size: smaller;color: rgb(176, 173, 173);">CODE-</span> <%= coupon.couponCode %></p>
+                            <p class="coupon-description"><%= coupon.description %></p>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
                                 </div>
                             </div>
                             <div class="col-lg-4 offset-lg-2">
-                                <form action="/selectAddress" method="post">
+                                <form action="/selectAddress" method="post" id="checkoutForm">
+                                    <input type="hidden" id="cartItemsData" name="cartItemsData">
+                                    <input type="hidden" id="updatedTotalAmount" name="updatedTotalAmount">
                                     <div class="cart__total__procced">
-                                      <h6>Cart total</h6>
-                                      <ul>
-                                        <li>Subtotal <span>$<%= totalPrice.toFixed(2) %></span></li>
-                                        <% if (discountValue && discountValue > 0) { %>
-                                            <li>Discount <span>-$<%= discountValue.toFixed(2) %></span></li>
-                                            <li>Total <span>$<%= (totalPrice - discountValue).toFixed(2) %></span></li>
-                                        <% } else { %>
-                                            <li>Total <span>$<%= totalPrice.toFixed(2) %></span></li>
-                                        <% } %>
-                                    </ul>                                                                           
-                                      <button type="submit" class="primary-btn">Proceed to checkout</button>
+                                        <h6>Cart total</h6>
+                                        <ul>
+                                            <li>Subtotal <span>$<%= totalPrice.toFixed(2) %></span></li>
+                                            <% if (discountValue && discountValue > 0) { %>
+                                                <li>Discount <span>-$<%= discountValue.toFixed(2) %></span></li>
+                                                <li>Total <span>$<%= (totalPrice - discountValue).toFixed(2) %></span></li>
+                                            <% } else { %>
+                                                <li>Total <span>$<%= totalPrice.toFixed(2) %></span></li>
+                                            <% } %>
+                                        </ul>                                                                           
+                                        <button type="submit" class="primary-btn">Proceed to checkout</button>
                                     </div>
-                                  </form>
+                                </form>                                                               
                             </div>                            
                         </div>
                    
@@ -327,21 +359,24 @@
 </div>
 <!-- Search End -->
 <script>
-    // Function to update cart totals
-    function updateCartTotal() {
-        let subtotal = 0;
-        document.querySelectorAll('.cart__total').forEach(function(totalElement) {
-            subtotal += parseFloat(totalElement.textContent);
-        });
-    
-        // Retrieve discount value from backend
-        const discountValue = parseFloat('<%= discountValue || 0 %>'); 
-        const total = subtotal - discountValue; // Apply discount to subtotal
-    
-        // Update subtotal and total in the UI
-        document.querySelector('.cart__total__procced ul li:nth-child(1) span').textContent = '$ ' + subtotal.toFixed(2);
-        document.querySelector('.cart__total__procced ul li:last-child span').textContent = '$ ' + total.toFixed(2);
-    }
+function updateCartTotal() {
+    let subtotal = 0;
+    document.querySelectorAll('.cart__total').forEach(function(totalElement) {
+        subtotal += parseFloat(totalElement.textContent);
+    });
+
+    // Retrieve discount value from backend
+    const discountValue = parseFloat('<%= discountValue || 0 %>'); 
+    const total = subtotal - discountValue; // Apply discount to subtotal
+
+    // Update subtotal and total in the UI
+    document.querySelector('.cart__total__procced ul li:nth-child(1) span').textContent = '$ ' + subtotal.toFixed(2);
+    document.querySelector('.cart__total__procced ul li:last-child span').textContent = '$ ' + total.toFixed(2);
+
+    // Update hidden inputs for form submission
+    document.getElementById('updatedTotalAmount').value = total.toFixed(2);
+}
+
     
     // Function to save cart data to localStorage
     function saveCartToLocalStorage() {
@@ -443,16 +478,48 @@
         updateCartTotal(); // Call this to ensure totals are updated on load
     };
     
-    // Function to update cart data in form submission when applying coupon
-    function updateCartDataBeforeSubmit() {
-        const cartData = localStorage.getItem('cartData');
-        const discountValue = parseFloat('<%= discountValue || 0 %>'); 
-        updateCartTotal(); // Ensure the totals are updated before submission
+// Function to update cart data in form submission when applying coupon
+function updateCartDataBeforeSubmit() {
+    let cartData = [];
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+        const cartItemId = input.name.split('[')[1].split(']')[0];
+        const quantity = input.value;
+        cartData.push({ id: cartItemId, quantity: quantity });
+    });
     
-        // Assuming you have an input to send this value to the backend if necessary
-        document.getElementById('cartDataInput').value = cartData; 
-        document.getElementById('discountValueInput').value = discountValue; // Set the discount value to be sent
-    }
+    // Save the cart data to the hidden input
+    document.getElementById('cartItemsData').value = JSON.stringify(cartData);
+    updateCartTotal(); // Ensure totals are updated before submission
+}
+
+// Event listener to handle quantity change
+document.querySelectorAll('.quantity-input').forEach(function(input) {
+    input.addEventListener('change', function() {
+        var max = parseInt(this.getAttribute('data-max'));
+        var price = parseFloat(this.getAttribute('data-price'));
+        var value = parseInt(this.value);
+        
+        // Handle quantity validation
+        if (value > max) {
+            this.value = max;
+            value = max;
+        }
+        if (value < 1) {
+            this.value = 1;
+            value = 1;
+        }
+
+        // Update individual product total price
+        var row = this.closest('tr');
+        var productTotal = row.querySelector('.cart__total');
+        productTotal.textContent = (price * value).toFixed(2);
+
+        // Update cart total price
+        updateCartTotal();
+        saveCartToLocalStorage(); // Save changes
+    });
+});
+
     
 
 

@@ -285,214 +285,176 @@ html, body {
 	margin-left: 29px;
 }
 
+
+.error-message.show-error {
+    display: block;
+}
  </style>
 
 </head>
 <body>
-	<form id="signform" action="/signup" method="post">
-    <div  class="form-structor">
-        <div class="signup">
-            <h2 class="form-title" id="signup"><span>or</span>Sign up</h2>
-			<% if (locals.message) { %>
-				<div class="alert alert-danger text-center" id="enterUsername">
-				  <%= message %>
-				</div>
-			  <% } %>
-            <div style="margin-top: 0;" class="form-holder">
-                <input type="text" name="name" id="name" class="input" placeholder="Name" />
-				<div id="error1" class="error-message"></div>
-                <input type="email" name="email" id="email" class="input" placeholder="Email" />
-				<div id="error3" class="error-message"></div>
-                <input type="text" name="phone" id="phone" class="input" placeholder="phone" />
-				<div id="error2" class="error-message"></div>
-                <input type="password" name="password" id="password" class="input" placeholder="Password" />
-				<div id="error4" class="error-message"></div>
-                <input type="password" name="cpassword" id="cpassword" class="input" placeholder="confirm Password" />
-				<div id="error5" class="error-message"></div>
-				<input type="referalCode" name="referalCode" id="referalCode" class="input" placeholder="Referal Code (optional)" />
-            </div>
-            <button  style="margin-bottom: 100px;" type="submit" class="submit-btn">Sign up</button>
-
-			<div class="login slide-up">
-				<div style="align-items: center; margin-top: 0px;" class="center">
-					<a href="/auth/google" style="text-decoration: none; margin-top: 0px;">
-						<img style="height: 28px; width: 34px; margin-left: 58px; margin-bottom: 5px;" src="img/google.png"><br>
-						<p style="color: rgb(37, 37, 159); width: 200px; margin: 0; line-height: 1; margin-bottom: 5px;">or use Google account</p>
-					</a>
-					<div class="form-holder" style="margin-top: 10px;">
-						<input type="email" class="input" placeholder="Email" style="margin-bottom: 5px;" />
-						<input type="password" class="input" placeholder="Password" style="margin-bottom: 5px;" />
-					</div>
-                         <button class="submit-btn" style="margin-top: 5px;" href="">Login</button>				
+	<form id="signform" action="/signup" method="post" onsubmit="return validateForm(event)">        
+		<div class="form-structor">
+            <div class="signup">
+                <h2 class="form-title" id="signup"><span>or</span>Sign up</h2>
+                <% if (locals.message) { %>
+                    <div class="alert alert-danger text-center" id="enterUsername">
+                        <%= message %>
+                    </div>
+                <% } %>
+                <div style="margin-top: 0;" class="form-holder">
+                    <input type="text" name="name" id="name" class="input" placeholder="Name" />
+                    <div id="error1" class="error-message"></div>
+                    <input type="email" name="email" id="email" class="input" placeholder="Email" />
+                    <div id="error3" class="error-message"></div>
+                    <input type="text" name="phone" id="phone" class="input" placeholder="Phone" />
+                    <div id="error2" class="error-message"></div>
+                    <input type="password" name="password" id="password" class="input" placeholder="Password" />
+                    <div id="error4" class="error-message"></div>
+                    <input type="password" name="cpassword" id="cpassword" class="input" placeholder="Confirm Password" />
+                    <div id="error5" class="error-message"></div>
+                    <input type="text" name="referalCode" id="referalCode" class="input" placeholder="Referral Code (optional)" />
                 </div>
-			</div>
-			
-	</div>
+                <button style="margin-bottom: 100px;" type="submit" class="submit-btn">Sign up</button>
 
-    </div>
-  </form>
-    <script>
-console.clear();
+                <div class="login slide-up">
+                    <div style="align-items: center; margin-top: 0px;" class="center">
+                        <a href="/auth/google" style="text-decoration: none; margin-top: 0px;">
+                            <img style="height: 28px; width: 34px; margin-left: 58px; margin-bottom: 5px;" src="img/google.png"><br>
+                            <p style="color: rgb(37, 37, 159); width: 200px; margin: 0; line-height: 1; margin-bottom: 5px;">or use Google account</p>
+                        </a>
+                        <div class="form-holder" style="margin-top: 10px;">
+                            <input type="email" class="input" placeholder="Email" style="margin-bottom: 5px;" />
+                            <input type="password" class="input" placeholder="Password" style="margin-bottom: 5px;" />
+                        </div>
+                        <button class="submit-btn" style="margin-top: 5px;" type="submit">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
-const loginBtn = document.getElementById('login');
-const signupBtn = document.getElementById('signup');
+	<script>
+		const nameid = document.getElementById("name");
+		const phoneid = document.getElementById("phone");
+		const passwordid = document.getElementById("password");
+		const emailid = document.getElementById("email");
+		const cpasswordid = document.getElementById("cpassword");
+	
+		const error1 = document.getElementById("error1");
+		const error2 = document.getElementById("error2");
+		const error3 = document.getElementById("error3");
+		const error4 = document.getElementById("error4");
+		const error5 = document.getElementById("error5");
+	
+		function validateForm(e) {
+    nameValidateChecking();
+    phoneValidateChecking();
+    emailValidateChecking();
+    passValidateChecking();
 
-loginBtn.addEventListener('click', (e) => {
-	let parent = e.target.parentNode.parentNode;
-	Array.from(e.target.parentNode.parentNode.classList).find((element) => {
-		if(element !== "slide-up") {
-			parent.classList.add('slide-up')
-		}else{
-			signupBtn.parentNode.classList.add('slide-up')
-			parent.classList.remove('slide-up')
-		}
-	});
-});
+    if (nameid.value.trim() === "" || emailid.value.trim() === "" || phoneid.value.trim() === "" || passwordid.value.trim() === "" || cpasswordid.value.trim() === "" ||
+        error1.innerHTML || error2.innerHTML || error3.innerHTML || error4.innerHTML || error5.innerHTML) {
+        e.preventDefault();
+    }
+}
+	
+function nameValidateChecking() {
+    const nameval = nameid.value;
+    const namepattern = /^[a-zA-Z]+(?:[\s'-][a-zA-Z]+)*$/;
 
-signupBtn.addEventListener('click', (e) => {
-	let parent = e.target.parentNode;
-	Array.from(e.target.parentNode.classList).find((element) => {
-		if(element !== "slide-up") {
-			parent.classList.add('slide-up')
-		}else{
-			loginBtn.parentNode.parentNode.classList.add('slide-up')
-			parent.classList.remove('slide-up')
-		}
-	});
-});
+    if (nameval.trim() == "") {
+        error1.style.display = "block";
+        error1.innerHTML = "please enter a valid name";
+        error1.classList.add("show-error");
+    } else if (!namepattern.test(nameval)) {
+        error1.style.display = "block";
+        error1.innerHTML = "name can only contain Alphabets and spaces";
+        error1.classList.add("show-error");
+    } else {
+        error1.style.display = "none";
+        error1.innerHTML = "";
+        error1.classList.remove("show-error");
+    }
+}
 
+function emailValidateChecking() {
+    const emailval = emailid.value;
+    const emailpattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+    if (emailval.trim() == "") {
+        error3.style.display = "block";
+        error3.innerHTML = "please enter a valid email";
+        error3.classList.add("show-error");
+    } else if (!emailpattern.test(emailval)) {
+        error3.style.display = "block";
+        error3.innerHTML = "Invalid Format";
+        error3.classList.add("show-error");
+    } else {
+        error3.style.display = "none";
+        error3.innerHTML = "";
+        error3.classList.remove("show-error");
+    }
+}
 
+function phoneValidateChecking() {
+    const phoneval = phoneid.value.trim();
+    const phonepattern = /^[0-9]{10}$/;
 
-//form stuffs
+    if (phoneval.trim() === "") {
+        error2.style.display = "block";
+        error2.innerHTML = "Please enter a phone number";
+        error2.classList.add("show-error");
+    } else if (!phonepattern.test(phoneval)) {
+        error2.style.display = "block";
+        error2.innerHTML = "Phone number must be exactly 10 digits";
+        error2.classList.add("show-error");
+    } else {
+        error2.style.display = "none";
+        error2.innerHTML = "";
+        error2.classList.remove("show-error");
+    }
+}
 
-const nameid = document.getElementById("name");
-const phoneid = document.getElementById("phone");
-const passwordid = document.getElementById("password");
-const emailid = document.getElementById("email");
-const cpasswordid = document.getElementById("cpassword");
+function passValidateChecking() {
+    const passval = passwordid.value;
+    const cpassval = cpasswordid.value;
+    const alpha = /[a-zA-Z]/;
+    const digit = /\d/;
 
-const error1 = document.getElementById("error1");
-const error2 = document.getElementById("error2");
-const error3 = document.getElementById("error3");
-const error4 = document.getElementById("error4");
-const error5 = document.getElementById("error5");
+    if (passval.trim() == "") {
+        error4.style.display = "block";
+        error4.innerHTML = "please enter a password";
+        error4.classList.add("show-error");
+    } else if (passval.length < 6) {
+        error4.style.display = "block";
+        error4.innerHTML = "Password should contain atleast 6 characters";
+        error4.classList.add("show-error");
+    } else if (!alpha.test(passval) || !digit.test(passval)) {
+        error4.style.display = "block";
+        error4.innerHTML = "Password should contain numbers and letters";
+        error4.classList.add("show-error");
+    } else {
+        error4.style.display = "none";
+        error4.innerHTML = "";
+        error4.classList.remove("show-error");
+    }
 
-const signform = document.getElementById("signform");
-
-
-
-
-function nameValidateChecking(e) {
- const nameval = nameid.value;
- const namepattern = /^[a-zA-Z]+(?:[\s'-][a-zA-Z]+)*$/;
-
- if(nameval.trim()==""){
-	   error1.style.display="block" ;
-	   error1.innerHTML="please enter a valid name" 
- }else if(!namepattern.test(nameval)){
-	 error1.style.display="block" ;
-	 error1.innerHTML="name can only contain Alphabets and spaces" 
- }else{
-	 error1.style.display="none" ;
-	 error1.innerHTML="";
- }
-
+    if (passval !== cpassval) {
+        error5.style.display = "block";
+        error5.innerHTML = "Password do not match";
+        error5.classList.add("show-error");
+    } else {
+        error5.style.display = "none";
+        error5.innerHTML = "";
+        error5.classList.remove("show-error");
+    }
 }
 
 
-function emailValidateChecking(e) {
- const emailval = emailid.value;
- const emailpattern =  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
- if(emailval.trim()==""){
-	   error3.style.display="block" ;
-	   error3.innerHTML="please enter a valid name" 
- }else if(!emailpattern.test(emailval)){
-	 error3.style.display="block" ;
-	 error3.innerHTML="Invalid Format" 
- }else{
-	 error3.style.display="none" ;
-	 error3.innerHTML="";
- }
-
-}
-
-
-
-
-function phoneValidateChecking(e) {
-const phoneval = phoneid.value.trim();
-const phonepattern = /^[0-9]{10}$/;
-
-if (phoneval.trim() === "") {
-	error2.style.display = "block";
-	error2.innerHTML = "Please enter a phone number";
-} else if (!phonepattern.test(phoneval)) {
-	error2.style.display = "block";
-	error2.innerHTML = "Phone number must be exactly 10 digits";
-} else {
-	error2.style.display = "none";
-	error2.innerHTML = "";
-}
-}
-
-
-
-
-function passValidateChecking(e) {
- const passval = passwordid.value;
- const cpassval = cpasswordid.value;
- const alpha = /[a-zA-Z]/;
- const digit = /\d/;
-
- if(passval.trim()==""){
-	   error4.style.display="block" ;
-	   error4.innerHTML="please enter a password" 
- }else if(passval.length<6){
-	 error4.style.display="block" ;
-	 error4.innerHTML="Password should contain atleast 6 characters" ;
- }else if(!alpha.test(passval) || !digit.test(passval)){
-	 error4.style.display="block" ;
-	 error4.innerHTML="Password should contain numbers and letters" 
- }else{
-	 error4.style.display="none" ;
-	 error4.innerHTML="";
- }
-
- if(passval!==cpassval){
-	 error5.style.display="block" ;
-	 error5.innerHTML="Password do not match" 
- }else{
-	 error5.style.display="none" ;
-	 error5.innerHTML="";
- }
-
-}
-
-
-document.addEventListener("DOMContentLoaded",function(){
- signform.addEventListener("submit",function(e){
-
-	 nameValidateChecking();
-	 phoneValidateChecking();
-	 emailValidateChecking();
-	 passValidateChecking();
-
-	 if( !nameid || !phoneid || !passwordid || !emailid || !cpasswordid ||
-		 !error1 || !error2 || !error3 || !error4 || !error5 || !signform ){//ithokke define cheyyunnath aaa defined functions nte ullil aahnnn	        
-		 console.error("One or more elemens are not found");			
-	 }
-
-	 //eee error div kalil error value und (true) anoo enn nokkan
-	 if( error1.innerHTML || error2.innerHTML || error3.innerHTML || error4.innerHTML || error5.innerHTML ){
-			   e.preventDefault() //submission block cheyyunnu
-	 }
-
- })
-})
-
-    </script>
-
+		
+	</script>
+	
 </body>
+
 </html>

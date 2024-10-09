@@ -8,7 +8,7 @@ const orderController = require("../controllers/orderController");
 
 
 router.get("/pageerror",userController.pageNotFound);
-
+router.get("/pageNotFound",userController.pageNotFound)
 //signup
 router.get("/",userController.loadHomePage);
 router.get("/signup",userController.loadSignup);
@@ -32,7 +32,7 @@ router.post("/reset-password",userController.resetPassword);
 
 
 
-
+router.get("/home",(req,res)=>{res.redirect("/")})
 router.get("/shop",userController.loadShopingPage);
 router.get('/productdetails/:id',userController.productDetails);
 router.get("/userProfile",userProfileController.loadUserProfile);
@@ -72,7 +72,6 @@ router.get("/wallet",userController.loadWallet);
 router.get('/downloadInvoice/:orderId',userController.downloadInvoice)
 
 router.get("/share-refer",userController.share_refer)
-
 
 
 module.exports = router;

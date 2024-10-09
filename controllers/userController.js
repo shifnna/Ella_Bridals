@@ -15,26 +15,67 @@ const path = require('path');
 
 const pageNotFound = async (req,res) => {
     try {
-        res.render('page_404')
+        res.render("page_404")
     } catch (error) {
-        res.redirect()
+        res.redirect("/pageerror")
     }
 }
 
 
 const loadHomePage = async (req,res)=>{
     try {
-        const user = req.session.user ;
+        const user = req.session.user ;      
+         searchQuery = req.query.search;
+      const categoryId = req.query.category;
+      let products;
 
-        if(user){
-         const userData = await User.findOne({_id:user});
+      if (categoryId) {
+        const category = await Category.findById(categoryId);
+        if (!category) {
+          return res.status(404).send('Category not found');
+        }
+  
+        if (searchQuery) {
+          products = await Product.find({
+            category: category._id,
+            $or: [
+              { productName: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
+              { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+          });
+        } else {
+          products = await Product.find({ category: category._id });
+        }
+  
+      } else {
+        // If no category is selected but there's a search query
+        if (searchQuery) {
+          products = await Product.find({
+            $or: [
+              { productName: { $regex: searchQuery, $options: 'i' } },
+              { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+          });
+        } else {
+          products = await Product.find();
+        }
+      }
+  
+      const categories = await Category.find({isListed:true});
+      let userData = await User.findOne({_id:user});
+      let wishlist = [];
+
+      if(user){
+        wishlist = userData.wishlist;
          const c = userData.cart.length;
          const w = userData.wishlist.length;
 
-         res.render("home",{user:userData,c,w});
-        }else{
-        res.render('home', { c: 0, w: 0 });
-        }
+      return res.render('home', { products, user: userData, categories,c,w ,wishlist});
+
+      }else{
+        res.render('home', { c: 0, w: 0,products, user: userData, categories,wishlist });
+      }
+
     } catch (error) {
         console.log("home page not found",error);
         res.status(500).send("server eror")
@@ -48,7 +89,8 @@ const loadSignup = async (req,res) => {
         return res.render("signup")
     } catch (error) {
         console.log("home page not loading",error);
-        res.status(500).send("server error")
+        res.status(500).send("server error");
+        return res.redirect("/pageerror")
         
     }
 }
@@ -106,40 +148,39 @@ function validateEmail(email) {
 
 
 const signup = async (req, res) => {
-    try {
-        const { name, email, phone, password, cpassword , referalCode} = req.body;
-        req.session.referalCode = referalCode
-        if (password !== cpassword) {
-            return res.render("signup", { message: "Passwords do not match" });
-        }
+  try {
+      const { name, email, phone, password, cpassword, referalCode } = req.body;
+      req.session.referalCode = referalCode;
 
-        if (!validateEmail(email)) { // Add this function to validate email format
-            return res.render("signup", { message: "Invalid email format" });
-        }
+      // if (password !== cpassword) {
+      //     return res.render("signup", { message: "Passwords do not match" });
+      // }
 
-        const findUser = await User.findOne({ email });
-        if (findUser) {
-            return res.render("signup", { message: "User with this email already exists" });
-        }
+      // if (!validateEmail(email)) {
+      //     return res.render("signup", { message: "Invalid email format" });
+      // }
 
-        const otp = generateOtp(6);
+      // const findUser = await User.findOne({ email });
+      // if (findUser) {
+      //     return res.render("signup", { message: "User with this email already exists" });
+      // }
 
-        const emailSend = await sendVerificationEmail(email, otp);
+      const otp = generateOtp(6);
+      const emailSend = await sendVerificationEmail(email, otp);
 
-        if (!emailSend) {
-            return res.json("email-error");
-        }
+      if (!emailSend) {
+          return res.json("email-error");
+      }
 
-        req.session.userOtp = otp;
-        req.session.userData = { name, phone, email, password };
+      req.session.userOtp = otp;
+      req.session.userData = { name, phone, email, password };
 
-        res.render("verify-otp");
-        console.log("OTP sent:", otp);
-
-    } catch (error) {
-        console.error("Error saving user:", error);
-        res.status(500).send("Internal server error");
-    }
+      res.render("verify-otp");
+      console.log("OTP sent:", otp);
+  } catch (error) {
+      console.error("Error saving user:", error);
+      res.status(500).send("Internal server error");
+  }
 };
 
 
@@ -155,34 +196,46 @@ const securePassword = async (password)=>{
     }
 }
 
-const verifyOtp = async (req,res)=>{
-    try {
-        const {otp} = req.body;
-        console.log(otp);
 
-        if(otp===req.session.userOtp){
-            const user = req.session.userData;
-            const passwordHash = await securePassword(user.password);
-            const saveUserData = new User({
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                password: passwordHash,
-            })
-            await saveUserData.save();
+const verifyOtp = async (req, res) => {
+  try {
+      const { otp } = req.body;
 
-            let newUserBonus = 0;
-            if (req.session.referalCode) {
-              const referrerUser = await User.findOne({ referenceCode: req.session.referalCode });
-    
+      // Check if OTP is in the session and compare
+      if (req.session.userOtp && otp.trim() === req.session.userOtp) {
+          const user = req.session.userData;
+          const passwordHash = await securePassword(user.password);
+          const saveUserData = new User({
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+              password: passwordHash,
+          });
+
+          // Extract the referral code from the session
+          const referalCode = req.session.referalCode;
+
+          try {
+              await saveUserData.save();
+          } catch (error) {
+              if (error.code === 11000) {
+                  return res.status(400).json({ success: false, message: "Email already exists" });
+              }
+              throw error; // rethrow if it's a different error
+          }
+
+          let newUserBonus = 0;
+          if (referalCode) { // Check if referral code exists
+              const referrerUser = await User.findOne({ referenceCode: referalCode });
+
               if (referrerUser) {
                   referrerUser.wallet += 100; // Assuming wallet is a field in User schema
                   await referrerUser.save();
-    
+
                   // Create a new transaction
                   const transaction = new Transaction({
                       description: `Reference Benefit for ${referalCode} received`,
-                      userId: referrerUser._id, // Save the referrer's ID
+                      userId: referrerUser._id,
                       amount: 100,
                   });
                   await transaction.save();
@@ -191,33 +244,31 @@ const verifyOtp = async (req,res)=>{
                   console.error("No user found with the provided referral code.");
               }
           }
+
           saveUserData.wallet += newUserBonus;
           await saveUserData.save();
 
-//transaction saving for the new user
+          // Transaction saving for the new user
           if (newUserBonus > 0) {
-            const newUserTransaction = new Transaction({
-                description: `Welcome bonus for signing up using ${req.session.referalCode}`,
-                userId: saveUserData._id, 
-                amount: newUserBonus,
-            });
-            await newUserTransaction.save();
-        }
+              const newUserTransaction = new Transaction({
+                  description: `Welcome bonus for signing up using ${referalCode}`,
+                  userId: saveUserData._id,
+                  amount: newUserBonus,
+              });
+              await newUserTransaction.save();
+          }
 
-            req.session.user = saveUserData. _id,
-            res.json({success:true,redirectUrl:"/"});
+          req.session.user = saveUserData._id;
+          res.json({ success: true, redirectUrl: "/" });
+      } else {
+          res.status(400).json({ success: false, message: "Invalid OTP, please try again" });
+      }
+  } catch (error) {
+      console.error("Error verifying OTP", error);
+      res.status(500).json({ success: false, message: "An error occurred" });
+  }
+};
 
-        }else{
-            res.status(400).json({success:false , message:"invalid OTP, please try again"});
-          
-        }
-        
-    } catch (error) {
-        console.error("error verifying otp",error);
-        res.status(500).json({success:false,message:"an error occure"})
-            
-    }
-}
 
 
 
@@ -248,51 +299,67 @@ const resendOtp = async (req,res)=>{
     }
 }
 
+const loadLogin = async (req, res) => {
+  try {
+      if (!req.session.user) {
+          return res.render("login"); 
+      } else {
+          const user = await User.findById(req.session.user);
+          
+          if (user && user.isBlocked) {
+              console.log("User is blocked, redirecting to login.");
+              
+              req.session.destroy((err) => {
+                  if (err) {
+                      console.error("Error destroying session:", err);
+                  }
+                  return res.redirect("/login"); 
+              });
+              return; // Prevent further execution
+          }
+          return res.redirect("/");
+      }
+  } catch (error) {
+      console.error("Error loading login page:", error);
+      return res.redirect("/pageerror"); 
+  }
+};
 
-const loadLogin = async (req,res)=>{
-    try {
-        if(!req.session.user){
-            return res.render("login")
-        }else{
-            redirect("/");
-        }
-     } catch (error) {
-        res.redirect("/pageNotFound")
-     }
-}
 
 
 
-const login = async (req,res)=>{
-     try {
-        const {email,password} = req.body;
-        const findUser =await User.findOne({email:email,isAdmin:false});
-        
-        if(!findUser){
-            return res.render("login",{message:"User not found"});
-        }
 
-        if(findUser.isBlocked){
-            return res.render("login",{message:"User is blocked by admin"})
-        }
+const login = async (req, res) => {
+  try {
+      const { email, password } = req.body;
+      const findUser = await User.findOne({ email: email, isAdmin: false });
 
-        if (!findUser.password) {
-            return res.render("login", { message: "Password not found in database" });
-        }
+      if (!findUser) {
+          return res.render("login", { message: "User not found" });
+      }
 
-        const passMatch = await bcrypt.compare(password, findUser.password);
+      if (findUser.isBlocked) {
+          return res.render("login", { message: "User is blocked by admin" });
+      }
 
-        if(!passMatch){
-            return res.render("login",{message:"incorrect password"});
-        }
+      if (!findUser.password) {
+          return res.render("login", { message: "Password not found in database" });
+      }
 
-        req.session.user = findUser._id;
-        res.redirect("/");
-     } catch (error) {
-        console.error("login error",error);
-        res.render("login",{message:'login failed.. please try again'})
-     }
-}
+      const passMatch = await bcrypt.compare(password, findUser.password);
+
+      if (!passMatch) {
+          return res.render("login", { message: "Incorrect password" });
+      }
+
+      req.session.user = findUser._id;
+      return res.redirect("/");
+  } catch (error) {
+      console.error("Login error", error);
+      return res.render("login", { message: 'Login failed.. please try again' });
+  }
+};
+
 
 
 const loadShopingPage = async (req, res) => {
@@ -351,6 +418,7 @@ const loadShopingPage = async (req, res) => {
     } catch (error) {
       console.log('Error loading home page:', error.message);
       res.status(500).send('Internal Server Error');
+      return res.redirect("/pageerror")
     }
   };
 
@@ -358,6 +426,9 @@ const loadShopingPage = async (req, res) => {
 
 const productDetails = async (req,res)=>{         //& load a product details page
     const productId = req.params.id;
+    if( !productId){
+      return res.redirect("/pageerror")
+    }
   console.log("product id is:",productId);
 
     const details = await Product.findOne({_id:productId});
@@ -377,7 +448,7 @@ const logout = async (req,res)=>{
     req.session.destroy((err) => {
         if (err) {
             console.log("Error destroying session:", err);
-            return res.redirect("/admin/pageerror"); // Redirect to error page only on session destruction failure
+            return res.redirect("/pageerror"); // Redirect to error page only on session destruction failure
         }
         res.clearCookie('connect.sid', { path: '/' }); // Clear the session cookie
         return res.redirect("/"); // Redirect to the login page after successful logout
@@ -395,23 +466,34 @@ const loadResetPassword = async (req,res)=>{
         }
     } catch (error) {
         console.error("error occure for loading forgottpassword page",error);
-        
+        return res.redirect("/pageerror")
     }
 }
 
 
 const resetPassword = async (req, res) => {
+    
+  const userId = req.session.user; 
+    if (!userId) {
+      return res.redirect("/login");
+    }
+
+    let user = await User.findById(userId); 
+
+    if (!user || user.isBlocked) {
+      return res.redirect("/login"); 
+    }
+
     const { oldpassword, newpassword, confirmpassword } = req.body;
   
     if (newpassword !== confirmpassword) {
       return res.render('resetPassword', { message3: "Password do not match" });
     }
-  
-    const userId = req.session.user;
+
     try {
-      const user = await User.findById(userId);
+       user = await User.findById(userId);
       if (!user) {
-        return res.status(404).send("User not found");
+        return res.render('resetPassword', { message3: "User not found" });
       }
   
       const isPasswordMatch = await bcrypt.compare(oldpassword, user.password);
@@ -437,24 +519,31 @@ const resetPassword = async (req, res) => {
         const userId = req.session.user;
         const productId = req.params.id; 
 
+        let user = await User.findById(userId)
+if(!userId){
+  return res.redirect("/login")
+}
+        if(!user || user.isBlocked ){
+          return res.redirect("/login")
+        }
         const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).send('Product not found');
+        return res.redirect(`/shop?message=product not found`)
       }
-      if (product.isBlocked===true) {
-        return res.status(404).send('Product not available');
+      if (product.isBlocked) {
+        return res.redirect(`/shop?message=product is unavailable`)
       }
       if (product.quantity < 1) {
-        return res.status(404).send('Stocks Left');
+        return res.redirect(`/shop?message=product stocks left`)
       }
 
-        const user = await User.findById(userId);
+         user = await User.findById(userId);
         if (!user) {
            res.redirect("/login");
         }
 
         if (user.wishlist.includes(productId)) {
-            return res.status(400).json({ message: 'Product already in wishlist' });
+          return res.redirect(`/shop?message=product is already in wishlist`)
         }
 
         user.wishlist.push(productId);
@@ -464,6 +553,7 @@ const resetPassword = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
+        return res.redirect("/pageerror")
     }
   }
 
@@ -472,6 +562,10 @@ const resetPassword = async (req, res) => {
         const userId = req.session.user;
 
         const user = await User.findById(userId).populate('wishlist'); // Populate the wishlist with product details
+
+        if(!user || user.isBlocked){
+          return res.redirect("/login")
+        }
 
         if (!user) {
             return res.redirect("/login"); 
@@ -483,6 +577,7 @@ const resetPassword = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
+        return res.redirect("/pageerror")
     }
 };
 
@@ -512,10 +607,11 @@ const loadWallet = async (req,res)=>{
     try {
         const userId = req.session.user; // Assuming user ID is stored in session
         const user = await User.findById(userId).populate("transactions") // Adjust the field names as necessary
-    
-        if (!user) {
-          return res.status(404).send('User not found');
+
+        if(!user || user.isBlocked){
+          return res.redirect("/login")
         }
+        
     // console.log("transactions",user.transactions);
     const transactions = await Transaction.find({userId:userId})
     
@@ -527,6 +623,8 @@ const loadWallet = async (req,res)=>{
       } catch (error) {
         console.error('Error retrieving wallet information:', error);
         res.status(500).send('Internal Server Error');
+        return res.redirect("/pageerror")
+
       }
 }
 
@@ -675,6 +773,12 @@ const downloadInvoice = async (req, res) => {
     const order = await Order.findById(req.params.orderId).populate('products');
     const doc = new jsPDF();
 
+    const userId = req.session.user;
+    let user = await User.findById(userId)
+
+        if(!user || user.isBlocked ){
+          return res.redirect("/login")
+        }
     // Invoice Header
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
@@ -764,30 +868,37 @@ let productDetailsContentStartY = productDetailsStartY + 12 + productDetailsGap;
 doc.setFont("helvetica", "normal");
 let y = productDetailsContentStartY; // Starting Y-coordinate for product rows
 order.products.forEach((product) => {
+  const productPrice = product.offerPrice !== 0 ? product.offerPrice : product.price; // Determine the price to use
+  const totalAmount = (productPrice * product.quantity).toFixed(2); // Calculate the total amount for this product
+
   doc.rect(10, y - 7, 190, 10);  // Draw box for each product row
   doc.text(doc.splitTextToSize(product.name, 90), 12, y);  // Wrap long product names
   doc.text(`${product.quantity}`, 110, y);
-  doc.text(`Rs. ${(product.price-order.offerDiscount).toFixed(2)}`, 130, y);
-  doc.text(`Rs. ${(product.price-order.offerDiscount * product.quantity).toFixed(2)}`, 170, y);
+  doc.text(`Rs. ${productPrice.toFixed(2)}`, 130, y); // Show the actual price per product
+  doc.text(`Rs. ${totalAmount}`, 170, y); // Show the total amount for this product
   y += 10; // Increment Y for the next product row
 });
 
+   // Amount in Words and Total Amount Box
+y += 10;
+const totalAmount = order.totalAmount + order.couponDiscount; // Assuming this is the subtotal
+const discountAmount = order.couponDiscount || 0; // Get the discount amount (or 0 if not set)
+const finalAmount = totalAmount - discountAmount; // Calculate final amount after discount
+const amountInWords = numberToWords(finalAmount); // Convert final amount to words
 
-    // Amount in Words and Total Amount Box
-    y += 10;
-    const totalAmount = order.totalAmount; // Assuming you want to include delivery charges
-    const amountInWords = numberToWords(totalAmount);
-    doc.text("Amount in words:", 10, y);
-    doc.text(amountInWords, 10, y + 10);
-    
-    // Box for Totals (Increased height and light grey background)
-    y += 20;
-    doc.setFillColor(220, 220, 220); // Light grey background for the totals box
-    doc.rect(130, y, 70, 40, 'F');  // Increased height for totals box
-    doc.setFont("helvetica", "normal");
-    doc.text(`Sub Total: Rs. ${order.totalAmount.toFixed(2)}`, 132, y + 10);
-    doc.text(`Delivery charge: Rs. 0`, 132, y + 20);
-    doc.text(`Total: Rs. ${(order.totalAmount ).toFixed(2)}`, 132, y + 30);
+doc.text("Amount in words:", 10, y);
+doc.text(amountInWords, 10, y + 10);
+
+// Box for Totals (Increased height and light grey background)
+y += 20;
+doc.setFillColor(220, 220, 220); // Light grey background for the totals box
+doc.rect(130, y, 70, 50, 'F');  // Increased height for totals box
+doc.setFont("helvetica", "normal");
+doc.text(`Sub Total: Rs. ${totalAmount.toFixed(2)}`, 132, y + 10);
+doc.text(`Discount: Rs. ${discountAmount.toFixed(2)}`, 132, y + 20);
+doc.text(`Delivery charge: Rs. 0`, 132, y + 30);
+doc.text(`Total: Rs. ${finalAmount.toFixed(2)}`, 132, y + 40);
+
 
     // Footer Section
     doc.setFontSize(12);
@@ -806,6 +917,7 @@ order.products.forEach((product) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error generating PDF");
+    return res.redirect("/pageerror")
   }
 };
 
@@ -836,6 +948,7 @@ console.log(user);
   } catch (error) {
     console.error("Error generating reference code:", error);
     res.status(500).json({ success: false, message: "Internal server error." });
+    return res.redirect("/pageerror")
   }
 }
 

@@ -434,3 +434,235 @@ in this chart, the graph is showing a fixed result always. i want to show it lik
 under each line it should show the date. if the report is based on the week it should shows the order count in each daty and if
  i generated the report based on the month it should show the results in each week and if it is basedon the year it should show
   the order cout in each month
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //order details page old code
+
+  <%- include("../../views/partials/H-profile") %>
+<style>
+        .download-invoice {
+        margin-right: 55px;
+        text-decoration: none;
+        color: rgb(48, 48, 52); /* Original color */
+    }
+    
+    .download-invoice:hover {
+        color: #eb2f6e; /* Hover color */
+    }
+</style>
+
+<!-- Order Details Section -->
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Order Details</h1>
+<!-- Add a link to download the PDF invoice -->
+<a class="download-invoice" href="/downloadInvoice/<%= order._id %>">Download Invoice &#x1F4E5;</a>    
+</div>
+
+    <!-- Order Information -->
+    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
+        <div id="report-form" class="col-md-8">
+            <h6 class="product-title">PLACED : <%= order.orderDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></h6>
+            <p style="font-size:15px;">ORDER NO : <%= order._id %></p>
+        </div>
+        <div style="margin-left: 100px;" class="col-md-2 text-end">
+            <h6>TOTAL: $<%= order.totalAmount %> </h6>
+        </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
+        <h6>Shipping Address</h6>
+        <div>
+            <%= order.address[0].username %> <br>
+            <%= order.address[0].address %> <br>
+            <%= order.address[0].state %>, <%= order.address[0].city %>, <%= order.address[0].pincode %> <br>
+            <%= order.address[0].mobile %>
+        </div>
+    </div>
+
+    <!-- Product Details -->
+    <% order.products.forEach(function(product) { %>
+        <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
+            <!-- <div class="col-md-3 d-flex align-items-start"> -->
+                <% if (product.productImage && product.productImage.length > 0) { %>
+                    <img style="width: 80px; height: 80px; object-fit: cover; margin-right: 16px;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
+                <% } %>
+            <!-- </div> -->
+            <div class="col-md-9">
+                <div>
+                    <h6>Product Name: <%= product.name %></h6>
+                    <p>Quantity: <%= product.quantity %></p>
+                    <p>Status: <%= order.status %></p>
+                    <!-- Add more details if needed -->
+                </div>
+            </div>
+        </div>
+    <% }); %>
+
+    <!-- Payment Details -->
+    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
+        <h6>Payment Details</h6>
+        <div class="payment-details">
+            <div class="row">
+                <div class="col-6">
+                    <span>Payment method</span>
+                </div>
+                <div class="col-6 text-end">
+                    <span><%= order.payment %></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <span>Subtotal (Inclusive tax)</span>
+                </div>
+                <div class="col-6 text-end">
+                    <span>₹<%= order.totalAmount %></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <span>Discount</span>
+                </div>
+                <div class="col-6 text-end">
+                    <span>-₹<%= order.discount %></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <span>Shipping Charges</span>
+                </div>
+                <div class="col-6 text-end">
+                    <span>₹<%= order.shippingCharges %></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <span>Total</span>
+                </div>
+                <div class="col-6 text-end">
+                    <span>₹<%= order.totalAmount %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;align-items: center;">
+        <% if (order.status === 'Cancelled') { %>
+            <button class="btn btn-outline-primary" style="background-color: #ffffff; border-color: #0e0c0d;background: rgb(6, 6, 6);width: 50%;margin-left: 25%;">
+                <a style="text-decoration: none; color: rgb(228, 223, 223);">Your Order is Cancelled</a>
+            </button>
+        <% } else if(order.status === 'Delivered'){ %>
+            <button id="returnOrderBtn" class="btn btn-outline-primary return-order-btn" style="background-color: #ffffff; border-color: #0e0c0d;background: rgb(6, 6, 6);width: 50%;margin-left: 25%;">
+                <a style="text-decoration: none; color: rgb(228, 223, 223); cursor: pointer;">Return Order</a>
+            </button>
+        <% } else if(order.status === 'Returned'){ %>
+            <button class="btn btn-outline-primary" style="background-color: #ffffff; border-color: #0e0c0d;background: rgb(6, 6, 6);width: 50%;margin-left: 25%;">
+                <a style="text-decoration: none; color: rgb(228, 223, 223); cursor: pointer;">Your Order is Returned</a>
+            </button>
+        <% }else if(order.status === 'Pending'){ %>
+            <button id="continuePayment" class="btn btn-outline-primary" style="background-color: #ffffff; border-color: #0e0c0d;background: rgb(95, 135, 95);width: 50%;margin-left: 25%;">
+                <a href="/proceedOrder?orderId=<%= order._id %>" style="text-decoration: none;color: rgb(228, 223, 223); cursor: pointer;border-color: rgb(58, 102, 56);">Continue Payment</a>
+            </button>
+        <% }else{ %>
+                <button id="cancelOrderBtn" class="btn btn-outline-primary" style="background-color: #ffffff; border-color: #0e0c0d;background: rgb(6, 6, 6);width: 50%;margin-left: 25%;">
+                    <a style="text-decoration: none; color: rgb(228, 223, 223); cursor: pointer;">Cancel Order</a>
+                </button>
+        <% } %>
+    </div>   
+</main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Ensure the script is executed after the page has fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var cancelOrderBtn = document.getElementById('cancelOrderBtn');
+        var returnOrderBtn = document.getElementById('returnOrderBtn');
+
+        if (cancelOrderBtn) {
+            cancelOrderBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default button action
+
+                // Trigger SweetAlert for confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to cancel this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff4081',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to cancel the order
+                        window.location.href = "/cancelOrder?orderId=<%= order._id %>";
+                    }
+                });
+            });
+        }
+
+        if (returnOrderBtn) {
+            returnOrderBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default button action
+
+                // Trigger SweetAlert for confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to return this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff4081',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, return it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to the backend route for returning the order
+                        window.location.href = "/returnOrder?orderId=<%= order._id %>";
+                    }
+                });
+            });
+        }
+
+    });
+
+
+
+
+
+$(document).ready(function() {
+  $('.dropdown-toggle').dropdown();
+});
+
+</script>
+
+
+<!-- Bootstrap 5 JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Bootstrap 5 JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Js Plugins -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/mixitup.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+
+</html>

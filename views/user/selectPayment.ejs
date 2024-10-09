@@ -201,9 +201,9 @@
                               <li>
                                 <%= product.product.productName %>
                                 <% if(product.offerPrice > 0){%>
-                                <span>$ <%= product.offerPrice %></span>
+                                <span>₹ <%= product.offerPrice %></span>
                                 <%}else{%>
-                                <span>$ <%= product.price %></span>
+                                <span>₹ <%= product.price %></span>
                                 <%}%>
                               </li>
                             <% }) %>
@@ -211,10 +211,10 @@
                     </div>
                     <div class="checkout__order__total">
                         <ul>
-                            <li>Subtotal <span>$ <%= totalPrice %></span></li>
-                            <li>Discount <span><%= dis %></span></li>
-                            <li>Shipping <span>$0.00</span></li>
-                            <li>Total <span>$ <%= totalPrice-dis %></span></li>
+                            <li>Subtotal <span>₹ <%= (parseFloat(totalPrice) + parseFloat(dis)).toFixed(2) %></span></li>
+                            <li>Discount <span>₹<%= dis %></span></li>
+                            <li>Shipping <span>₹0.00</span></li>
+                            <li>Total <span>₹ <%= totalPrice %></span></li>
                         </ul>
                     </div>
                     <div class="checkout__order__widget">

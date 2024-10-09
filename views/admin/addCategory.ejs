@@ -134,83 +134,74 @@
 
             </ul>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <h2>Add New Category</h2>
-                <div class="profile">
-                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
-                </div>
-            </div>
-
-            <!-- Form Content -->
-            <div class="form-container">
-                <form method="post" action="/admin/addCategory" onsubmit="return handleFormSubmit(event)">
-                    <div class="mb-4">
-                        <label for="product_name" class="form-label">Name</label>
-                        <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required/>
-                        <div id="name-error" class="error-message"></div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label">Description</label>
-                        <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId" required></textarea>
-                        <div id="description-error" class="error-message"></div>
-                    </div>
-                    <div class="d-grid">
-                        <button class="btn btn-primary" type="submit">
-                            Create Category
-                        </button>
-                    </div>
-                </form>
-            </div>
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Header -->
+    <div class="top-header">
+        <h2>Add New Category</h2>
+        <div class="profile">
+            <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
         </div>
     </div>
 
-
-    <% if (messages.length > 0) { %>
-        <div class="messages">
-            <% messages.forEach((message) => { %>
-                <div class="message <%= message.type %>"><%= message.text %></div>
-            <% }) %>
+    <!-- Form Content -->
+   <!-- Form Content -->
+<div class="form-container">
+    <form method="post" action="/admin/addCategory">
+      <div class="mb-4">
+        <label for="product_name" class="form-label">Name</label>
+        <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" value="<%= name %>" />
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Description</label>
+        <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId"><%= description %></textarea>
+      </div>
+      <% if (error) { %>
+        <div class="error-message">
+          <div style="font-size: small;"><%= error %></div>
         </div>
-    <% } %>
+      <% } %>
+      <div class="d-grid">
+        <button class="btn btn-primary" type="submit">Create Category</button>
+      </div>
+    </form>
+  </div>   
+</div>
 
-    
-    <script>
-        // Function to handle form validation before submitting
-        function handleFormSubmit(event) {
-            // Prevent default form submission
-            event.preventDefault();
+<script>
+  function handleFormSubmit(event) {
+    event.preventDefault();
 
-            // Clear any previous error messages
-            document.getElementById("name-error").textContent = '';
-            document.getElementById("description-error").textContent = '';
+    document.getElementById("name-error").textContent = '';
+    document.getElementById("description-error").textContent = '';
 
-            // Get form values
-            const name = document.getElementById("product_name").value.trim();
-            const description = document.getElementById("descriptionId").value.trim();
+    const name = document.getElementById("product_name").value.trim();
+    const description = document.getElementById("descriptionId").value.trim();
 
-            let hasError = false;
+    let hasError = false;
 
-            // Name validation
-            if (name.length < 3) {
-                document.getElementById("name-error").textContent = 'Name must be at least 3 characters long.';
-                hasError = true;
-            }
+    if (!name) {
+        document.getElementById("name-error").textContent = 'Name is required.';
+        hasError = true;
+    } else if (name.length < 3) {
+        document.getElementById("name-error").textContent = 'Name must be at least 3 characters long.';
+        hasError = true;
+    }
 
-            // Description validation
-            if (description.length < 5) {
-                document.getElementById("description-error").textContent = 'Description must be at least 5 characters long.';
-                hasError = true;
-            }
+    if (!description) {
+        document.getElementById("description-error").textContent = 'Description is required.';
+        hasError = true;
+    } else if (description.length < 5) {
+        document.getElementById("description-error").textContent = 'Description must be at least 5 characters long.';
+        hasError = true;
+    }
 
-            // If no validation errors, submit the form
-            if (!hasError) {
-                event.target.submit();
-            }
-        }
-    </script>
+    if (!hasError) {
+        event.target.submit();
+    }
+}
+
+</script>
+
 </body>
 </html>

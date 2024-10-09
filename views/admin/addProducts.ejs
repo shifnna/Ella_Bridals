@@ -167,99 +167,111 @@
         </div>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <h2>Add New Product</h2>
-                <div class="profile">
-                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+<div class="main-content">
+    <!-- Top Header -->
+    <div class="top-header">
+        <h2>Add New Product</h2>
+        <div class="profile">
+            <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+        </div>
+    </div>
+
+    <!-- Product Form -->
+    <div class="product-form">
+        <h3>Product Details</h3>
+        <form action="/admin/addProducts" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" class="form-control" id="productName" name="productName" placeholder="Enter product name" required>
+                    <span class="error-message" id="productName-error" style="color: red;"></span>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <select style="height: 60px;" class="form-control" id="brand" name="brand" required>
+                        <% for(let i=0; i< brand.length ; i++) { %>
+                        <option value="<%=brand[i].brandName%>"><%=brand[i].brandName%></option>
+                        <% } %>
+                    </select>
+                    <span class="error-message" id="brand-error" style="color: red;"></span>
                 </div>
             </div>
-
-            <!-- Product Form -->
-            <div class="product-form">
-                <h3>Product Details</h3>
-                <form action="/admin/addProducts" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="productName">Product Name</label>
-                            <input type="text" class="form-control" id="productName" name="productName" placeholder="Enter product name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="brand">Brand</label>
-                            <select style="height: 60px;" class="form-control" id="brand" name="brand" required>
-                                <% for(let i=0; i< brand.length ; i++) { %>
-                                <option value="<%=brand[i].brandName%>"><%=brand[i].brandName%></option>
-                                <%}%>
-                            </select>                          
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <select class="form-control" id="category" name="category" required>
-                                <% for(let i=0; i< cat.length ; i++) { %>
-                                <option value="<%=cat[i].name%>"><%=cat[i].name%></option>
-                                <%}%>
-                            </select>
-                        </div>
-                        <div class="form-group full-width">
-                            <label for="description">Description</label>
-                            <textarea class="form-control" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="regularPrice">Regular Price</label>
-                            <input type="number" class="form-control" id="regularPrice" name="regularPrice" placeholder="Enter regular price" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="salePrice">Sale Price</label>
-                            <input type="number" class="form-control" id="salePrice" name="salePrice" placeholder="Enter sale price">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="quantity">Quantity</label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="color">Color</label>
-                            <input type="text" class="form-control" id="color" name="color" placeholder="Enter color">
-                        </div>
-                        <div class="form-group">
-                            <label for="size">Size</label>
-                            <input type="text" class="form-control" id="size" name="size" placeholder="Enter size">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="offerPercentage">Offer Percentage</label>
-                            <input type="number" class="form-control" id="offerPercentage" name="offerPercentage" placeholder="Enter offer percentage" min="0" max="100">
-                        </div>
-                        <div class="form-group">
-                            <label for="offerPrice">Offer Price</label>
-                            <input type="number" class="form-control" id="offerPrice" name="offerPrice" placeholder="Enter offer price">
-                        </div>
-                    </div>
-                    <div class="form-row img-upload">
-                        <% for (let i = 1; i <= 4; i++) { %>
-                        <div class="form-group">
-                            <label for="image1">Image 1</label>
-                            <img src="" alt="" id="imgView<%= i %>">
-                            <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, `<%= i %>`)">
-                        </div>
-                        <div class="image-cropper d-flex align-items-center" style="display:none;">
-                            <img  src="" id="croppedImg<%= i %>" alt="">
-                            <button type="button" id="saveButton<%= i %>" class="btn-sm btn-primary">Save</button>
-                        </div>
-
-                    <% } %>
-                    </div>
-                     <button type="submit" onclick="validateAndSubmit()">Add Product</button>
-                </form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select class="form-control" id="category" name="category" required>
+                        <% for(let i=0; i< cat.length ; i++) { %>
+                        <option value="<%=cat[i].name%>"><%=cat[i].name%></option>
+                        <% } %>
+                    </select>
+                    <span class="error-message" id="category-error" style="color: red;"></span>
+                </div>
+                <div class="form-group full-width">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea>
+                    <span class="error-message" id="description-error" style="color: red;"></span>
+                </div>
             </div>
-        </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="salePrice">Sale Price</label>
+                    <input type="number" class="form-control" id="salePrice" name="salePrice" placeholder="Enter sale price" required min="0">
+                    <span class="error-message" id="salePrice-error" style="color: red;"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" required min="1">
+                    <span class="error-message" id="quantity-error" style="color: red;"></span>
+                </div>
+                <div class="form-group">
+                    <label for="color">Color</label>
+                    <select class="form-control" id="color" name="color" required>
+                        <option value="">Select a color</option>
+                        <option value="Red">Red</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Green">Green</option>
+                        <option value="Black">Black</option>
+                        <option value="White">White</option>
+                        <option value="Yellow">Yellow</option>
+                        <option value="Pink">Pink</option>
+                        <option value="Purple">Purple</option>
+                    </select>
+                    <span class="error-message" id="color-error" style="color: red;"></span>
+                </div>
+                <div class="form-group">
+                    <label for="size">Size</label>
+                    <select class="form-control" id="size" name="size" required>
+                        <option value="">Select a size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                    </select>
+                    <span class="error-message" id="size-error" style="color: red;"></span>
+                </div>
+            </div>
+            <div class="form-row img-upload">
+                <% for (let i = 1; i <= 4; i++) { %>
+                <div class="form-group">
+                    <label for="image<%= i %>">Image <%= i %></label>
+                    <img src="" alt="" id="imgView<%= i %>">
+                    <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, `<%= i %>`)">
+                    <span class="error-message" id="images-error" style="color: red;"></span>
+                </div>
+                <div class="image-cropper d-flex align-items-center" style="display:none;">
+                    <img src="" id="croppedImg<%= i %>" alt="">
+                    <button type="button" id="saveButton<%= i %>" class="btn-sm btn-primary">Save</button>
+                </div>
+                <% } %>
+            </div>
+            <button type="submit" onclick="validateAndSubmit()">Add Product</button>
+        </form>
+    </div>
+</div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
@@ -323,15 +335,78 @@
         document.getElementById(id).innerHTML = message;
     }
 
+
+
+    function validateAndSubmit() {
+        if (validateForm()) {
+            document.forms[0].submit();
+        }
+    }
+
+    function viewImage(event, index) {
+        let input = event.target;
+        let reader = new FileReader();
+
+        reader.onload = function() {
+            let dataURL = reader.result;
+            let image = document.getElementById("imgView" + index);
+            image.src = dataURL;
+
+            let cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                guides: true,
+                background: false,
+                autoCropArea: 1,
+                zoomable: true
+            });
+
+            let cropperContainer = document.querySelector("#croppedImg" + index).parentNode;
+            cropperContainer.style.display = 'block';
+
+            let saveButton = document.querySelector('#saveButton' + index);
+            saveButton.addEventListener("click", async function() {
+                let croppedCanvas = cropper.getCroppedCanvas();
+                let croppedImage = document.getElementById("croppedImg" + index);
+                croppedImage.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+
+                let timestamp = new Date().getTime();
+                let fileName = `cropped-img-${timestamp}-${index}.png`;
+
+                await croppedCanvas.toBlob(blob => {
+                    let imgFile = new File([blob], fileName, { type: 'image/png' });
+                    const fileList = new DataTransfer();
+                    fileList.items.add(imgFile);
+                    input.files = fileList.files;
+                });
+
+                cropperContainer.style.display = 'none';
+                cropper.destroy();
+            });
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function clearErrorMessages() {
+        document.querySelectorAll('.error-message').forEach(function(el) {
+            el.innerHTML = '';
+        });
+    }
+
+    function displayErrorMessage(id, message) {
+        document.getElementById(id).innerHTML = message;
+    }
+
+
+
     function validateForm() {
         clearErrorMessages();
         const name = document.getElementsByName('productName')[0].value;
         const description = document.getElementById('descriptionid').value;
         const brand = document.getElementsByName('brand')[0].value;
-        const price = document.getElementsByName('regularPrice')[0].value;
         const salePrice = document.getElementsByName('salePrice')[0].value;
         const color = document.getElementsByName('color')[0].value;
-        const category = document.getElementsByName('category')[0].value;
+        const size = document.getElementsByName('size')[0].value;
         const quantity = document.getElementsByName('quantity')[0].value;
         const images = document.getElementById('input1').files;
 
@@ -352,37 +427,23 @@
             isValid = false;
         }
 
-        if (price.trim() === "") {
-            displayErrorMessage('regularPrice-error', 'Please enter a regular price.');
-            isValid = false;
-        } else if (isNaN(price)) {
-            displayErrorMessage('regularPrice-error', 'Regular price should be a numeric value.');
-            isValid = false;
-        }
-
-        if (salePrice.trim() !== "" && isNaN(salePrice)) {
-            displayErrorMessage('salePrice-error', 'Sale price should be a numeric value.');
+        if (salePrice.trim() === "" || isNaN(salePrice) || salePrice < 0) {
+            displayErrorMessage('salePrice-error', 'Sale price must be a numeric value and cannot be negative.');
             isValid = false;
         }
 
         if (color.trim() === "") {
-            displayErrorMessage('color-error', 'Please enter a color.');
-            isValid = false;
-        } else if (!/^[a-zA-Z\s]+$/.test(color.trim())) {
-            displayErrorMessage('color-error', 'Color should contain only alphabetic characters.');
+            displayErrorMessage('color-error', 'Please select a color.');
             isValid = false;
         }
 
-        if (category.trim() === "") {
-            displayErrorMessage('category-error', 'Please select a category.');
+        if (size.trim() === "") {
+            displayErrorMessage('size-error', 'Please select a size.');
             isValid = false;
         }
 
-        if (quantity.trim() === "") {
-            displayErrorMessage('quantity-error', 'Please enter a quantity.');
-            isValid = false;
-        } else if (isNaN(quantity)) {
-            displayErrorMessage('quantity-error', 'Quantity should be a numeric value.');
+        if (quantity.trim() === "" || isNaN(quantity) || quantity <= 0) {
+            displayErrorMessage('quantity-error', 'Quantity must be a numeric value and must be greater than zero.');
             isValid = false;
         }
 

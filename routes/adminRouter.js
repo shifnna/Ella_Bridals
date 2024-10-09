@@ -18,7 +18,6 @@ const couponController = require("../controllers/couponController");
 router.get("/login",adminController.loadLogin);
 router.post("/login",adminController.login);
 router.get("/dashboard",adminController.login)
-
 router.get("/logout",adminController.logout);
 
 
@@ -26,8 +25,14 @@ router.get("/customers",customerController.loadCustomers);
 router.get("/blockCustomer",customerController.customerBlocked);
 router.get("/unblockCustomer",customerController.customerunBlocked);
 router.get("/category",categoryController.loadCategories);
-router.get("/addCategory",(req,res)=>{res.render("addCategory")})
 router.post("/addCategory",categoryController.addCategory);
+router.get("/addCategory", (req, res) => {
+    res.render('addCategory', {
+        name: '',           
+        description: '',  
+        error: '', 
+    });
+});
 router.get("/brands",brandController.loadBrands);
 router.get("/addProducts",productController.getProductAddPage);
 router.get("/products",productController.loadProducts);
@@ -77,6 +82,11 @@ router.post('/download-excel', adminController.generateExcelReport);
 
 
 
-
+// 404 Middleware for user Router
+router.use((req, res) => {
+    
+    return res.status(404).render('page_404'); 
+ });
+ 
 
 module.exports = router;

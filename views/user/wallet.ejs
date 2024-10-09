@@ -40,7 +40,7 @@
 
     <!-- Wallet Balance -->
     <div class="wallet-balance mb-4">
-        <h4>Your Wallet Balance: <span class="text-success">$<%= walletBalance%></span></h4>
+        <h4>Your Wallet Balance: <span class="text-success">₹<%= walletBalance%></span></h4>
     </div>
 
     <!-- Recent Transactions -->
@@ -60,7 +60,7 @@
                     <tr>
                       <td><%= new Date(transaction.date).toLocaleDateString('en-US', {year: 'numeric',month: 'long',day: 'numeric'}) %></td>
                       <td><%= transaction.description %></td>
-                      <td class="<%= transaction.amount > 0 ? 'text-success' : 'text-danger' %>">$<%= transaction.amount %></td>
+                      <td class="<%= transaction.amount > 0 ? 'text-success' : 'text-danger' %>">₹<%= transaction.amount %></td>
                     </tr>
                     <% }); %>
                   <% } else { %>

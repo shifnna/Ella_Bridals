@@ -134,39 +134,45 @@
             </ul>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Header -->
-            <div class="top-header">
-                <h2>Edit Category</h2>
-                <div class="profile">
-                    <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
-                </div>
-            </div>
 
-            <!-- Form Content -->
-            <div class="form-container">
-                <form method="post"  action="/admin/editCategory/<%=category._id%>">
-                    <div class="mb-4">
-                        <label for="product_name" class="form-label">Name</label>
-                        <input type="text" name="categoryName" value="<%=category.name%>" placeholder="Type here" class="form-control" id="product_name" required/>
-                        <div id="name-error" class="error-message"></div>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label">Description</label>
-                        <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId" required><%=category.description%></textarea>
-                        <div id="description-error" class="error-message"></div>
-                    </div>
-                    <div class="d-grid">
-                        <button class="btn btn-primary" type="submit">
-                            Edit Category
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <!-- Main Content -->
+<div class="main-content">
+    <!-- Top Header -->
+    <div class="top-header">
+      <h2>Edit Category</h2>
+      <div class="profile">
+        <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+      </div>
+    </div>
+  
+    <!-- Form Content -->
+    <div class="form-container">
+      <form method="post" action="/admin/editCategory/<%= category._id %>">
+        <% if (error) { %>
+          <div class="error-message">
+            <div style="font-size: small;"><%= error.text %></div>
+          </div>
+        <% } %>
+        <div class="mb-4">
+          <label for="product_name" class="form-label">Name</label>
+          <input type="text" name="categoryName" value="<%= category.name %>" placeholder="Type here" class="form-control" id="product_name" />                      
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Description</label>
+          <textarea placeholder="Type here" name="description" class="form-control" id="descriptionId" ><%= category.description %></textarea>
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary" type="submit">
+            Edit Category
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+            
         </div>
     </div>
-
+<!-- 
 
     <% if (messages.length > 0) { %>
         <div class="messages">
@@ -174,7 +180,7 @@
                 <div class="message <%= message.type %>"><%= message.text %></div>
             <% }) %>
         </div>
-    <% } %>
+    <% } %> -->
 
     
     <script>
@@ -182,34 +188,35 @@
         function handleFormSubmit(event) {
             // Prevent default form submission
             event.preventDefault();
-
+    
             // Clear any previous error messages
             document.getElementById("name-error").textContent = '';
             document.getElementById("description-error").textContent = '';
-
+    
             // Get form values
             const name = document.getElementById("product_name").value.trim();
             const description = document.getElementById("descriptionId").value.trim();
-
+    
             let hasError = false;
-
+    
             // Name validation
             if (name.length < 3) {
                 document.getElementById("name-error").textContent = 'Name must be at least 3 characters long.';
                 hasError = true;
             }
-
+    
             // Description validation
-            if (description.length < 5) {
+            if (!description || description.length < 5) {
                 document.getElementById("description-error").textContent = 'Description must be at least 5 characters long.';
                 hasError = true;
             }
-
+    
             // If no validation errors, submit the form
             if (!hasError) {
                 event.target.submit();
             }
         }
     </script>
+    
 </body>
 </html>

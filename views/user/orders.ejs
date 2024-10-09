@@ -2,58 +2,54 @@
 
 <!-- Order Details Section -->
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">My Orders</h1>
-    </div>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h1 class="h2">My Orders</h1>
+  </div>
 
-    <!-- Orders Header -->
-    <div class="order-header row mb-4">
-        <div class="col-md-12">
-        </div>
-    </div>
-    <%if(orders.length <= 0){%>
+  <% if (orders.length <= 0) { %>
       <div class="order-header row mb-4">
-        <div class="col-md-12">
-            <h4 style="margin-top: 3%;" class="order-summary-title">No Order Summary</h4>
-        </div>
-    </div>
-    <%}%>
-
-    <!-- Orders List -->
-   <%if(orders.length > 0){%>
-    <% orders.forEach(function(order) { %>
-        <% order.products.forEach(function(product) { %>
-          <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
-            <div class="col-md-8">
-              <!-- Order status with colored circle -->
-              <h6 class="product-title">
-                Status:<%= order.status %> <span class="status-circle <%= order.status.toLowerCase() %>"></span> 
-              </h6>
-              <p>ORDER NUMBER: <%= order._id %></p>
-              
-              <div>
-                <!-- product image -->
-                <% if (product.productImage && product.productImage.length > 0) { %>
-                  <img style="width: 80px;height: 80px;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
-                <% } %>
-              </div>
-            </div>
-            <div style="margin-left: 100px;" class="col-md-2 text-end">
-                <a style="border-color: #0e0c0d;" href="/orderDetails?orderId=<%= order._id %>" class="btn btn-outline-primary btn-sm view-details-btn">
-                    View Details
-                  </a>
-            </div>
+          <div class="col-md-12">
+              <h4 style="margin-top: 3%;" class="order-summary-title">No Order Summary</h4>
           </div>
-        <% }); %>
+      </div>
+  <% } else { %>
+      <!-- Orders List -->
+      <% orders.forEach(function(order) { %>
+          <div class="order-card mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
+              <div class="row">
+                  <div class="col-md-10">
+                      <h6 class="product-title">
+                          Status: <%= order.status %> <span class="status-circle <%= order.status.toLowerCase() %>"></span>
+                      </h6>
+                      <p>ORDER NUMBER: <%= order._id %></p>
+                      <div class="product-images" style="display: flex; flex-wrap: wrap;">
+                          <% order.products.forEach(function(product) { %>
+                              <% if (product.productImage && product.productImage.length > 0) { %>
+                                  <div style="margin: 5px;">
+                                      <img style="width: 80px; height: 80px;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
+                                  </div>
+                              <% } %>
+                          <% }); %>
+                      </div>
+                  </div>
+                  <div class="col-md-2 text-end">
+                      <a style="border-color: #0e0c0d;" href="/orderDetails?orderId=<%= order._id %>" class="btn btn-outline-primary btn-sm view-details-btn">
+                          View Details
+                      </a>
+                  </div>
+              </div>
+          </div>
       <% }); %>
-    <!-- Order Actions -->
-    <div class="mt-4 text-center">
-        <button style="background-color: #0e0c0d; border-color: #0e0c0d;" class="btn btn-outline-primary">
-            <a style="text-decoration: none; color: aliceblue;" href="/shop">Continue Shopping</a>
-        </button>
-    </div>
-    <%}%>
+  <% } %>
+  
+  <!-- Order Actions -->
+  <div class="mt-4 text-center">
+      <button style="background-color: #0e0c0d; border-color: #0e0c0d;" class="btn btn-outline-primary">
+          <a style="text-decoration: none; color: aliceblue;" href="/shop">Continue Shopping</a>
+      </button>
+  </div>
 </main>
+
 
 <!-- Custom CSS for Status Circle -->
 <style>
@@ -66,7 +62,7 @@
     }
     
     /* Status color styles */
-    .pending {
+    .OrderConfirmed {
         background-color: rgb(55, 75, 118);
     }
 

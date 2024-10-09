@@ -39,7 +39,20 @@
     box-shadow: none; /* Remove any potential shadow on focus */
 }
 </style>
-
+      <!-- Breadcrumb Begin -->
+      <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="/"><i class="fa fa-home"></i> Home</a>
+                        <a href="/shop"><span>Shop</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
     <div class="container">
         <div class="d-flex justify-content-center align-items-center">
             <form action="/shop" method="get" class="search-form">
@@ -193,14 +206,14 @@
                                 <% if (product.offerPrice && product.offerPrice > 0) { %>
                                   <div class="price-container" style="display: flex; align-items: center;">
                                     <div class="sale-price" style="text-decoration: line-through; margin-right: 10px;margin-left: 25%;font-weight: 600;color: dimgray;">
-                                      $ <%= product.salePrice %>
+                                        ₹ <%= product.salePrice %>
                                     </div>
                                     <div class="offer-price" style="color:black;text-align: center;font-weight: 600;">
-                                      $ <%= product.offerPrice %>
+                                        ₹ <%= product.offerPrice %>
                                     </div>
                                   </div>
                                 <% } else { %>
-                                  <div class="product__price">$ <%= product.salePrice %></div>
+                                  <div class="product__price">₹ <%= product.salePrice %></div>
                                 <% } %>
                               </div>
                             </div>
