@@ -218,7 +218,7 @@
                 <%= order.products.reduce((total, product) => total + product.quantity, 0) %>
             </td>
             <td style="padding: 8px; border: 1px solid #ccc;">
-                Rs.<%= order.products[0].couponDiscount %>
+                Rs.<%= order.couponDiscount %>
             </td>
             <td style="padding: 8px; border: 1px solid #ccc;">
                 <%= order.products.reduce((total, product) => total + product.price, 0) %>
@@ -275,7 +275,7 @@
                 x: {
                     title: {
                         display: true,
-                        text: 'Months'
+                        text: 'Date'
                     }
                 }
             }
@@ -330,44 +330,6 @@
 });
 
 
-
-
-
-
-// function generateChart(labels, data) {
-//         const ctx = document.getElementById("myChart").getContext("2d");
-//         new Chart(ctx, {
-//             type: "bar", // or "line" if you prefer
-//             data: {
-//                 labels: labels,
-//                 datasets: [{
-//                     label: "Sales Revenue",
-//                     data: data,
-//                     backgroundColor: "rgba(75, 192, 192, 0.5)",
-//                     borderColor: "rgba(75, 192, 192, 1)",
-//                     borderWidth: 1,
-//                     fill: true
-//                 }]
-//             },
-//             options: {
-//                 scales: {
-//                     y: {
-//                         beginAtZero: true,
-//                         title: {
-//                             display: true,
-//                             text: 'Total Revenue'
-//                         }
-//                     },
-//                     x: {
-//                         title: {
-//                             display: true,
-//                             text: 'Dates'
-//                         }
-//                     }
-//                 }
-//             }
-//         });
-//     }
 
 
 //modal  

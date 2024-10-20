@@ -118,9 +118,80 @@
             background-color: #ff007f;
         }
 
+        /* Preloder */
+
+        #preloder {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 999999;
+	background: #ffffff;
+}
+
+.loader {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -13px;
+	margin-left: -13px;
+	border-radius: 60px;
+	animation: loader 0.8s linear infinite;
+	-webkit-animation: loader 0.8s linear infinite;
+}
+
+
+@keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+}
+
+@-webkit-keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+}
     </style>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
 </head>
 <body>
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
 
 <div class="container">
     <!-- Stepper -->
@@ -144,7 +215,9 @@
     <!-- Main Content -->
     <h1>Choose Address</h1>
     <p>Detailed address will help our delivery partner reach your doorstep quickly</p>
-    
+    <% if(message !==''){%>
+        <span style="color: red;font-size: small;"><%=message%></span>
+    <%}%>
     <div class="row d-flex justify-content-start flex-wrap">
         <!-- Add New Address -->
         <div class="col-md-5 mb-3">
@@ -164,12 +237,25 @@
             </div>
         </div>
         <% }); %>
-<% }); %>
+      <% }); %>
 
     </div>
 </div>
 
 <!-- Bootstrap JS CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+   <!-- Js Plugins -->
+   <script src="js/jquery-3.3.1.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+   <script src="js/jquery.magnific-popup.min.js"></script>
+   <script src="js/jquery-ui.min.js"></script>
+   <script src="js/mixitup.min.js"></script>
+   <script src="js/jquery.countdown.min.js"></script>
+   <script src="js/jquery.slicknav.js"></script>
+   <script src="js/owl.carousel.min.js"></script>
+   <script src="js/jquery.nicescroll.min.js"></script>
+   <script src="js/main.js"></script>
+   </body>
+   
+       </body>
+       </html>

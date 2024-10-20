@@ -2,37 +2,42 @@ const User = require("../models/userSchema");
 
 const loadCustomers = async (req,res)=>{
     try {
-        let search = "";
-        if(req.query.search){
-            search=req.query.search;
-        }
-        
-        let page = 1
-        if(req.query.page){
-            page=req.query.page;
-        }
-        const limit = 10;
-
-        const userData = await User.find({
+        if(req.session.admin){
+            let search = "";
+            if(req.query.search){
+                search=req.query.search;
+            }
+            
+            let page = 1
+            if(req.query.page){
+                page=req.query.page;
+            }
+            const limit = 10;
+    
+            const userData = await User.find({
+                isAdmin:false,
+                $or:[
+                    {name:{$regex:".*"+search+".*"}},
+                    {email:{$regex:".*"+search+".*"}}
+                ],
+    
+            }).sort({createdOn:1}).limit(limit*1).skip((page-1)*limit).exec()//chain of promise ne combine cheyyan
+    
+        const count = await User.find({
             isAdmin:false,
             $or:[
                 {name:{$regex:".*"+search+".*"}},
                 {email:{$regex:".*"+search+".*"}}
             ],
-
-        }).sort({name:1}).limit(limit*1).skip((page-1)*limit).exec()//chain of promise ne combine cheyyan
-
-    const count = await User.find({
-        isAdmin:false,
-        $or:[
-            {name:{$regex:".*"+search+".*"}},
-            {email:{$regex:".*"+search+".*"}}
-        ],
-    }).countDocuments();
+        }).countDocuments();
+        
+        const totalPages = Math.ceil(count / limit);
     
-    const totalPages = Math.ceil(count / limit);
-
-    res.render("customers", { data: userData, totalPages: totalPages, currentpage: page, search: search });
+        res.render("customers", { data: userData, totalPages: totalPages, currentpage: page, search: search });            
+        }else{
+            res.redirect("/pageerror")
+        }
+        
 
     } catch (error) {
         console.error(error);
@@ -46,10 +51,16 @@ const loadCustomers = async (req,res)=>{
 
 const customerBlocked = async (req,res)=>{
     try {
-        let id=req.query.id;
-        await User.updateOne({_id:id},{$set:{isBlocked:true}});
-        res.redirect("/admin/customers");
+        if(req.session.admin){
+            let id=req.query.id;
+            await User.updateOne({_id:id},{$set:{isBlocked:true}});
+            res.redirect("/admin/customers");            
+        }else{
+            res.redirect("/pageerror")
+        }
+        
     } catch (error) {
+        console.error(error);
         res.redirect("/pageerror");
     }
 };
@@ -61,10 +72,16 @@ const customerBlocked = async (req,res)=>{
 
 const customerunBlocked = async (req,res)=>{
     try {
-        let id=req.query.id;
-        await User.updateOne({_id:id},{$set:{isBlocked:false}});
-        res.redirect("/admin/customers");
+        if(req.session.admin){
+            let id=req.query.id;
+            await User.updateOne({_id:id},{$set:{isBlocked:false}});
+            res.redirect("/admin/customers");            
+        }else{
+            res.redirect("/pageerror")
+        }
+    
     } catch (error) {
+        console.error(error);
         res.redirect("/pageerror");
     }
 }

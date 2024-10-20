@@ -6,26 +6,28 @@
 
     <!-- Enhanced Sign-Up Form -->
     <div class="container">
-        <form action="/editProfile/<%= data._id %>" method="post" style="max-width: 500px; margin-left: 10px; margin-right: auto; padding: 20px; background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border: 2px solid #ddd;">
+        <form id="editProfileForm" action="/editProfile/<%=data._id %>" method="post" style="max-width: 500px; margin-left: 10px; margin-right: auto; padding: 20px; background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border: 2px solid #ddd;">
             <div class="mb-4 text-center">
-                <!-- Round User Profile Picture -->
                 <img src="https://via.placeholder.com/100" alt="User Profile" class="user-profile-pic">
                 <label for="name" class="form-label" style="font-weight: 20px; color: #333; margin-top: 10px;"><%= data.name%> </label>
             </div>
             <div class="mb-4">
                 <label for="name" class="form-label" style="font-weight: bold; color: #333;">Name</label>
-                <input type="text" value="<%= data.name%>" class="form-control" id="name" name="name" required 
+                <input type="text" value="<%= data.name%>" class="form-control" id="name" name="name" 
                        style="padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #e0e0e0; background-color: #fafafa;">
+                <span class="error-message" style="color: red; display: none;">Please enter your name.</span>
             </div>
             <div class="mb-4">
                 <label for="email" class="form-label" style="font-weight: bold; color: #333;">Email address</label>
-                <input type="email" value="<%= data.email%>"  class="form-control" id="email" name="email" required 
+                <input type="email" value="<%= data.email%>" class="form-control" id="email" name="email" 
                        style="padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #e0e0e0; background-color: #fafafa;">
+                <span class="error-message" style="color: red; display: none;">Please enter a valid email address.</span>
             </div>
             <div class="mb-4">
                 <label for="phone" class="form-label" style="font-weight: bold; color: #333;">Phone Number</label>
-                <input type="text" value="<%= data.phone %>"  class="form-control" id="phone" name="phone" required 
+                <input type="text" value="<%= data.phone %>" class="form-control" id="phone" name="phone" 
                        style="padding: 12px; font-size: 16px; border-radius: 8px; border: 1px solid #e0e0e0; background-color: #fafafa;">
+                <span class="error-message" style="color: red; display: none;">Please enter a valid phone number.</span>
             </div>
           
             <button type="submit" class="btn btn-primary w-100" 
@@ -38,6 +40,7 @@
 
 <!-- Updated CSS with reduced shadow -->
 <style>
+    /* Existing styles */
     html, body {
         height: 100%;
         overflow-x: hidden;
@@ -49,32 +52,71 @@
     }
 
     .container {
-        max-width: 100%; /* Allow the container to take full width */
+        max-width: 100%;
     }
 
     form {
-        margin-left: 10px; /* Align form slightly to the left */
+        margin-left: 10px;
         padding: 30px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03); /* Reduced shadow for subtlety */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
     }
 
     .user-profile-pic {
-        width: 70px; /* Set the width of the profile picture */
-        height: 70px; /* Set the height of the profile picture */
-        border-radius: 50%; /* Make the picture round */
-        object-fit: cover; /* Ensure the image covers the entire circle */
-        border: 2px solid #ddd; /* Optional: Add a border around the picture */
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #ddd;
     }
 
     button:hover {
-        background: linear-gradient(145deg, #ff80ab, #ff4081); /* Button hover effect */
+        background: linear-gradient(145deg, #ff80ab, #ff4081);
     }
 </style>
 
-
-
 <!-- Bootstrap 5 JS CDN -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.dropdown-toggle').dropdown();
+
+        $('#editProfileForm').on('submit', function(event) {
+            let valid = true;
+
+            // Clear previous error messages
+            $('.error-message').hide();
+
+            // Validate Name
+            const name = $('#name').val().trim();
+            if (name === "") {
+                valid = false;
+                $('#name').next('.error-message').show();
+            }
+
+            // Validate Email
+            const email = $('#email').val().trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email === "" || !emailPattern.test(email)) {
+                valid = false;
+                $('#email').next('.error-message').show();
+            }
+
+            // Validate Phone
+            const phone = $('#phone').val().trim();
+            const phonePattern = /^\d{10}$/; // Adjust this pattern based on your phone number format
+            if (phone === "" || !phonePattern.test(phone)) {
+                valid = false;
+                $('#phone').next('.error-message').show();
+            }
+
+            // If not valid, prevent form submission
+            if (!valid) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
 <script>
     $(document).ready(function() {
   $('.dropdown-toggle').dropdown();
@@ -92,5 +134,4 @@
 <script src="js/jquery.nicescroll.min.js"></script>
 <script src="js/main.js"></script>
 </body>
-
 </html>

@@ -319,19 +319,22 @@
                 </div>
             </div>
             <form action="/admin/changeStatus/?orderId=<%=order._id%>" method="post">
-            <div class="dashboard2">
-                <h3>Order Status</h3>
+                <div class="dashboard2">
+                    <h3>Order Status</h3>
                     <select id="order-status" name="status">
-                        <% if(order.status !== "Delivered"){%>
-                        <option style="color: #007bff;" value="OrderConfirmed">Order Confirmed</option>
-                        <option style="color: orangered;" value="Cancelled">Cancelled</option>
-                        <option style="color: #007bff;" value="shipped">Shipped</option>
-                        <option style="color: #007bff;" value="Return">Return</option>
-                        <%}%>
-                        <option style="color: green;" value="delivered">Delivered</option>
-
+                        <% if (order.status === "Cancelled") { %>
+                            <option style="color: orangered;" value="Cancelled">Cancelled</option>
+                        <% } else { %>
+                            <% if (order.status !== "Delivered") { %>
+                                <option style="color: #007bff;" value="OrderConfirmed">Order Confirmed</option>
+                                <option style="color: orangered;" value="Cancelled">Cancelled</option>
+                                <option style="color: #007bff;" value="shipped">Shipped</option>
+                                <option style="color: #007bff;" value="Return">Return</option>
+                            <% } %>
+                            <option style="color: green;" value="delivered">Delivered</option>
+                        <% } %>
                     </select>            
-            </div>
+                </div>
             <div>
                 <button style="margin: 15px;padding: 10px;background: green;color: #ebebeb;border: none;border-radius: 5px;" id="update-status">Update Status</button>
             </div>

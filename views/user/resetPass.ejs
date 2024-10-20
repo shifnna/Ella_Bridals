@@ -1,0 +1,288 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+</head>
+<body>
+    <h2>Reset Password</h2>
+    <form id="resetPasswordForm" action="/updatePassword" method="post">
+        <input type="password" name="newPassword" required placeholder="New Password" />
+        <input type="password" name="confirmPassword" required placeholder="Confirm Password" />
+        <button type="submit">Update Password</button>
+    </form>
+    <% if (message) { %>
+        <div style="color: red;"><%= message %></div>
+    <% } %>
+</body>
+</html>
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password - Nykaa Style</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .reset-password-container {
+      background-color: white;
+      width: 400px;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .reset-password-container h2 {
+      text-align: center;
+      color: #ff3f6c;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #ff3f6c;
+    }
+
+    .reset-btn {
+      background-color: #ff3f6c;
+      color: white;
+      padding: 10px 15px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .reset-btn:hover {
+      background-color: #e2335d;
+    }
+
+    .back-to-login {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #ff3f6c;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-to-login:hover {
+      text-decoration: underline;
+    }
+
+        
+/* Preloder */
+
+#preloder {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 999999;
+	background: #ffffff;
+}
+
+.loader {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -13px;
+	margin-left: -13px;
+	border-radius: 60px;
+	animation: loader 0.8s linear infinite;
+	-webkit-animation: loader 0.8s linear infinite;
+}
+
+
+@keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+}
+
+@-webkit-keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+}
+
+    </style>
+    
+</head>
+<body>
+     <!-- Page Preloder -->
+     <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+
+  <div class="reset-password-container">
+    <h2>Confirm new password</h2>
+	<form id="loginform" action="/updatePassword" method="post">
+        
+			<div class="signup">
+				<div class="form-holder">
+				<div class="form-group">
+                    <input type="password" name="newPassword" required placeholder="New Password" />
+                    <div id="error1" class="error-message"></div>
+				</div>
+				<div class="form-group">
+                    <input type="password" name="confirmPassword" required placeholder="Confirm Password" />					
+					<div id="error2" class="error-message"></div>
+				</div>
+				</div>
+				<%if(message){%>
+					  <span style="color: red;font-size: small;"><%=message%></span>
+				<%}%>
+			</div>
+            <button class="reset-btn" type="submit">Update Password</button>
+
+    </form>
+    <a href="/login" class="back-to-login">Back to Login</a>
+  </div>
+
+</body>
+
+<script>
+	console.clear();
+	
+	const loginBtn = document.getElementById('login');
+	const signupBtn = document.getElementById('signup');
+	
+	loginBtn.addEventListener('click', (e) => {
+		let parent = e.target.parentNode.parentNode;
+		Array.from(e.target.parentNode.parentNode.classList).find((element) => {
+			if(element !== "slide-up") {
+				parent.classList.add('slide-up')
+			}else{
+				signupBtn.parentNode.classList.add('slide-up')
+				parent.classList.remove('slide-up')
+			}
+		});
+	});
+	
+	signupBtn.addEventListener('click', (e) => {
+		let parent = e.target.parentNode;
+		Array.from(e.target.parentNode.classList).find((element) => {
+			if(element !== "slide-up") {
+				parent.classList.add('slide-up')
+			}else{
+				loginBtn.parentNode.parentNode.classList.add('slide-up')
+				parent.classList.remove('slide-up')
+			}
+		});
+	});
+	
+	
+	
+		  const passid = document.getElementById("password");
+		  const error1 = document.getElementById("error1");
+		  const error2 = document.getElementById("error2");
+		  const loginform = document.getElementById("loginform");
+	
+		  
+		  
+	
+		  function passValidateChecking(e) {
+			const passval = passid.value;
+			if (passval.length < 8) {
+			  error2.style.display = "block";
+			  error2.innerHTML = "Should contain at least 8 characters";
+			} else {
+			  error2.style.display = "none";
+			  error2.innerHTML = "";
+			}
+		  }
+	
+		  
+  </script>
+<!-- Js Plugins -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/mixitup.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+
+</html>

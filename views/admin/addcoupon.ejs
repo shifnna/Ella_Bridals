@@ -94,15 +94,23 @@
 
         .brand-form .form-group {
             margin-bottom: 15px;
+            position: relative;
         }
 
         .brand-form .form-control {
             width: 100%;
             box-sizing: border-box;
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            bottom: -20px;
         }
 
         .brand-form button {
@@ -148,10 +156,9 @@
                 <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
                 <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
-                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
-                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
-                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
-
+                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li>
+                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li>
+                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
 
@@ -168,10 +175,11 @@
             <!-- Coupon Form -->
             <div class="brand-form">
                 <h3>Add New Coupon</h3>
-                <form action="/admin/addCoupon" method="POST" >
+                <form id="couponForm" action="/admin/addCoupon" method="POST" onsubmit="return validateForm()">
                     <div class="form-group">
                         <label for="couponCode">Coupon Code</label>
                         <input type="text" id="couponCode" name="couponCode" class="form-control" placeholder="Enter coupon code">
+                        <div class="error-message" id="couponCodeError"></div>
                     </div>
 
                     <div class="form-row">
@@ -186,6 +194,7 @@
                         <div class="form-group">
                             <label for="discountValue">Discount Value</label>
                             <input type="number" id="discountValue" name="discountValue" class="form-control" placeholder="Enter discount value">
+                            <div class="error-message" id="discountValueError"></div>
                         </div>
                     </div>
 
@@ -193,22 +202,20 @@
                         <div class="form-group">
                             <label for="expiryDate">Expiry Date</label>
                             <input type="date" id="expiryDate" name="expiryDate" class="form-control">
+                            <div class="error-message" id="expiryDateError"></div>
                         </div>
 
                         <div class="form-group">
                             <label for="minOrderAmount">Min Order Amount</label>
                             <input type="number" id="minOrderAmount" name="minOrderAmount" class="form-control" placeholder="Enter minimum order amount">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="maxOrderAmount">Max Order Amount</label>
-                            <input type="number" id="maxOrderAmount" name="maxOrderAmount" class="form-control" placeholder="Enter maximum order amount">
+                            <div class="error-message" id="minOrderAmountError"></div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description">Description</label>
                         <textarea id="description" name="description" class="form-control" placeholder="Enter description"></textarea>
+                        <div class="error-message" id="descriptionError"></div>
                     </div>
 
                     <button type="submit">Save Coupon</button>
@@ -218,13 +225,52 @@
     </div>
     <script>
         function validateForm() {
-  const code = document.getElementById('couponCode').value;
-  if (code.trim() === '') {
-    alert('Coupon Code cannot be empty!');
-    return false;
-  }
-  return true;
-}
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+            // Coupon Code
+            const couponCode = document.getElementById('couponCode').value.trim();
+            if (couponCode === '') {
+                document.getElementById('couponCodeError').textContent = 'Coupon Code cannot be empty!';
+                isValid = false;
+            }
+
+            // Discount Value
+            const discountType = document.getElementById('discountType').value;
+            const discountValue = parseFloat(document.getElementById('discountValue').value);
+            if (discountValue <= 0 || isNaN(discountValue)) {
+                document.getElementById('discountValueError').textContent = 'Discount Value must be a positive number!';
+                isValid = false;
+            } else if (discountType === 'percentage' && discountValue > 100) {
+                document.getElementById('discountValueError').textContent = 'Discount Value cannot exceed 100 for percentage!';
+                isValid = false;
+            }
+
+            // Expiry Date
+            const expiryDate = document.getElementById('expiryDate').value;
+            if (expiryDate === '') {
+                document.getElementById('expiryDateError').textContent = 'Expiry Date cannot be empty!';
+                isValid = false;
+            }
+
+            // Min Order Amount
+            const minOrderAmount = parseFloat(document.getElementById('minOrderAmount').value);
+            if (minOrderAmount < 0 || isNaN(minOrderAmount)) {
+                document.getElementById('minOrderAmountError').textContent = 'Min Order Amount must be a positive number!';
+                isValid = false;
+            }
+
+            // Description
+            const description = document.getElementById('description').value.trim();
+            if (description === '') {
+                document.getElementById('descriptionError').textContent = 'Description cannot be empty!';
+                isValid = false;
+            }
+
+            return isValid;
+        }
     </script>
 </body>
 

@@ -6,6 +6,7 @@ const Product = require("../models/productSchema");
 
 const loadCategories = async (req, res) => {
     try {
+      if(req.session.admin){
         let search = "";
         if (req.query.search) {
             search = req.query.search;
@@ -23,7 +24,7 @@ const loadCategories = async (req, res) => {
                 { description: { $regex: ".*" + search + ".*" } }
             ]
         })
-            .sort({ name:-1 })
+            .sort({ createdAt:-1 })
             .skip((page - 1) * limit)
             .limit(limit);
 
@@ -42,7 +43,11 @@ const loadCategories = async (req, res) => {
             totalPages: totalPages,
             totalCategories: count,
             search: search
-        });
+        });      
+      }else{
+      return res.redirect("/pageerror")
+      }
+      
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror");
@@ -53,13 +58,15 @@ const loadCategories = async (req, res) => {
 
 
 const addCategory = async (req, res) => {
+  try {
+  if(req.session.admin){
     const { name, description } = req.body;
   
     // Trim inputs
     const trimmedName = name.trim();
     const trimmedDescription = description.trim();
   
-    try {
+    
       let error = null;
   
       if (!trimmedName) {
@@ -98,14 +105,14 @@ const addCategory = async (req, res) => {
   
       const newCategory = new Category({ name: trimmedName, description: trimmedDescription });
       await newCategory.save();
-      return res.redirect("/admin/category");
+      return res.redirect("/admin/category");  
+    }else{
+      return res.redirect("/pageerror")
+  }
+   
     } catch (error) {
       console.error(error);
-      return res.render('addCategory', {
-        name: trimmedName,
-        description: trimmedDescription,
-        error: 'Internal server error'
-      });
+      return res.redirect("/pageerror")
     }
   };
 
@@ -114,6 +121,7 @@ const addCategory = async (req, res) => {
 
 const addCategoryOffer = async (req,res)=>{
     try {
+      if(req.session.admin){
         const percentage = parseFloat(req.body.percentage)
         const categoryId = req.body.categoryId;
         const category = await Category.findById(categoryId);
@@ -135,11 +143,15 @@ const addCategoryOffer = async (req,res)=>{
             product.salePrice=product.regularPrice;
             await product.save()
         }
-        res.json({status:true})
+        res.json({status:true})      
+      }else{
+      return res.redirect("/pageerror")
+      }
+      
     } catch (error) {
         console.error('Error adding category offer:', error);
         res.status(500).json({ status: false, message: 'Internal server error' });
-            }
+    }
 }
 
 
@@ -147,6 +159,7 @@ const addCategoryOffer = async (req,res)=>{
 
 const removeCategoryOffer = async (req,res)=>{
     try {
+      if(req.session.admin){
         const categoryId = req.body.categoryId;
         console.log("Received categoryId:", categoryId);
         const category = await Category.findById(categoryId);
@@ -170,7 +183,10 @@ const removeCategoryOffer = async (req,res)=>{
         await category.save();
 
         res.json({status:true})
-    } catch (error) {
+          }else{
+      return res.redirect("/pageerror")
+      }
+      } catch (error) {
         console.error("Error removing category offer:", error);
         res.status(500).json({status:false,message:"Internal server error"})
     }
@@ -181,9 +197,14 @@ const removeCategoryOffer = async (req,res)=>{
 
 const getListCategory = async (req,res)=>{
     try {
+      if(req.session.admin){
         let id = req.query.id;
         await Category.updateOne({_id:id},{$set:{isListed:true}});
-        res.redirect("/admin/category")
+        res.redirect("/admin/category")      
+      }else{
+      return res.redirect("/pageerror")
+      }
+      
     } catch (error) {
         res.redirect("/pageerror")
     }
@@ -194,9 +215,14 @@ const getListCategory = async (req,res)=>{
 
 const getUnlistCategory = async (req,res)=>{
     try {
+      if(req.session.admin){
         let id = req.query.id;
         await Category.updateOne({_id:id},{$set:{isListed:false}});
         res.redirect("/admin/category")
+      }else{
+      return res.redirect("/pageerror")
+      }
+      
     } catch (error) {
         res.redirect("/pageerror");
     }
@@ -210,10 +236,14 @@ const getUnlistCategory = async (req,res)=>{
 
 const getEditCategory = async (req,res)=>{
     try {
+      if(req.session.admin){
         let id = req.query.id;
-       const category = await Category.findOne({_id:id});
-        res.render("editCategory",{category:category,error:''})
-    } catch (error) {
+        const category = await Category.findOne({_id:id});
+         res.render("editCategory",{category:category,error:''})
+        }else{
+      return res.redirect("/pageerror")
+      }
+       } catch (error) {
         res.redirect("/pageerror");
     }
 }
@@ -222,54 +252,59 @@ const getEditCategory = async (req,res)=>{
 
 const editCategory = async (req, res) => {
     try {
-      const id = req.params.id;
-      const { categoryName, description } = req.body;
-  
-      const trimmedCategoryName = categoryName.trim();
-      const trimmedDescription = description.trim();
-  
-      let error = null;
-  
-      if (!trimmedCategoryName) {
-        error = { type: 'error', text: 'Category name is required.' };
-      } else if (!trimmedDescription) {
-        error = { type: 'error', text: 'Description is required.' };
-      }
-  
-      if (error) {
-        return res.render("editCategory", {
-          category: { _id: id, name: trimmedCategoryName, description: trimmedDescription },
-          error
+      if(req.session.admin){
+        const id = req.params.id;
+        const { categoryName, description } = req.body;
+    
+        const trimmedCategoryName = categoryName.trim();
+        const trimmedDescription = description.trim();
+    
+        let error = null;
+    
+        if (!trimmedCategoryName) {
+          error = { type: 'error', text: 'Category name is required.' };
+        } else if (!trimmedDescription) {
+          error = { type: 'error', text: 'Description is required.' };
+        }
+    
+        if (error) {
+          return res.render("editCategory", {
+            category: { _id: id, name: trimmedCategoryName, description: trimmedDescription },
+            error
+          });
+        }
+    
+        const existingCategory = await Category.findOne({
+          name: { $regex: new RegExp(`^${categoryName}$`, 'i') }, // Case insensitive regex
+          _id: { $ne: id } // Exclude the current category
         });
+    
+        if (existingCategory) {
+          error = { type: 'error', text: 'Category exists, please choose another name' };
+          return res.render("editCategory", {
+            category: { _id: id, name: categoryName, description }, // Retain the current category data
+            error
+          });
+        }
+    
+        const updatedCategory = await Category.findByIdAndUpdate(id, {
+          name: categoryName,
+          description: description,
+        }, { new: true });
+    
+        if (updatedCategory) {
+          return res.redirect("/admin/category");
+        } else {
+          error = { type: 'error', text: 'Category not found' };
+          return res.render("editCategory", {
+            category: { _id: id, name: categoryName, description },
+            error
+          });
+        }      
+      }else{
+      return res.redirect("/pageerror")
       }
-  
-      const existingCategory = await Category.findOne({
-        name: { $regex: new RegExp(`^${categoryName}$`, 'i') }, // Case insensitive regex
-        _id: { $ne: id } // Exclude the current category
-      });
-  
-      if (existingCategory) {
-        error = { type: 'error', text: 'Category exists, please choose another name' };
-        return res.render("editCategory", {
-          category: { _id: id, name: categoryName, description }, // Retain the current category data
-          error
-        });
-      }
-  
-      const updatedCategory = await Category.findByIdAndUpdate(id, {
-        name: categoryName,
-        description: description,
-      }, { new: true });
-  
-      if (updatedCategory) {
-        return res.redirect("/admin/category");
-      } else {
-        error = { type: 'error', text: 'Category not found' };
-        return res.render("editCategory", {
-          category: { _id: id, name: categoryName, description },
-          error
-        });
-      }
+      
     } catch (error) {
       console.error("Error updating category:", error);
       return res.status(500).render("editCategory", {

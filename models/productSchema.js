@@ -44,6 +44,7 @@
 // });
 
 // module.exports = mongoose.model('Product', productSchema);
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -65,12 +66,9 @@ const productSchema = new Schema({
         ref: 'Category', 
         required: true,
       },
-    regularPrice: { 
-        type: Number,
-        required: true 
-    },
     salePrice: { 
-        type: Number 
+        type: Number ,
+        required:true,
     },
     createdOn: { 
         type: Date, 
@@ -81,7 +79,8 @@ const productSchema = new Schema({
         required: true 
     },
     color: { 
-        type: String 
+        type: String ,
+        required:true,
     },
     size: { 
         type: String 

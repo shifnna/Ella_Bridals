@@ -134,11 +134,80 @@
     border-color: #ff007f;
     color: #fff;
 }  */
+
+        /* Preloder */
+
+        #preloder {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 999999;
+	background: #ffffff;
+}
+
+.loader {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -13px;
+	margin-left: -13px;
+	border-radius: 60px;
+	animation: loader 0.8s linear infinite;
+	-webkit-animation: loader 0.8s linear infinite;
+}
+
+
+@keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+}
+
+@-webkit-keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+}
     </style>
+    <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
 </head>
 <body>
-
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
 <div class="container">
     <div class="stepper">
         <div class="step completed">
@@ -163,17 +232,21 @@
     <form action="/proceedOrder?subtotal=<%= totalPrice%>" method="post">
         <div class="row">
             <div class="col-md-8">
-                <div class="payment-method-card">
+                <!-- <div class="payment-method-card">
                     <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
                     <label for="creditCard">Credit Card</label>
                 </div>
                 <div class="payment-method-card">
-                    <input type="radio" id="razorpay" name="paymentMethod" value="razorpay">
-                    <label for="razorpay">Razorpay</label>
-                </div>
-                <div class="payment-method-card">
                     <input type="radio" id="bankTransfer" name="paymentMethod" value="bankTransfer">
                     <label for="bankTransfer">Bank Transfer</label>
+                </div> -->
+                <div class="payment-method-card">
+                    <input type="radio" id="razorpay" name="paymentMethod" value="razorpay">
+                    <label for="razorpay">Razorpay</label>
+                </div>                
+                <div class="payment-method-card">
+                    <input type="radio" id="wallet" name="paymentMethod" value="wallet">
+                    <label for="wallet">Wallet</label>
                 </div>
                 <div class="payment-method-card">
                     <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
@@ -252,5 +325,18 @@
     proceedBtn.disabled = true;
     proceedBtn.classList.remove('active'); // Ensure 'active' class is removed when disabled
 </script>
-</body>
-</html>
+   <!-- Js Plugins -->
+   <script src="js/jquery-3.3.1.min.js"></script>
+   <script src="js/bootstrap.min.js"></script>
+   <script src="js/jquery.magnific-popup.min.js"></script>
+   <script src="js/jquery-ui.min.js"></script>
+   <script src="js/mixitup.min.js"></script>
+   <script src="js/jquery.countdown.min.js"></script>
+   <script src="js/jquery.slicknav.js"></script>
+   <script src="js/owl.carousel.min.js"></script>
+   <script src="js/jquery.nicescroll.min.js"></script>
+   <script src="js/main.js"></script>
+   </body>
+   
+       </body>
+       </html>

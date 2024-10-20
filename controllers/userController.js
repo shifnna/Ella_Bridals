@@ -84,16 +84,18 @@ const loadHomePage = async (req,res)=>{
 
 
 
-const loadSignup = async (req,res) => {
-    try {
-        return res.render("signup")
-    } catch (error) {
-        console.log("home page not loading",error);
-        res.status(500).send("server error");
-        return res.redirect("/pageerror")
-        
-    }
-}
+const loadSignup = async (req, res) => {
+  try {
+      let message = req.query.message || '';
+
+      return res.render("signup", { message });
+  } catch (error) {
+      console.log("home page not loading", error);
+      res.status(500).send("server error");
+      return res.redirect("/pageerror");
+  }
+};
+
 
 
 
@@ -152,24 +154,23 @@ const signup = async (req, res) => {
       const { name, email, phone, password, cpassword, referalCode } = req.body;
       req.session.referalCode = referalCode;
 
-      // if (password !== cpassword) {
-      //     return res.render("signup", { message: "Passwords do not match" });
-      // }
+      const user = await User.find({email:email})
+      if(user.length >0){
+        return res.redirect(`/signup?message=User with this email already exist`)
+      }
 
-      // if (!validateEmail(email)) {
-      //     return res.render("signup", { message: "Invalid email format" });
-      // }
-
-      // const findUser = await User.findOne({ email });
-      // if (findUser) {
-      //     return res.render("signup", { message: "User with this email already exists" });
-      // }
-
+      if(referalCode){
+        const referal = await User.findOne({referenceCode:referalCode})
+        if(!referal){
+          return res.redirect(`/signup?message=Enter a Valid Referal Code`)
+        }
+      }
+      
       const otp = generateOtp(6);
       const emailSend = await sendVerificationEmail(email, otp);
 
       if (!emailSend) {
-          return res.json("email-error");
+          return res.json("email-sending-error");
       }
 
       req.session.userOtp = otp;
@@ -259,8 +260,8 @@ const verifyOtp = async (req, res) => {
           }
 
           req.session.user = saveUserData._id;
-          res.json({ success: true, redirectUrl: "/" });
-      } else {
+          res.status(200).json({ success: true, message: "otp verified", redirectUrl: '/' });      
+        } else {
           res.status(400).json({ success: false, message: "Invalid OTP, please try again" });
       }
   } catch (error) {
@@ -603,6 +604,8 @@ const removeFromWishlist = async (req,res)=>{
     }
 }
 
+
+
 const loadWallet = async (req,res)=>{
     try {
         const userId = req.session.user; // Assuming user ID is stored in session
@@ -613,7 +616,7 @@ const loadWallet = async (req,res)=>{
         }
         
     // console.log("transactions",user.transactions);
-    const transactions = await Transaction.find({userId:userId})
+    const transactions = await Transaction.find({userId:userId}).sort({date:-1})
     
         // Render the wallet page and pass the user data
         res.render('wallet', {
@@ -867,23 +870,39 @@ let productDetailsContentStartY = productDetailsStartY + 12 + productDetailsGap;
 // Product Table Rows
 doc.setFont("helvetica", "normal");
 let y = productDetailsContentStartY; // Starting Y-coordinate for product rows
-order.products.forEach((product) => {
-  const productPrice = product.offerPrice !== 0 ? product.offerPrice : product.price; // Determine the price to use
-  const totalAmount = (productPrice * product.quantity).toFixed(2); // Calculate the total amount for this product
 
-  doc.rect(10, y - 7, 190, 10);  // Draw box for each product row
-  doc.text(doc.splitTextToSize(product.name, 90), 12, y);  // Wrap long product names
-  doc.text(`${product.quantity}`, 110, y);
-  doc.text(`Rs. ${productPrice.toFixed(2)}`, 130, y); // Show the actual price per product
-  doc.text(`Rs. ${totalAmount}`, 170, y); // Show the total amount for this product
-  y += 10; // Increment Y for the next product row
+order.products.forEach((product) => {
+  if (product.status !== 'Cancelled' && product.status !== 'Returned') {
+    // Process the product item
+    let productPrice = 0;
+    let quantity = 1;
+
+    if (product.offerPrice !== undefined) {
+      productPrice = product.offerPrice;
+    } else if (product.price !== undefined) {
+      productPrice = product.price;
+    }
+
+    if (product.quantity !== undefined) {
+      quantity = product.quantity;
+    }
+
+    const totalAmount = (productPrice * quantity).toFixed(2);
+
+    doc.rect(10, y - 7, 190, 10);  // Draw box for each product row
+    doc.text(doc.splitTextToSize(product.name, 90), 12, y);  // Wrap long product names
+    doc.text(`${quantity}`, 110, y);
+    doc.text(`Rs. ${productPrice.toFixed(2)}`, 130, y); // Show the actual price per product
+    doc.text(`Rs. ${totalAmount}`, 170, y); // Show the total amount for this product
+    y += 10; // Increment Y for the next product row
+  }
 });
 
    // Amount in Words and Total Amount Box
 y += 10;
-const totalAmount = order.totalAmount + order.couponDiscount; // Assuming this is the subtotal
+const totalAmount = order.totalAmount + order.couponDiscount || 0; // Assuming this is the subtotal
 const discountAmount = order.couponDiscount || 0; // Get the discount amount (or 0 if not set)
-const finalAmount = totalAmount - discountAmount; // Calculate final amount after discount
+const finalAmount = totalAmount - discountAmount || 0; // Calculate final amount after discount
 const amountInWords = numberToWords(finalAmount); // Convert final amount to words
 
 doc.text("Amount in words:", 10, y);
@@ -916,7 +935,7 @@ doc.text(`Total: Rs. ${finalAmount.toFixed(2)}`, 132, y + 40);
     res.send(pdfBuffer);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error generating PDF");
+    console.log("Error generating PDF");;
     return res.redirect("/pageerror")
   }
 };

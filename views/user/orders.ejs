@@ -21,7 +21,7 @@
                       <h6 class="product-title">
                           Status: <%= order.status %> <span class="status-circle <%= order.status.toLowerCase() %>"></span>
                       </h6>
-                      <p>ORDER NUMBER: <%= order._id %></p>
+                      <p>ORDER NUMBER:  ORD-<%= order._id.toString().slice(-8).toUpperCase() %></p>
                       <div class="product-images" style="display: flex; flex-wrap: wrap;">
                           <% order.products.forEach(function(product) { %>
                               <% if (product.productImage && product.productImage.length > 0) { %>

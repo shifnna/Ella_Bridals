@@ -177,12 +177,10 @@
     </div>
 </div>
 
-
-
                                 </div>
                             </div>
                             <div class="col-lg-4 offset-lg-2">
-                                <form action="/selectAddress" method="post" id="checkoutForm">
+                                <form action="/selectAddress" method="get" id="checkoutForm">
                                     <input type="hidden" id="cartItemsData" name="cartItemsData">
                                     <input type="hidden" id="updatedTotalAmount" name="updatedTotalAmount">
                                     <div class="cart__total__procced">
@@ -365,17 +363,18 @@ function updateCartTotal() {
         subtotal += parseFloat(totalElement.textContent);
     });
 
-    // Retrieve discount value from backend
-    const discountValue = parseFloat('<%= discountValue || 0 %>'); 
+    // Calculate the total with discount
+    const discountValue = parseFloat('<%= discountValue || 0 %>');
     const total = subtotal - discountValue; // Apply discount to subtotal
 
-    // Update subtotal and total in the UI
-    document.querySelector('.cart__total__procced ul li:nth-child(1) span').textContent = '$ ' + subtotal.toFixed(2);
-    document.querySelector('.cart__total__procced ul li:last-child span').textContent = '$ ' + total.toFixed(2);
+    // Update UI
+    document.querySelector('.cart__total__procced ul li:nth-child(1) span').textContent = '₹ ' + subtotal.toFixed(2);
+    document.querySelector('.cart__total__procced ul li:last-child span').textContent = '₹ ' + total.toFixed(2);
 
     // Update hidden inputs for form submission
     document.getElementById('updatedTotalAmount').value = total.toFixed(2);
 }
+
 
     
     // Function to save cart data to localStorage

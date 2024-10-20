@@ -38,6 +38,33 @@
     border-color: #ccc; /* You can customize the border color on focus if needed */
     box-shadow: none; /* Remove any potential shadow on focus */
 }
+.pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 0; 
+            list-style: none;
+        }
+        .page-item {
+            margin: 0 5px;
+            list-style: none;
+            margin-right: 70px;
+        }
+        .page-link {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #007bff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        .page-link:hover {
+            background-color: #e9ecef;
+        }
+        .active .page-link {
+            background-color: #007bff;
+            color: #fff;
+        }
 </style>
       <!-- Breadcrumb Begin -->
       <div class="breadcrumb-option">
@@ -84,7 +111,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="sidebar__filter">
+                        <!-- <div class="sidebar__filter">
                             <div class="section-title">
                                 <h4>Shop by price</h4>
                             </div>
@@ -100,8 +127,8 @@
                                 </div>
                             </div>
                             <a href="#">Filter</a>
-                        </div>
-                        <div class="sidebar__sizes">
+                        </div> -->
+                        <!-- <div class="sidebar__sizes">
                             <div class="section-title">
                                 <h4>Shop by size</h4>
                             </div>
@@ -123,9 +150,9 @@
                                 </label>
                                
                             </div>
-                        </div>
+                        </div> -->
                         <div class="sidebar__color">
-                            <div class="section-title">
+                            <!-- <div class="section-title">
                                 <h4>Shop by size</h4>
                             </div>
                             <div class="size__list color__list">
@@ -149,7 +176,7 @@
                                     <input type="checkbox" id="yellows">
                                     <span class="checkmark"></span>
                                 </label>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -224,6 +251,8 @@
                 </div>
             </div>
         </div>
+        <!-- pagination -->
+        
     </section>
     <!-- Shop Section End -->
 

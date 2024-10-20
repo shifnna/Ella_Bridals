@@ -1,410 +1,284 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset Password - Nykaa Style</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-    <style>
-@import url("https://fonts.googleapis.com/css?family=Fira+Sans");
+    .reset-password-container {
+      background-color: white;
+      width: 400px;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
 
-html, body {
-	position: relative;
-	min-height: 100vh;
-	background-color: #ffffff;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-family: "Fira Sans", Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
+    .reset-password-container h2 {
+      text-align: center;
+      color: #ff3f6c;
+      margin-bottom: 20px;
+    }
 
-.form-structor {
-	background-color: #222;
-	border-radius: 15px;
-	height: 550px;
-	width: 350px;
-	position: relative;
-	overflow: hidden;
-}
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-.form-structor::after {
-	content: '';
-	opacity: .8;
-	position: absolute;
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #ff3f6c;
+    }
+
+    .reset-btn {
+      background-color: #ff3f6c;
+      color: white;
+      padding: 10px 15px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .reset-btn:hover {
+      background-color: #e2335d;
+    }
+
+    .back-to-login {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #ff3f6c;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-to-login:hover {
+      text-decoration: underline;
+    }
+
+        
+/* Preloder */
+
+#preloder {
+	position: fixed;
+	width: 100%;
+	height: 100%;
 	top: 0;
-	right: 0;
-	bottom: 0;
 	left: 0;
-	background-repeat: no-repeat;
-	background-position: left bottom;
-	background-size: 500px;
-	background-image: url('https://images.unsplash.com/photo-1503602642458-232111445657?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=bf884ad570b50659c5fa2dc2cfb20ecf&auto=format&fit=crop&w=1000&q=100');
+	z-index: 999999;
+	background: #ffffff;
 }
 
-.signup {
+.loader {
+	width: 40px;
+	height: 40px;
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 65%;
-	z-index: 5;
-	transition: all .3s ease;
+	margin-top: -13px;
+	margin-left: -13px;
+	border-radius: 60px;
+	animation: loader 0.8s linear infinite;
+	-webkit-animation: loader 0.8s linear infinite;
 }
 
-.signup.slide-up {
-	top: 5%;
-	transform: translate(-50%, 0%);
-	transition: all .3s ease;
+
+@keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
 }
 
-.signup.slide-up .form-holder,
-.signup.slide-up .submit-btn {
-	opacity: 0;
-	visibility: hidden;
+@-webkit-keyframes loader {
+	0% {
+		-webkit-transform: rotate(0deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+		border: 4px solid #673ab7;
+		border-left-color: transparent;
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+		border: 4px solid #f44336;
+		border-left-color: transparent;
+	}
 }
 
-.signup.slide-up .form-title {
-	font-size: 1em;
-	cursor: pointer;
-}
-
-.signup.slide-up .form-title span {
-	margin-right: 5px;
-	opacity: 1;
-	visibility: visible;
-	transition: all .3s ease;
-}
-
-.signup .form-title {
-	color: #fff;
-	font-size: 1.7em;
-	text-align: center;
-}
-
-.signup .form-title span {
-	color: rgba(0, 0, 0, 0.4);
-	opacity: 0;
-	visibility: hidden;
-	transition: all .3s ease;
-}
-
-.signup .form-holder {
-	border-radius: 15px;
-	background-color: #fff;
-	overflow: hidden;
-	margin-top: 50px;
-	opacity: 1;
-	visibility: visible;
-	transition: all .3s ease;
-}
-
-.signup .form-holder .input {
-	border: 0;
-	outline: none;
-	box-shadow: none;
-	display: block;
-	height: 30px;
-	line-height: 30px;
-	padding: 8px 15px;
-	border-bottom: 1px solid #eee;
-	width: 100%;
-	font-size: 12px;
-}
-
-.signup .form-holder .input:last-child {
-	border-bottom: 0;
-}
-
-.signup .form-holder .input::-webkit-input-placeholder {
-	color: rgba(0, 0, 0, 0.4);
-}
-
-.signup .submit-btn {
-	background-color: rgba(0, 0, 0, 0.4);
-	color: rgba(256, 256, 256, 0.7);
-	border: 0;
-	border-radius: 15px;
-	display: block;
-	margin: 15px auto;
-	padding: 15px 45px;
-	width: 100%;
-	font-size: 13px;
-	font-weight: bold;
-	cursor: pointer;
-	opacity: 1;
-	visibility: visible;
-	transition: all .3s ease;
-}
-
-.signup .submit-btn:hover {
-	transition: all .3s ease;
-	background-color: rgba(0, 0, 0, 0.8);
-}
-
-.login {
-	position: absolute;
-	top: 20%;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #fff;
-	z-index: 5;
-	transition: all .3s ease;
-}
-
-.login::before {
-	content: '';
-	position: absolute;
-	left: 50%;
-	top: -20px;
-	transform: translate(-50%, 0);
-	background-color: #fff;
-	width: 200%;
-	height: 250px;
-	border-radius: 50%;
-	z-index: 4;
-	transition: all .3s ease;
-}
-
-.login .center {
-	position: absolute;
-	top: calc(50% - 10%);
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 65%;
-	z-index: 5;
-	transition: all .3s ease;
-}
-
-.login .form-title {
-	color: #000;
-	font-size: 1.7em;
-	text-align: center;
-}
-
-.login .form-title span {
-	color: rgba(0, 0, 0, 0.4);
-	opacity: 0;
-	visibility: hidden;
-	transition: all .3s ease;
-}
-
-.login .form-holder {
-	border-radius: 15px;
-	background-color: #fff;
-	border: 1px solid #eee;
-	overflow: hidden;
-	margin-top: 50px;
-	opacity: 1;
-	visibility: visible;
-	transition: all .3s ease;
-}
-
-.login .form-holder .input {
-	border: 0;
-	outline: none;
-	box-shadow: none;
-	display: block;
-	height: 30px;
-	line-height: 30px;
-	padding: 8px 15px;
-	border-bottom: 1px solid #eee;
-	width: 100%;
-	font-size: 12px;
-}
-
-.login .form-holder .input:last-child {
-	border-bottom: 0;
-}
-
-.login .form-holder .input::-webkit-input-placeholder {
-	color: rgba(0, 0, 0, 0.4);
-}
-
-.login .submit-btn {
-	background-color: white;
-	color: rgba(256, 256, 256, 0.7);
-	border: 0;
-	border-radius: 15px;
-	display: block;
-	margin: 15px auto;
-	padding: 15px 45px;
-	width: 100%;
-	font-size: 13px;
-	font-weight: bold;
-	cursor: pointer;
-	opacity: 1;
-	visibility: visible;
-	transition: all .3s ease;
-}
-
-.login .submit-btn:hover {
-	transition: all .3s ease;
-	background-color: rgba(0, 0, 0, 0.8);
-}
-
-.login.slide-up {
-	top: 90%;
-	transition: all .3s ease;
-}
-
-.login.slide-up .center {
-	top: 10%;
-	transform: translate(-50%, 0%);
-	transition: all .3s ease;
-}
-
-.login.slide-up .form-holder,
-.login.slide-up .submit-btn {
-	opacity: 0;
-	visibility: hidden;
-	transition: all .3s ease;
-}
-
-.login.slide-up .form-title {
-	font-size: 1em;
-	margin: 0;
-	padding: 0;
-	cursor: pointer;
-	transition: all .3s ease;
-}
-
-.login.slide-up .form-title span {
-	margin-right: 5px;
-	opacity: 1;
-	visibility: visible;
-	transition: all .3s ease;
-}
-.error-message{
-	color: red;
-	font-size: 0.68rem;
-	display: none;
-	margin-left: 29px;
-}
-
- </style>
-
+    </style>
+    
 </head>
 <body>
-	<form id="loginform" action="/login" method="post">
-    <div class="form-structor">
-        <div class="signup">
-            <h2 class="form-title" id="signup">Login</h2>
-            <div class="form-holder">
-                <!-- <input type="text" name="name" id="name" class="input" placeholder="Name" />
-				<div id="error1" class="error-message"></div> -->
-                <input type="email" name="email" id="email" class="input" placeholder="Email" />			
-				<div id="error1" class="error-message"></div>
-
-                <input type="password" name="password" id="password" class="input" placeholder="Password" />
-				<div id="error2" class="error-message"></div>
-                
-            </div>
-            <%if(locals.message && message.length>0){%>
-                <div class="alert alert-danger text-center">
-                  <%=message%>
-                </div>
-                <%}%>
-            <button type="submit" class="submit-btn">login</button>
-            <span style="margin-left: 50px;">forgot password?</span>
-        </div>
-
-        <div class="login slide-up">
-            <div class="center">
-				<span style="color: rgb(37, 37, 159);">  or use your google account</span>
-				<a href="/auth/google"> <img style="height: 28px;width: 34px;margin-left: 85px;" src="img/google.png"></a>
-                <h2 class="form-title" id="login"><span>or</span>Log in</h2>
-                <!-- <div class="form-holder">
-                    <input type="email" class="input" placeholder="Email" />
-                    <input type="password" class="input" placeholder="Password" />
-                </div>
-                <button class="submit-btn">Log in</button> -->
-            </div>
-        </div>
-
+     <!-- Page Preloder -->
+     <div id="preloder">
+        <div class="loader"></div>
     </div>
-  </form>
-    <script>
-console.clear();
-
-const loginBtn = document.getElementById('login');
-const signupBtn = document.getElementById('signup');
-
-loginBtn.addEventListener('click', (e) => {
-	let parent = e.target.parentNode.parentNode;
-	Array.from(e.target.parentNode.parentNode.classList).find((element) => {
-		if(element !== "slide-up") {
-			parent.classList.add('slide-up')
-		}else{
-			signupBtn.parentNode.classList.add('slide-up')
-			parent.classList.remove('slide-up')
-		}
-	});
-});
-
-signupBtn.addEventListener('click', (e) => {
-	let parent = e.target.parentNode;
-	Array.from(e.target.parentNode.classList).find((element) => {
-		if(element !== "slide-up") {
-			parent.classList.add('slide-up')
-		}else{
-			loginBtn.parentNode.parentNode.classList.add('slide-up')
-			parent.classList.remove('slide-up')
-		}
-	});
-});
 
 
+  <div class="reset-password-container">
+    <h2>Log In</h2>
+	<form id="loginform" action="/login" method="post">
+        
+			<div class="signup">
+				<div class="form-holder">
+				<div class="form-group">
+					<input type="email" name="email" id="email" class="input" placeholder="Email" />			
+					<div id="error1" class="error-message"></div>
+				</div>
+				<div class="form-group">
+					<input type="password" name="password" id="password" class="input" placeholder="Password" />
+					<div id="error2" class="error-message"></div>
+				</div>
+				</div>
+				<%if(locals.message && message.length>0){%>
+					  <span style="color: red;font-size: small;"><%=message%></span>
+				<%}%>
+				<button type="submit" class="reset-btn">login</button>
+				<a href="/forgotPassword" style="color: rgb(116, 117, 122);margin-left: 37%;">forgot password?</a>
+			</div>
 
-const emailid = document.getElementById("email");
-      const passid = document.getElementById("password");
-      const error1 = document.getElementById("error1");
-      const error2 = document.getElementById("error2");
-      const loginform = document.getElementById("loginform");
-
-      function emailValidateChecking(e) {
-        const emailval = emailid.value;
-        const emailpattern =
-          /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
-
-        if (!emailpattern.test(emailval)) {
-          error1.style.display = "block";
-          error1.innerHTML = "Invalid Format";
-        } else {
-          error1.style.display = "none";
-          error1.innerHTML = "";
-        }
-      }
-
-      function passValidateChecking(e) {
-        const passval = passid.value;
-        if (passval.length < 8) {
-          error2.style.display = "block";
-          error2.innerHTML = "Should contain at least 8 characters";
-        } else {
-          error2.style.display = "none";
-          error2.innerHTML = "";
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        loginform.addEventListener("submit", function (e) {
-          emailValidateChecking();
-          passValidateChecking();
-
-          if (!emailid || !passid || !error1 || !error2 || !loginform) {
-            console.error("One or more elements not found");
-          }
-
-          if (error1.innerHTML || error2.innerHTML) {
-            e.preventDefault();
-          }
-        });
-      });
-
-    </script>
+    </form>
+    <a href="/userProfile" class="back-to-login">Back to Profile</a>
+  </div>
 
 </body>
+
+<script>
+	console.clear();
+	
+	const loginBtn = document.getElementById('login');
+	const signupBtn = document.getElementById('signup');
+	
+	loginBtn.addEventListener('click', (e) => {
+		let parent = e.target.parentNode.parentNode;
+		Array.from(e.target.parentNode.parentNode.classList).find((element) => {
+			if(element !== "slide-up") {
+				parent.classList.add('slide-up')
+			}else{
+				signupBtn.parentNode.classList.add('slide-up')
+				parent.classList.remove('slide-up')
+			}
+		});
+	});
+	
+	signupBtn.addEventListener('click', (e) => {
+		let parent = e.target.parentNode;
+		Array.from(e.target.parentNode.classList).find((element) => {
+			if(element !== "slide-up") {
+				parent.classList.add('slide-up')
+			}else{
+				loginBtn.parentNode.parentNode.classList.add('slide-up')
+				parent.classList.remove('slide-up')
+			}
+		});
+	});
+	
+	
+	
+	const emailid = document.getElementById("email");
+		  const passid = document.getElementById("password");
+		  const error1 = document.getElementById("error1");
+		  const error2 = document.getElementById("error2");
+		  const loginform = document.getElementById("loginform");
+	
+		  function emailValidateChecking(e) {
+			const emailval = emailid.value;
+			const emailpattern =
+			  /^[a-zA-Z0-9._-]+@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$/;
+	
+			if (!emailpattern.test(emailval)) {
+			  error1.style.display = "block";
+			  error1.innerHTML = "Invalid Format";
+			} else {
+			  error1.style.display = "none";
+			  error1.innerHTML = "";
+			}
+		  }
+	
+		  function passValidateChecking(e) {
+			const passval = passid.value;
+			if (passval.length < 8) {
+			  error2.style.display = "block";
+			  error2.innerHTML = "Should contain at least 8 characters";
+			} else {
+			  error2.style.display = "none";
+			  error2.innerHTML = "";
+			}
+		  }
+	
+		  document.addEventListener("DOMContentLoaded", function () {
+			loginform.addEventListener("submit", function (e) {
+			  emailValidateChecking();
+			  passValidateChecking();
+	
+			  if (!emailid || !passid || !error1 || !error2 || !loginform) {
+				console.error("One or more elements not found");
+			  }
+	
+			  if (error1.innerHTML || error2.innerHTML) {
+				e.preventDefault();
+			  }
+			});
+		  });
+	
+  </script>
+<!-- Js Plugins -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/mixitup.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+
 </html>

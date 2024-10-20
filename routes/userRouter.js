@@ -4,7 +4,7 @@ const userController = require("../controllers/userController");
 const passport = require("../config/passport")
 const userProfileController = require("../controllers/userProfileController");
 const orderController = require("../controllers/orderController");
-
+const forgotPasswordController = require("../controllers/forgotPassword")
 
 
 router.get("/pageerror",userController.pageNotFound);
@@ -13,7 +13,8 @@ router.get("/pageNotFound",userController.pageNotFound)
 router.get("/",userController.loadHomePage);
 router.get("/signup",userController.loadSignup);
 router.post("/signup",userController.signup);
-router.post("/verify-otp",userController.verifyOtp)
+router.post("/verify-otp",userController.verifyOtp);
+router.get("/verify-otp",(req,res)=>{res.render("verify-otp")});
 router.post("/resendOtp",userController.resendOtp);
 
 
@@ -22,6 +23,7 @@ router.get("/auth/google",passport.authenticate('google',{scope:['profile','emai
 router.get("/auth/google/callback",passport.authenticate('google',{failureRedirect:"/signup"}),(req,res)=>{
     res.redirect("/")
 })
+
 
 //login
 router.get("/login",userController.loadLogin);
@@ -51,9 +53,9 @@ router.get("/addToCart/:id/:id2",userProfileController.addToCart);
 router.get("/removeFromCart",userProfileController.removeFromCart);
 router.post("/updateCart/:id",userProfileController.updateCart)
 
-router.post("/selectAddress",userProfileController.selectAddress);
+router.get("/selectAddress",userProfileController.selectAddress);
 router.get("/selectPayment",userProfileController.selectPayment);
-router.post("/applyCoupon",userProfileController.applyCoupon)
+router.post("/applyCoupon",userProfileController.applyCoupon);
 router.post("/proceedOrder",userProfileController.confirmOrder);
 //for retry payment
 router.get("/proceedOrder",userProfileController.confirmOrder2);
@@ -74,4 +76,21 @@ router.get('/downloadInvoice/:orderId',userController.downloadInvoice)
 router.get("/share-refer",userController.share_refer)
 
 
+//^ forget password
+router.get("/forgotPassword", forgotPasswordController.forgotPassword);
+router.get("/verifyForgotOtp",forgotPasswordController.loadVerifyForgotOtp)
+router.get("/resetPassword",forgotPasswordController.resetPassword);
+router.post("/sendOtp", forgotPasswordController.sendOtp);
+router.post("/verifyForgotOtp", forgotPasswordController.verifyForgotOtp);
+router.post("/updatePassword", forgotPasswordController.updatePassword);
+
+
+
+
+// 404 Middleware for user Router
+router.use((req, res) => {
+    
+    return res.status(404).render('page_404'); 
+ });
+ 
 module.exports = router;

@@ -1,91 +1,87 @@
-const mongoose=require("mongoose");
-const {Schema} = mongoose;
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-
-const userSchema=new Schema({
-    name:{
-        type:String,
-        required:true
+const userSchema = new Schema({
+    name: {
+        type: String,
+        required: true
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    phone:{
-        type:String,
-        required:false, //for eg: oru single sign up cheyyanengil like google/facebook there phn number is not necessary.
-        unique:false,
-        sparse:true,
-        default:null
+    phone: {
+        type: String,
+        required: false,
+        unique: false,
+        sparse: true,
+        default: null
     },
-    googleId:{
-        type:String,
-        unique:true,
-        sparse:true,//sparse allows multiple nulls
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true,
     },
-    password:{
-        type:String,
-        required:false
+    password: {
+        type: String,
+        required: false
     },
-    isBlocked:{
-        type:Boolean,
-        default:false,
+    isBlocked: {
+        type: Boolean,
+        default: false,
     },
-    isAdmin:{
-        type:Boolean,
-        default:false,
+    isAdmin: {
+        type: Boolean,
+        default: false,
     },
-    cart:[{
-       type:Schema.Types.ObjectId, //it is a reference to another collection
-       ref:"Cart", //collection name
+    cart: [{
+        type: Schema.Types.ObjectId,
+        ref: "Cart",
     }],
-    wallet:{
-        type:Number,
-        default:0,
+    wallet: {
+        type: Number,
+        default: 0,
     },
-    transactions: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Transaction' 
+    transactions: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Transaction'
     }],
-
     wishlist: [{
         type: Schema.Types.ObjectId,
         ref: "Product",
     }],
-    orderHistory:[{
-        type:Schema.Types.ObjectId,
-        ref:"Order"
+    orderHistory: [{
+        type: Schema.Types.ObjectId,
+        ref: "Order"
     }],
-    createdOn:{
-        type:Date,
-        default:Date.now,
-
+    createdOn: {
+        type: Date,
+        default: Date.now,
     },
-    referalCode:{
-        type:String, //id
-        // required:true,
+    referalCode: {
+        type: String,
+        // Uncomment if needed
+        // required: true,
     },
-    redeemed:{
-        type:Boolean,
-        // required:true,  
+    redeemed: {
+        type: Boolean,
     },
-    reedeemedUsers:[{
-        type:Schema.Types.ObjectId,
-        ref:"User",//edhokke users redeemed cheythu enn ariyan
-        // required:true,
+    reedeemedUsers: [{
+        type: Schema.Types.ObjectId,
+        ref: "User",
     }],
-    searchHistory:[{   //filter or sort chythathin shesham athil ninn product pick cheyyan
-        category:{
-            type:Schema.Types.ObjectId,
-            ref:"Category"
+    searchHistory: [{
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: "Category"
         },
-        brand:{
-            type:String,
+        brand: {
+            type: String,
         },
-        searchOn:{
-            type:Date,
-            default:Date.now,
+        searchOn: {
+            type: Date,
+            default: Date.now,
         }
     }],
     addresses: [{
@@ -94,10 +90,17 @@ const userSchema=new Schema({
     }],
     referenceCode: { 
         type: String, 
-        unique: true 
+        unique: true, 
+        sparse: true // Allows multiple nulls
     },
-    
-})
+    passwordResetToken: {
+        type: String,
+        required: false,
+    },
+    passwordResetExpires: {
+        type: Date,
+        required: false,
+    },
+});
 
-
-module.exports = mongoose.model("User",userSchema)
+module.exports = mongoose.model("User", userSchema);

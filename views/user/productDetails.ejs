@@ -124,10 +124,10 @@
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>
                             <li><a href="#"><span class="icon_heart_alt"></span>
-                                <div class="tip">2</div>
+                                <!-- <div class="tip">2</div> -->
                             </a></li>
                             <li><a href="#"><span class="icon_bag_alt"></span>
-                                <div class="tip">2</div>
+                                <!-- <div class="tip">2</div> -->
                             </a></li>
                         </ul>
                     </div>
@@ -148,7 +148,7 @@
                     <div class="breadcrumb__links">
                         <a href="./index.html"><i class="fa fa-home"></i> Home</a>
                         <a href="#">Women’s </a>
-                        <span>Essential structured blazer</span>
+                        <span> <%= data.productName %></span>
                     </div>
                 </div>
             </div>
@@ -192,7 +192,7 @@
                 
                 <div class="col-lg-6">
                     <div class="product__details__text">
-                        <h3>Essential structured blazer <span>Brand: SKMEIMore Men Watches from SKMEI</span></h3>
+                        <h3> <%= data.productName %><span>Brand: <%= data.brand %></span></h3>
                         <div class="rating">
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
@@ -201,17 +201,28 @@
                             <i class="fa fa-star"></i>
                             <span>( 138 reviews )</span>
                         </div>
-                        <div class="product__details__price">₹ 75.0 <span>₹ 83.0</span></div>
-                        <p>Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
-                        magni lores eos qui ratione voluptatem sequi nesciunt.</p>
+                        <!-- <div class="product__details__price"> ₹ <%= data.salePrice %><span>₹ 83.0</span></div> -->
+                        <% if (data.offerPrice && data.offerPrice > 0) { %>
+                            <div class="product__details__price" style="display: flex; align-items: center;">
+                              <div class="sale-price" style="text-decoration: line-through; margin-right: 10px;margin-left: 25%;font-weight: 600;color: dimgray;">
+                                  ₹ <%= data.salePrice %>
+                              </div>
+                              <div class="offer-price" style="color:black;text-align: center;font-weight: 600;">
+                                  ₹ <%= data.offerPrice %>
+                              </div>
+                            </div>
+                        <% } else { %>
+                            <div class="product__details__price">₹ <%= data.salePrice %></div>
+                        <% } %>
+                        <p> <%= data.description %>.</p>
                         <div class="product__details__button">
-                            <div class="quantity">
+                            <!-- <div class="quantity">
                                 <span>Quantity:</span>
                                 <div class="pro-qty">
                                     <input type="text" value="1">
                                 </div>
-                            </div>
-                            <a href="/addToCart/<%= data._id %>" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
+                            </div> -->
+                            <a href="/addToCart/<%= data._id%>/10" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
                             <ul>
                                 <li><a href="/addwishlist/<%= data._id %>"><span class="icon_heart_alt"></span></a></li>
                                 <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
@@ -220,7 +231,7 @@
                         <div class="product__details__widget">
                             <ul>
                                 
-                                <li>
+                                <!-- <li>
                                     <span>Available color:</span>
                                     <div class="color__checkbox">
                                         <label for="red">
@@ -235,6 +246,12 @@
                                             <input type="radio" name="color__radio" id="grey">
                                             <span class="checkmark grey-bg"></span>
                                         </label>
+                                    </div>
+                                </li> -->
+                                <li>
+                                    <span>Available stock:</span>
+                                    <div class="color__checkbox">
+                                        <h6 style="color: brown;"><%=data.quantity%></h4>
                                     </div>
                                 </li>
                                 <li>

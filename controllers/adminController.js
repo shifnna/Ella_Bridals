@@ -19,6 +19,7 @@ const loadLogin =  (req,res)=>{
     
     if(req.session.admin){
         return res.redirect("/admin/dashboard")
+
     }else{
         res.render("loginPage",{message:null})
     }
@@ -140,7 +141,6 @@ const topSellingBrands = brandSalesData.map(sale => ({
         const grandTotal = 0;
         const totalDiscount = 0;
         const offerDiscount = 0;
-        const labels = [];
         const chartData = [];
         
         return res.render("dashboard", { orders, grandTotal, totalDiscount, offerDiscount ,topSellingProducts,topSellingCategories,topSellingBrands,chartData});
@@ -228,8 +228,10 @@ const generateReport = async (req, res) => {
 
 
             orders.forEach((order)=>{
-                totalDiscount += order.products[0].couponDiscount 
+                totalDiscount += order.couponDiscount || 0; 
             })
+            console.log('totalDiscount',totalDiscount);
+            
 
 //^ Step 1: Aggregate orders to find total quantity sold for each product
  const salesData = await Order.aggregate([

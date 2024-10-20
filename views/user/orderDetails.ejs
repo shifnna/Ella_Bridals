@@ -22,7 +22,7 @@
     <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
         <div id="report-form" class="col-md-8">
             <h6 class="product-title">PLACED : <%= order.orderDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></h6>
-            <p style="font-size:15px;">ORDER NO : <%= order._id %></p>
+            <p style="font-size:15px;">ORDER NO : <%= order._id.toString().slice(-8).toUpperCase() %></p>
         </div>
         <div style="margin-left: 100px;" class="col-md-2 text-end">
             <h5>TOTAL: ₹<%= order.totalAmount %> </h5>
@@ -31,7 +31,7 @@
 
     <!-- Shipping Address -->
     <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
-        <h6>Shipping Address</h6>
+        <h4>Shipping Address</h6>
         <div>
             <%= order.address[0].username %> <br>
             <%= order.address[0].address %> <br>
@@ -45,10 +45,12 @@
         <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto; align-items: center;">
             <% if (product.productImage && product.productImage.length > 0) { %>
                 <img style="width: 80px; height: 80px; object-fit: cover; margin-right: 16px;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
+            <% } else { %>
+                <img style="width: 80px; height: 80px; object-fit: cover; margin-right: 16px;" src="/path/to/default/image.jpg" alt="Default Image" class="img-fluid rounded">
             <% } %>
             <div class="col-md-8">
                 <div>
-                    <p>Status: <%= order.status %></p>
+                    <p>Status: <%= product.status %></p>
                     <h6>Product Name: <%= product.name %></h6>
                     <h6>Price: ₹<%= product.price %></h6>
                     <p>Quantity: <%= product.quantity %></p>
@@ -56,23 +58,15 @@
                 </div>
             </div>
             <div class="col-md-2 text-end">
-                <% if (order.status === 'Cancelled') { %>
-                    <button class="btn btn-outline-dark" style="width: 100%;">
-                        <span>Order Cancelled</span>
+                <% if(product.status === 'Delivered') { %>
+                    <button id="returnOrderBtn"  class="btn btn-outline-dark" style="width: 100%;">
+                        <a href="/returnOrder?orderId=<%= order._id %>&productId=<%= product.productId %>" style="text-decoration: none; color: black;">Return Order</a>
                     </button>
-                <% } else if(order.status === 'Delivered') { %>
-                    <button class="btn btn-outline-dark" style="width: 100%;">
-                        <a href="/returnOrder?orderId=<%= order._id %>" style="text-decoration: none; color: black;">Return Order</a>
+                <% } else if(product.status === 'OrderConfirmed') { %>
+                    <button id="cancelOrderBtn" class="btn btn-outline-dark" style="width: 100%;">
+                        <a href="/cancelOrder?orderId=<%= order._id %>&productId=<%= product.productId %>" style="text-decoration: none; color: black;">Cancel Order</a>
                     </button>
-                <% } else if(order.status === 'Returned') { %>
-                    <button class="btn btn-outline-dark" style="width: 100%;">
-                        <span>Order Returned</span>
-                    </button>
-                <% } else if(order.status === 'Pending') { %>
-                    <button class="btn btn-outline-dark" style="width: 100%;">
-                        <a href="/proceedOrder?orderId=<%= order._id %>" style="text-decoration: none; color: black;">Continue Payment</a>
-                    </button>
-                <% } else { %>
+                <% } else if(product.status === 'Shipped') { %>
                     <button id="cancelOrderBtn" class="btn btn-outline-dark" style="width: 100%;">
                         <a href="/cancelOrder?orderId=<%= order._id %>&productId=<%= product.productId %>" style="text-decoration: none; color: black;">Cancel Order</a>
                     </button>
@@ -80,6 +74,7 @@
             </div>
         </div>
     <% }); %>
+    
 
     <!-- Payment Details -->
     <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 40%; margin: auto; margin-left: 55%; border-width: 8px; border-color: rgba(127, 124, 124, 0.326); border-radius: 3px;">
@@ -126,7 +121,14 @@
                 </div>
             </div>
         </div>
-    </div>   
+        <% if(order.status === 'Pending') { %>
+            <button class="btn btn-outline-dark" style="width:200px;background-color: rgb(68, 148, 68);border: none;margin-left: 5%;">
+                <a href="/proceedOrder?orderId=<%= order._id %>" style="text-decoration: none; color: rgb(252, 249, 249);">Continue Payment</a>
+            </button>
+        <%}%>
+    </div> 
+    
+          
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -148,6 +150,33 @@
                     confirmButtonColor: '#ff4081',
                     cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to cancel the order
+                        window.location.href = cancelOrderBtn.querySelector('a').href;
+                    }
+                });
+            });
+        }
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelOrderBtn = document.getElementById('returnOrderBtn');
+
+        if (cancelOrderBtn) {
+            cancelOrderBtn.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default button action
+
+                // Trigger SweetAlert for confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to Return this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff4081',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, Return it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Redirect to cancel the order

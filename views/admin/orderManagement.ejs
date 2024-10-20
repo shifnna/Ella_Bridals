@@ -192,7 +192,7 @@
                             <% orders.forEach(order => {%>
                             <!-- Example Row 1 -->
                             <tr>
-                                <td><%=order._id%></td>
+                                <td>ORD-<%= order._id.toString().slice(-8).toUpperCase() %></td>
                                 <td><%=order.address[0].username%></td>
                                 <td><%=order.status%></td>
                                 <td><%=order.totalAmount%></td>
