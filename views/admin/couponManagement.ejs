@@ -253,7 +253,6 @@
                                 <th>Discount</th>
                                 <th>expiryDate</th>
                                 <th>Min order amount</th>
-                                <th>Max order amount</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -270,7 +269,6 @@
                                     <%}%>
                                 <td><%= data[i].expiryDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></td>
                                 <td><%= data[i].minOrderAmount %></td>
-                                <td><%= data[i].maxOrderAmount %></td>
                                 <td><span class="badge rounded-pill alert-success">Active</span></td>
                                 <td>
                                     <a href="/admin/editCoupon?id=<%=data[i]._id%>" class="btn btn-edit" onclick="return confirm('Are you sure you want to delete this coupon?')">Edit</a>

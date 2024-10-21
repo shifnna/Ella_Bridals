@@ -158,11 +158,9 @@
                 <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
                 <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
                 <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
-                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
-                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
-                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
-
-
+                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li>
+                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li>
+                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </div>
 
@@ -183,59 +181,77 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="productName">Product Name</label>
-                            <input type="text" class="form-control" value="<%= product.productName %>"  id="productName" name="productName" placeholder="Enter product name" required>
+                            <input type="text" class="form-control" value="<%= product.productName %>" id="productName" name="productName" placeholder="Enter product name">
+                            <small class="error-message" id="productNameError" style="color: red;"></small>
                         </div>
                         <div class="form-group">
                             <label for="brand">Brand</label>
-                            <input type="text" class="form-control" value="<%= product.brand %>"  id="brand" name="brand" placeholder="Enter brand" required>
+                            <select style="height: 60px;" class="form-control" id="brand" name="brand" required>
+                                <% for(let i=0; i< brand.length ; i++) { %>
+                                <option value="<%=brand[i].brandName%>"><%=brand[i].brandName%></option>
+                                <% } %>
+                            </select>                            
+                            <small class="error-message" id="brandError" style="color: red;"></small>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="category">Category</label>
-                            <select class="form-control" id="category" name="category" required>
-                                <% for(let i=0; i< cat.length ; i++) { %>
+                            <select class="form-control" id="category" name="category">
+                                <% for(let i=0; i< cat.length; i++) { %>
                                     <option value="<%= cat[i]._id %>" <%= (cat[i]._id === product.category) ? 'selected' : '' %> ><%=cat[i].name%></option>
-                                <%}%>
+                                <% } %>
                             </select>
+                            <small class="error-message" id="categoryError" style="color: red;"></small>
                         </div>
                         <div class="form-group full-width">
                             <label for="description">Description</label>
-                            <!-- <textarea class="form-control" value="<%= product.description %>" id="descriptionid" name="description" rows="4" placeholder="Enter description" required></textarea> -->
-                            <textarea class="form-control" id="descriptionid" name="description" rows="4" placeholder="Enter description" required><%= product.description %></textarea>                        </div>
+                            <textarea class="form-control" id="descriptionid" name="description" rows="4" placeholder="Enter description"><%= product.description %></textarea>
+                            <small class="error-message" id="descriptionError" style="color: red;"></small>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="regularPrice">Regular Price</label>
-                            <input type="number" class="form-control" value="<%= product.regularPrice %>" id="regularPrice" name="regularPrice" placeholder="Enter regular price" required>
-                        </div>
-                        <div class="form-group">
                             <label for="salePrice">Sale Price</label>
                             <input type="number" value="<%= product.salePrice %>" class="form-control" id="salePrice" name="salePrice" placeholder="Enter sale price">
+                            <small class="error-message" id="salePriceError" style="color: red;"></small>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="quantity">Quantity</label>
-                            <input type="number" class="form-control" value="<%= product.quantity %>" id="quantity" name="quantity" placeholder="Enter quantity" required>
+                            <input type="number" class="form-control" value="<%= product.quantity %>" id="quantity" name="quantity" placeholder="Enter quantity">
+                            <small class="error-message" id="quantityError" style="color: red;"></small>
                         </div>
                         <div class="form-group">
                             <label for="color">Color</label>
                             <input type="text" class="form-control" value="<%= product.color %>" id="color" name="color" placeholder="Enter color">
+                            <small class="error-message" id="colorError" style="color: red;"></small>
                         </div>
                         <div class="form-group">
                             <label for="size">Size</label>
-                            <input type="text" class="form-control" value="<%= product.size %>" id="size" name="size" placeholder="Enter size">
+                            <select class="form-control" id="size" name="size" >
+                                <option value="">Select a size</option>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>                            
+                            <small class="error-message" id="sizeError" style="color: red;"></small>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="offerPercentage">Offer Percentage</label>
                             <input type="number" class="form-control" value="<%= product.offerPercentage %>" id="offerPercentage" name="offerPercentage" placeholder="Enter offer percentage" min="0" max="100">
+                            <small class="error-message" id="offerPercentageError" style="color: red;"></small>
                         </div>
                         <div class="form-group">
                             <label for="offerPrice">Offer Price</label>
                             <input type="number" class="form-control" value="<%= product.offerPrice %>" id="offerPrice" name="offerPrice" placeholder="Enter offer price">
+                            <small class="error-message" id="offerPriceError" style="color: red;"></small>
                         </div>
                     </div>
                     <div class="card-header">
@@ -257,18 +273,17 @@
                     <div class="form-row img-upload">
                         <% for (let i = 1; i <= 4; i++) { %>
                         <div class="form-group">
-                            <label for="image1">Image 1</label>
+                            <label for="image<%= i %>">Image <%= i %></label>
                             <img src="" alt="" id="imgView<%= i %>">
                             <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, `<%= i %>`)">
                         </div>
                         <div class="image-cropper d-flex align-items-center" style="display:none;">
-                            <img  src="" id="croppedImg<%= i %>" alt="">
+                            <img src="" id="croppedImg<%= i %>" alt="">
                             <button type="button" id="saveButton<%= i %>" class="btn-sm btn-primary">Save</button>
                         </div>
-
-                    <% } %>
+                        <% } %>
                     </div>
-                    <button type="submit" onclick="return validateForm()">Update Product</button>
+                    <button type="submit">Update Product</button>
                 </form>
             </div>
         </div>
@@ -276,61 +291,125 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
     <script>
-       
-       function validateForm() {
+        function validateForm() {
+    // Clear previous error messages
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
     // Get field values
     const productName = document.getElementById('productName').value.trim();
     const brand = document.getElementById('brand').value.trim();
     const category = document.getElementById('category').value;
     const description = document.getElementById('descriptionid').value.trim();
+    const salePrice = document.getElementById('salePrice').value.trim();
+    const quantity = document.getElementById('quantity').value.trim();
+    const offerPercentage = document.getElementById('offerPercentage').value.trim();
+    const offerPrice = document.getElementById('offerPrice').value.trim();
+    const color = document.getElementById('color').value.trim();  // Added for color
+    const size = document.getElementById('size').value;  // Added for size
 
-    // Check if category is a valid MongoDB ID
-    const isValidCategoryId = /^[a-f\d]{24}$/i.test(category);
+    // Initialize a valid state
+    let isValid = true;
 
-    console.log("Validation result:", !productName || !brand || !isValidCategoryId || !description);
-
-    // Check if any of the required fields are empty
-    if (!productName || !brand || !isValidCategoryId || !description) {
-        alert('Please fill out all required fields');
-        return false;  // Block form submission if validation fails
+    // Check if any required fields are empty
+    if (!productName) {
+        document.getElementById('productNameError').textContent = 'Product Name is required.';
+        isValid = false;
+    }
+    if (!brand) {
+        document.getElementById('brandError').textContent = 'Brand is required.';
+        isValid = false;
+    }
+    if (!category.match(/^[a-f\d]{24}$/i)) {
+        document.getElementById('categoryError').textContent = 'Please select a valid category.';
+        isValid = false;
+    }
+    if (!description) {
+        document.getElementById('descriptionError').textContent = 'Description is required.';
+        isValid = false;
+    }
+    if (!color) {
+        document.getElementById('colorError').textContent = 'Color is required.';
+        isValid = false;
+    }
+    if (!size) {
+        document.getElementById('sizeError').textContent = 'Size is required.';
+        isValid = false;
     }
 
-    return true;  // Allow form submission
+    // Check for numeric fields
+    const salePriceNum = parseFloat(salePrice);
+    const quantityNum = parseInt(quantity, 10);
+    const offerPercentageNum = parseFloat(offerPercentage);
+    const offerPriceNum = parseFloat(offerPrice);
+
+    if (salePrice === '' || isNaN(salePriceNum)) {
+        document.getElementById('salePriceError').textContent = 'Sale Price must be a valid number.';
+        isValid = false;
+    } else if (salePriceNum < 0) {
+        document.getElementById('salePriceError').textContent = 'Sale Price cannot be negative.';
+        isValid = false;
+    }
+
+    if (quantity === '' || isNaN(quantityNum)) {
+        document.getElementById('quantityError').textContent = 'Quantity must be a valid number.';
+        isValid = false;
+    } else if (quantityNum < 0) {
+        document.getElementById('quantityError').textContent = 'Quantity cannot be negative.';
+        isValid = false;
+    }
+
+    if (offerPercentage === '' || isNaN(offerPercentageNum)) {
+        document.getElementById('offerPercentageError').textContent = 'Offer Percentage must be a valid number.';
+        isValid = false;
+    } else if (offerPercentageNum < 0) {
+        document.getElementById('offerPercentageError').textContent = 'Offer Percentage cannot be negative.';
+        isValid = false;
+    }
+
+    if (offerPrice === '' || isNaN(offerPriceNum)) {
+        document.getElementById('offerPriceError').textContent = 'Offer Price must be a valid number.';
+        isValid = false;
+    } else if (offerPriceNum < 0) {
+        document.getElementById('offerPriceError').textContent = 'Offer Price cannot be negative.';
+        isValid = false;
+    }
+
+    // Prevent form submission if not valid
+    return isValid; // Allow or prevent form submission
 }
 
 
-    function deleteSingleImage(imageName, productId) {  
-    // Create an object with the imageName and productId
-    const data = {
-        imageNameToServer: imageName,
-        productIdToserver: productId
-    };
 
-    // Send an AJAX POST request to the backend
-    fetch('/admin/deleteImage', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.status) {
-            // Successfully deleted the image
-            // Remove the image element from the DOM
-            document.querySelector(`img[src="/uploads/product-images/${imageName}"]`).parentElement.parentElement.remove();
-        } else {
-            // Handle the error (for example, show an alert)
-            alert('Error deleting image.');
+
+
+        function deleteSingleImage(imageName, productId) {
+            const data = {
+                imageNameToServer: imageName,
+                productIdToserver: productId
+            };
+
+            // Send an AJAX POST request to the backend
+            fetch('/admin/deleteImage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status) {
+                    // Successfully deleted the image
+                    document.querySelector(`img[src="/imgs/re-images/${imageName}"]`).parentElement.parentElement.remove();
+                } else {
+                    alert('Error deleting image.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
     </script>
-
 </body>
+
 </html>

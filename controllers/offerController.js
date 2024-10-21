@@ -70,42 +70,72 @@ if(req.session.admin){
 
 
 
-const addOffer = async (req,res)=>{
+
+
+const addOffer = async (req, res) => {
     try {
-        
-if(req.session.admin){
-    // console.log("body is :",req.body);
-    const {offerType,entityId,discountPercentage,validFrom,validTo,status} = req.body;
+        if (req.session.admin) {
+            const {
+                offerType,
+                entityId,
+                discountPercentage,
+                validFrom,
+                validTo,
+                status,
+            } = req.body;
 
-    const newOffer = new Offer({
-     offerType,
-     entityId,
-     discountPercentage,
-     validFrom,
-     validTo,
-     status,
-    })
-    
-    newOffer.save();
+            const newOffer = new Offer({
+                offerType,
+                entityId,
+                discountPercentage,
+                validFrom,
+                validTo,
+                status,
+            });
 
-    if(offerType== 'Category'){
-     await Category.findOneAndUpdate({name: entityId},{$set:{categoryOffer:discountPercentage}});
-    }else if(offerType== 'Brand'){
-     await Brand.findOneAndUpdate({brandName: entityId},{$set:{brandOffer:discountPercentage}})
-    }
+            await newOffer.save(); // Save the new offer
 
-    console.log("Offer created Successfully");
-    
-    res.redirect("/admin/offers")    
-}else{
-    res.redirect("/pageerror")
-}
-    
+            // Update products based on the offer type
+            let products;
+            if (offerType === 'Category') {
+                // Fetch the products associated with the category
+                const category = await Category.findOne({ name: entityId });
+                if (category) {
+                    products = await Product.find({ category: category._id });
+                }
+            } else if (offerType === 'Brand') {
+                // Fetch the products associated with the brand
+                const brand = await Brand.findOne({ brandName: entityId });
+                if (brand) {
+                    products = await Product.find({ brand: brand._id });
+                }
+            }
+
+            // Update each product with the new offer details
+            if (products && products.length > 0) {
+                for (const product of products) {
+                    // Update offer percentage
+                    product.offerPercentage = discountPercentage;
+
+                    // Calculate the new offer price based on the sale price
+                    product.offerPrice = product.salePrice - Math.floor(product.salePrice * (discountPercentage / 100));
+
+                    // Save the updated product
+                    await product.save();
+                }
+            }
+
+            console.log("Offer created and products updated successfully.");
+            res.redirect("/admin/offers");
+        } else {
+            res.redirect("/pageerror");
+        }
     } catch (error) {
-        console.log("error adding offer",error);       
-        res.redirect("/pageerror")
+        console.log("Error adding offer:", error);
+        res.redirect("/pageerror");
     }
-}
+};
+
 
 
 
@@ -182,35 +212,54 @@ if(req.session.admin){
 
 const deleteOffer = async (req, res) => {
     try {
-        
-if(req.session.admin){
-    const id = req.query.id;
+        if (req.session.admin) {
+            const id = req.query.id;
 
-    const offer = await Offer.findById(id);
+            const offer = await Offer.findById(id);
 
-    if (offer) {
-        await Offer.deleteOne({ _id: id });
+            if (offer) {
+                // Fetch the products associated with the offer type
+                let products;
+                if (offer.offerType === 'Category') {
+                    const category = await Category.findOne({ name: offer.entityId });
+                    if (category) {
+                        products = await Product.find({ category: category._id });
+                    }
+                } else if (offer.offerType === 'Brand') {
+                    const brand = await Brand.findOne({ brandName: offer.entityId });
+                    if (brand) {
+                        products = await Product.find({ brand: brand._id });
+                    }
+                }
 
-        if (offer.offerType === 'Category') {
-            await Category.findOneAndDelete({name:offer.entityId})
-        } else if (offer.offerType === 'Brand') {
-            await Category.findOneAndDelete({name:offer.entityId})
+                // Reset offer details for each product
+                if (products && products.length > 0) {
+                    for (const product of products) {
+                        product.offerPercentage = 0;  // Reset the offer percentage
+                        product.offerPrice = product.salePrice;  // Reset the offer price back to the sale price
+
+                        await product.save();  // Save the updated product
+                    }
+                }
+
+                // Delete the offer
+                await Offer.deleteOne({ _id: id });
+
+                console.log("Offer deleted and products updated successfully.");
+                res.redirect("/admin/offers");
+            } else {
+                res.status(404).json({ error: "Offer not found" });
+            }
+        } else {
+            res.redirect("/pageerror");
         }
-
-        console.log("Offer deleted and updated successfully.");
-        res.redirect("/admin/offers");
-    } else {
-        res.status(404).json({ error: "Offer not found" });
-    }    
-}else{
-    res.redirect("/pageerror")
-}
-        
     } catch (error) {
-        console.log("Error deleting offer", error);
+        console.log("Error deleting offer:", error);
         res.redirect("/pageerror");
     }
 };
+
+
 
 
 module.exports = {

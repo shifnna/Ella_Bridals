@@ -248,19 +248,20 @@ button:hover a {
                     <!-- Brand Form -->
                     <div class="brand-form">
                         <h3>Add New Brand</h3>
-                        <form action="/admin/addBrand" method="POST" enctype="multipart/form-data">
+                        <form id="brandForm" action="/admin/addBrand" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                             <div class="form-group">
                                 <label for="brandName">Brand Name</label>
                                 <input style="height: 40px;" type="text" class="form-control" id="brandName" name="brandName" placeholder="Type here">
+                                <div id="brandNameError" class="error-message" style="color: red;font-size: small;"></div>
                             </div>
                             <div class="form-group">
                                 <label for="brandImage">Brand Image</label>
                                 <img src="" alt=""/>
                                 <input style="height: 40px;" type="file" class="form-control-file" id="brandImage" name="brandImage">
+                                <div id="brandImageError" class="error-message" style="color: red;font-size: small;"></div>
                             </div>
                             <button type="submit">Add Brand</button>
-                            <!--  -->
-                       </form>
+                        </form>
                     </div>
                 </div>
 
@@ -316,6 +317,34 @@ button:hover a {
     </div>
 
     <script>
+ function validateForm() {
+        // Clear previous error messages
+        document.getElementById('brandNameError').innerText = '';
+        document.getElementById('brandImageError').innerText = '';
+
+        // Get the values from the form
+        const brandName = document.getElementById('brandName').value.trim();
+        const brandImage = document.getElementById('brandImage').files[0];
+
+        let isValid = true;
+
+        // Validate brand name
+        if (!brandName.match(/^[A-Za-z\s]+$/)) {
+            document.getElementById('brandNameError').innerText = 'Brand name must contain only letters.';
+            isValid = false;
+        }
+
+        // Validate brand image
+        if (!brandImage) {
+            document.getElementById('brandImageError').innerText = 'Please select a brand image.';
+            isValid = false;
+        }
+
+        return isValid; // Return true if all validations pass
+    }
+
+
+
 
         function confirmDelete(){
           return confirm("are you sure you want to delete this brand?")

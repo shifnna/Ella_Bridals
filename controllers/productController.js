@@ -156,56 +156,97 @@ console.log(req.body);
 
 
 
-
 const addProductOffer = async (req, res) => {
     try {
-        
-if(req.session.admin){
-    const { productId, percentage } = req.body;
-    const findProduct = await Product.findOne({ _id: productId });
-    const findCategory = await Category.findOne({ _id: findProduct.category });
+        if (req.session.admin) {
+            const { productId, percentage } = req.body;
 
-    if (findCategory.categoryOffer > percentage) {
-        return res.json({ status: false, message: "This product's category already has a category offer" })
-    }
+            console.log("Received productId:", productId);
+            console.log("Received percentage:", percentage);
 
-    findProduct.offerPrice = findProduct.salePrice - Math.floor(findProduct.regularPrice * (percentage / 100));
-    findProduct.offerPercentage = parseInt(percentage);
+            const findProduct = await Product.findOne({ _id: productId }).populate('category');
+            if (!findProduct) {
+                return res.json({ status: false, message: "Product not found" });
+            }
 
-    await findProduct.save();
-    findCategory.categoryOffer = 0;
-    await findCategory.save();
-    res.json({ status: true });    
-}else{
-    res.redirect("/pageerror")
-}
-        
+            const findCategory = await Category.findOne({ _id: findProduct.category });
+            if (!findCategory) {
+                return res.json({ status: false, message: "Category not found" });
+            }
+
+            console.log("Found Product:", findProduct);
+            console.log("Found Category:", findCategory);
+
+            if (findCategory.categoryOffer > percentage) {
+                return res.json({ status: false, message: "This product's category already has a category offer" });
+            }
+
+            const salePrice = parseFloat(findProduct.salePrice);
+            const offerPercentage = parseInt(percentage);
+
+            console.log("Sale Price:", salePrice);
+            console.log("Offer Percentage:", offerPercentage);
+
+            if (isNaN(salePrice) || isNaN(offerPercentage)) {
+                return res.json({ status: false, message: "Invalid price or percentage values" });
+            }
+
+            findProduct.offerPrice = salePrice * (1 - (offerPercentage / 100));
+            findProduct.offerPercentage = offerPercentage;
+
+            console.log("Calculated Offer Price:", findProduct.offerPrice);
+
+            // Save the product
+            await findProduct.save();
+
+            findCategory.categoryOffer = 0;
+            await findCategory.save();
+
+            res.json({ status: true });    
+        } else {
+            res.redirect("/pageerror");
+        }
     } catch (error) {
-        res.redirect("/pageerror");
-        return res.status(500).json({ status: true, message: "Internal server error" })
+        console.error("Error adding product offer:", error);
+        res.status(500).json({ status: false, message: "Internal server error" });
     }
-}
+};
+
+
+
 
 const removeProductOffer = async (req, res) => {
     try {
-        
-if(req.session.admin){
-    const { productId } = req.body;
-    const findProduct = await Product.findOne({ _id: productId });
-    const percentage = findProduct.productOffer;
-    findProduct.salePrice = findProduct.salePrice + Math.floor(findProduct.regularPrice * (percentage / 100));
-    findProduct.productOffer = 0;
-    await findProduct.save();
-    res.json({ status: true })
+        if (req.session.admin) {
+            const { productId } = req.body;
 
-}else{
-    res.redirect("/pageerror")
-}
-        
+            const findProduct = await Product.findOne({ _id: productId });
+            if (!findProduct) {
+                return res.json({ status: false, message: "Product not found" });
+            }
+
+            console.log("Found Product for Removing Offer:", findProduct);
+
+            if (findProduct.offerPercentage === 0) {
+                return res.json({ status: false, message: "No active offer to remove" });
+            }
+
+            findProduct.offerPrice = 0;         
+            findProduct.offerPercentage = 0;    
+            
+            await findProduct.save();
+
+            res.json({ status: true, message: "Offer removed successfully." });
+        } else {
+            res.redirect("/pageerror");
+        }
     } catch (error) {
-        res.redirect("/pageerror");
+        console.error("Error removing product offer:", error);
+        res.status(500).json({ status: false, message: "Internal server error" });
     }
-}
+};
+
+
 
 const blockProduct = async (req, res) => {
     try {
@@ -244,30 +285,33 @@ if(req.session.admin){
 }
 
 
-
-const getEditProduct = async (req,res)=>{
+const getEditProduct = async (req, res) => {
     try {
-        
-if(req.session.admin){
-    const id= req.query.id;
-    const product = await Product.findOne({_id:id});
-    const category = await Category.find({});
-    const brand = await Brand.find({});
+        if (req.session.admin) {
+            const id = req.query.id;
 
-    
-    res.render("edit-product",{
-        product:product,
-        cat:category,
-        brand:brand
-    })    
-}else{
-    res.redirect("/pageerror")
-}
-        
+            const product = await Product.findOne({ _id: id });
+            const category = await Category.find({});
+            const brand = await Brand.find({});
+
+            if (!product) {
+                return res.redirect("/pageerror");
+            }
+
+            return res.render("edit-product", {
+                product: product,
+                cat: category,
+                brand: brand,
+            });
+        } else {
+            return res.redirect("/pageerror");
+        }
     } catch (error) {
-        res.redirect("/pageerror")
+        console.error("Error fetching product:", error);
+        return res.redirect("/pageerror");
     }
 }
+
 
 
 
@@ -345,7 +389,6 @@ if(req.session.admin){
             description: data.description,
             brand: data.brand,
             category: data.category,
-            regularPrice: data.regularPrice,
             salePrice: data.salePrice,
             quantity: data.quantity,
             size: data.size,

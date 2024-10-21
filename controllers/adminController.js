@@ -429,8 +429,6 @@ res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount,topSell
 
 
 
-
-
 async function generatePDFReport(req, res) {
     try {
         // Fetch orders and corresponding user data
@@ -450,14 +448,14 @@ async function generatePDFReport(req, res) {
         doc.text("Order Report", 10, 10);
 
         // Set headers
-        const headers = ["Sl.", "Order Date", "Customer", "Amount", "Discount", "Total"];
+        const headers = ["Sl.", "Order Date", "Customer", "Product Name", "Brand", "Total Amount", "Discount", "Grand Total"];
         const headerYPosition = 25; // Adjusted for better spacing
         const dataYStartPosition = headerYPosition + 15; // Start data after headers
 
         // Draw headers with larger font size and bold text
         doc.setFontSize(12); // Adjusted header size
         doc.setFont("helvetica", "bold"); // Set font to bold
-        const headerSpacing = 35; // Fixed spacing between headers
+        const headerSpacing = 30; // Fixed spacing between headers
 
         headers.forEach((header, index) => {
             doc.text(header, 10 + (index * headerSpacing), headerYPosition); // Adjusted spacing between headers
@@ -482,11 +480,18 @@ async function generatePDFReport(req, res) {
             const userName = order.userId ? order.userId.name : "Unknown User"; // Adjust as necessary
             const orderDate = new Date(order.orderDate).toLocaleDateString();
             const discount = order.offerDiscount || 0;
-            const total = (order.totalAmount - discount) || 0;
 
-            // Update totals
+            // Initialize order specific totals
+            let orderTotal = 0; // To hold total amount for the current order
+            const productTotalAmount = order.products.reduce((sum, product) => {
+                const productTotal = product.price * product.quantity; // Calculate product total
+                orderTotal += productTotal; // Accumulate the order total
+                return sum + productTotal; // Accumulate product total amount
+            }, 0); // Sum of product totals
+
+            // Update overall totals
             totalSalesCount += 1;
-            totalOrderAmount += order.totalAmount;
+            totalOrderAmount += (productTotalAmount - discount); // Grand total after discount
             totalDiscount += discount;
 
             // Create a formatted structure for each order
@@ -494,9 +499,11 @@ async function generatePDFReport(req, res) {
                 `${index + 1}`,
                 `${orderDate}`,
                 `${userName}`,
-                `$${order.totalAmount}`,
-                `$${discount}`,
-                `$${total}`,
+                order.products.map(product => `${product.name} (${product.quantity})`).join(", "), // Product names with quantities
+                order.products.map(product => product.brand).join(", "), // Product brands
+                `$${(productTotalAmount).toFixed(2)}`, // Total Amount for this order
+                `$${discount.toFixed(2)}`, // Discount
+                `$${(productTotalAmount - discount).toFixed(2)}` // Grand Total (order total minus discount)
             ];
 
             // Write the order details directly under the headers with alternating row colors
@@ -506,7 +513,7 @@ async function generatePDFReport(req, res) {
 
             orderDetails.forEach((detail, dataIndex) => {
                 // Adjust for possible long text and use text wrapping
-                if (dataIndex === 2) { // Customer name may be long
+                if (dataIndex === 3 || dataIndex === 4) { // Product name or brand may be long
                     const splitText = doc.splitTextToSize(detail, 50); // Split if too long
                     doc.text(splitText, 10 + (dataIndex * headerSpacing), verticalPosition);
                 } else {
@@ -528,19 +535,10 @@ async function generatePDFReport(req, res) {
         doc.setDrawColor(0);
         doc.line(10, lineYPosition, 200, lineYPosition); // Line under the data
 
-        // Display starting date and ending date
-        const startDate = new Date(orders[0].orderDate).toLocaleDateString(); // Adjust as necessary
-        const endDate = new Date(orders[orders.length - 1].orderDate).toLocaleDateString(); // Adjust as necessary
-
-        // Add starting date
-        doc.text(`Starting Date: ${startDate}`, 10, lineYPosition + 10); // Position under the line
-        // Add ending date
-        doc.text(`Ending Date: ${endDate}`, 10, lineYPosition + 20); // Position under the starting date
-
-        // Add total sales count, total order amount, and total discount
-        doc.text(`Total Sales Count: ${totalSalesCount}`, 10, lineYPosition + 30);
-        doc.text(`Total Order Amount: $${totalOrderAmount.toFixed(2)}`, 10, lineYPosition + 40);
-        doc.text(`Total Discount: $${totalDiscount.toFixed(2)}`, 10, lineYPosition + 50);
+        // Add summary section
+        doc.text(`Total Sales Count: ${totalSalesCount}`, 10, lineYPosition + 10);
+        doc.text(`Total Order Amount: $${totalOrderAmount.toFixed(2)}`, 10, lineYPosition + 20);
+        doc.text(`Total Discount: $${totalDiscount.toFixed(2)}`, 10, lineYPosition + 30);
 
         // Add a footer with the date
         const currentDate = new Date().toLocaleDateString();
@@ -561,6 +559,7 @@ async function generatePDFReport(req, res) {
         res.status(500).send("Error generating report");
     }
 }
+
 
 
 
@@ -590,47 +589,94 @@ async function generateExcelReport(req, res) {
             'Sl.',
             'Order Date',
             'Customer',
-            'Amount',
+            'Product Name',
+            'Brand',
+            'Total Amount',
             'Discount',
-            'Total',
+            'Grand Total',
         ]);
+
+        // Format header cells
+        worksheet.getRow(1).font = { bold: true }; // Bold headers
+        worksheet.getRow(1).alignment = { horizontal: 'center' }; // Center align headers
+
+        // Set widths for columns to ensure equal spacing
+        worksheet.getColumn(1).width = 5; // Sl.
+        worksheet.getColumn(2).width = 15; // Order Date
+        worksheet.getColumn(3).width = 20; // Customer
+        worksheet.getColumn(4).width = 30; // Product Name
+        worksheet.getColumn(5).width = 20; // Brand
+        worksheet.getColumn(6).width = 15; // Total Amount
+        worksheet.getColumn(7).width = 10; // Discount
+        worksheet.getColumn(8).width = 15; // Grand Total
 
         // Add orders to the worksheet
         let index = 1;
+        let totalOrderAmount = 0;
+        let totalDiscount = 0;
+
         orders.forEach((order) => {
             const userName = order.userId ? order.userId.name : "Unknown User";
             const orderDate = new Date(order.orderDate).toLocaleDateString();
             const discount = order.offerDiscount || 0;
-            const total = (order.totalAmount - discount) || 0;
 
+            // Initialize order specific totals
+            let orderTotal = 0; // To hold total amount for the current order
+            const productTotalAmount = order.products.reduce((sum, product) => {
+                const productTotal = product.price * product.quantity; // Calculate product total
+                orderTotal += productTotal; // Accumulate the order total
+                return sum + productTotal; // Accumulate product total amount
+            }, 0); // Sum of product totals
+
+            // Update overall totals
+            totalOrderAmount += (productTotalAmount - discount); // Grand total after discount
+            totalDiscount += discount;
+
+            // Add a new row to the worksheet
             worksheet.addRow([
                 index,
                 orderDate,
                 userName,
-                order.totalAmount,
-                discount,
-                total,
+                order.products.map(product => `${product.name} (${product.quantity})`).join(", "), // Product names with quantities
+                order.products.map(product => product.brand).join(", "), // Product brands
+                productTotalAmount.toFixed(2), // Total Amount for this order
+                discount.toFixed(2), // Discount
+                (productTotalAmount - discount).toFixed(2) // Grand Total (order total minus discount)
             ]);
+
+            // Format each cell to align the content to the right
+            const lastRow = worksheet.lastRow;
+            lastRow.getCell(6).numFmt = '$#,##0.00'; // Total Amount
+            lastRow.getCell(7).numFmt = '$#,##0.00'; // Discount
+            lastRow.getCell(8).numFmt = '$#,##0.00'; // Grand Total
 
             index++;
         });
 
-        // Save the workbook to a buffer
-        const buffer = await workbook.xlsx.writeBuffer();
+        // Add summary row at the end of the worksheet
+        const summaryRow = worksheet.addRow([]);
+        summaryRow.getCell(1).value = 'Total Sales Count:';
+        summaryRow.getCell(2).value = totalOrderAmount.toFixed(2);
+        summaryRow.getCell(3).value = `Total Order Amount: $${totalOrderAmount.toFixed(2)}`;
+        summaryRow.getCell(4).value = `Total Discount: $${totalDiscount.toFixed(2)}`;
+        
+        // Set the format for the summary row
+        summaryRow.font = { bold: true }; // Make it bold
+        summaryRow.getCell(2).numFmt = '$#,##0.00'; // Apply currency format
+        summaryRow.getCell(3).numFmt = '$#,##0.00'; // Apply currency format
+        summaryRow.getCell(4).numFmt = '$#,##0.00'; // Apply currency format
 
-        // Send the buffer as a response
-        res.set({
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': 'attachment; filename=sales_report.xlsx',
-            'Content-Length': buffer.length,
-        });
-
-        res.send(buffer);
+        // Generate Excel file and send it to the client
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=sales_report.xlsx');
+        await workbook.xlsx.write(res);
+        res.end();
     } catch (error) {
         console.error("Error generating Excel report:", error);
         res.status(500).send("Error generating report");
     }
 }
+
 
 module.exports = {
     pageerror,

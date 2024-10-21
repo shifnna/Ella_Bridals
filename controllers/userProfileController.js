@@ -341,8 +341,7 @@ const loadUserProfile = async (req, res) => {
     
       if (userId) {
         const order = await Order.findOne({ _id: orderId }).sort({ orderDate: -1 });
-        // console.log('Order details:', order); // Check if order details are updated
-
+               
         return res.render("orderDetails", { order: order });
       } else {
         return res.redirect("/login");
@@ -876,6 +875,10 @@ const confirmOrder = async (req, res) => {
                   throw new Error('Invalid Razorpay order response');
               }
 
+              order.products.forEach(product => {
+                product.status = 'Pending'; // Set the desired new status
+              });
+
               order.razorpayOrderId = razorpayOrder.id;
               order.status = 'Pending';
               order.totalAmount = req.session.updatedTotalAmount;
@@ -995,7 +998,10 @@ console.log('razorpay body',req.body);
       // console.log('razorpay id',razorpay_order_id);
       
       order = await Order.findOne({ userId: userId, razorpayOrderId: razorpay_order_id });
-
+      order.products.forEach(product => {
+        product.status = 'OrderConfirmed'; // Set the desired new status
+      });
+      
       order.status = 'OrderConfirmed';
       order.save();
 

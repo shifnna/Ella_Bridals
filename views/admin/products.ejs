@@ -335,9 +335,14 @@
                     Swal.fire("Failed", response.message, "error");
                 }
             },
+            error: (xhr, status, error) => {
+                console.error("AJAX error:", error);
+                Swal.fire("Error", "An error occurred while adding the offer.", "error");
+            }
         });
     }
- }
+}
+
 
 
 
