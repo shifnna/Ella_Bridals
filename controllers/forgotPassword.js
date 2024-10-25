@@ -4,9 +4,6 @@ const User = require("../models/userSchema");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 
-// <% if (message) { %>
-//     <div style="color: red;"><%= message %></div>
-// <% } %>
 
 const forgotPassword = async (req,res)=>{
     try {

@@ -16,85 +16,166 @@
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+<link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+<link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+<link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+<link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+<!-- Css Styles -->
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+<link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+<link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+<link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+<link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+<link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+<link rel="stylesheet" href="css/style.css" type="text/css">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
-    <style>
-        /* Profile section styles */
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
+<style>
+    header {
+        position: fixed;  /* Fix the header at the top */
+        top: 0;          /* Align it to the top */
+        left: 0;         /* Align it to the left */
+        width: 100%;     /* Full width */
+        z-index: 1000;   /* Ensure it stays above other content */
+        background-color: white; /* Set a background color to prevent transparency */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+    }
 
-        .profile-header img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-right: 20px;
-        }
+    .dropdown {
+        position: relative;
+    }
 
-        .profile-header .details {
-            font-size: 16px;
-        }
+    .dropdown-toggle {
+        cursor: pointer;
+    }
 
-        .profile-header .details span {
-            display: block;
-            margin-bottom: 5px;
-        }
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        padding: 10px;
+        display: none;
+    }
 
-        /* Address section */
-        .address-card {
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+    .dropdown-menu li {
+        margin-bottom: 10px;
+    }
 
-        .address-card h4 {
-            margin-bottom: 10px;
-        }
+    .dropdown-menu li a {
+        color: #000000;
+        text-decoration: none;
+    }
 
-        .address-card p {
-            margin-bottom: 5px;
-        }
+    .wishlist-icon {
+        color: red; /* Set heart icon color to red */
+        font-size: 24px; /* Adjust size if necessary */
+        transition: color 0.3s; /* Optional: Adds a transition effect */
+    }
 
-        .address-card a {
-            color: #007bff;
-            text-decoration: none;
-        }
+    .wishlist-icon:hover {
+        color: darkred; /* Change to a darker red on hover */
+    }
 
-        /* Sidebar styling */
-        .sidebar .nav-link {
-            margin-bottom: 10px;
-            padding: 10px;
-            font-size: 18px;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-a:hover{
-    color: rgb(253, 249, 249);
-}
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: #ff4081 !important; /* Dark Pink on hover and active */
-        }
-        .nav-link:hover{
-            color: #ff4081
-        }
-        .sidebar .nav-link i {
-            color: rgb(10, 42, 58); /* Dark green color for icons */
-            margin-right: 10px;
-        }
+    /* Profile section styles */
+    .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
 
-        .sidebar .nav-link:hover i,
+    .profile-header img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 20px;
+    }
+
+    .profile-header .details {
+        font-size: 16px;
+    }
+
+    .profile-header .details span {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* Address section */
+    .address-card {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .address-card h4 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .address-card p {
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .address-card a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    /* Sidebar styling */
+    .sidebar .nav-link {
+        margin-bottom: 10px;
+        padding: 10px;
+        font-size: 18px;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover {
+        color: darkred /* Dark Pink on hover */
+    }
+
+    .sidebar .nav-link.active {
+        color: darkred !important; /* Dark Pink when active */
+    }
+
+    .sidebar .nav-link i {
+        color: rgb(10, 42, 58); /* Dark green color for icons */
+        margin-right: 10px;
+    }
+
+    .sidebar .nav-link:hover i,
         .sidebar .nav-link.active i {
             color: rgb(245, 249, 250); /* Keep icons green when hovered or active */
-        }
+    }
 
-        /* Sidebar spacing between items */
-        /* .sidebar .nav-item {
-            margin-bottom: px; Increase space between sidebar options */
-        /* } */
-        
+
     .btn-outline-primary, .btn-outline-danger {
         font-weight: bold;
         font-size: 14px;
@@ -104,134 +185,58 @@ a:hover{
     }
 
     .btn-outline-primary:hover {
-        background-color: #09223c;
+        background-color: #b25555;
         color: white;
-        border-color: #081e36;
+        border-color: #b25555;
     }
-button{
-    background-color: #dc3545;
-        color: white;
-        border-color: #dc3545;
-}
+
     .btn-outline-danger:hover {
-        background-color: #dc3545;
+        background-color: #b25555;
         color: white;
-        border-color: #dc3545;
+        border-color: #b25555;
     }
 
-    .address-card {
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
+    /* Preloader */
+    #preloder {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 999999;
+        background: #ffffff;
     }
 
-    .address-card h4 {
-        font-size: 18px;
-        font-weight: bold;
+    .loader {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -13px;
+        margin-left: -13px;
+        border-radius: 60px;
+        animation: loader 0.8s linear infinite;
     }
 
-    .address-card p {
-        font-size: 14px;
-        color: #333;
+    @keyframes loader {
+        0% {
+            transform: rotate(0deg);
+            border: 4px solid darkred;
+            border-left-color: transparent;
+        }
+        50% {
+            transform: rotate(180deg);
+            border: 4px solid #673ab7;
+            border-left-color: transparent;
+        }
+        100% {
+            transform: rotate(360deg);
+            border: 4px solid darkred;
+            border-left-color: transparent;
+        }
     }
-
-    .order-card {
-            border: 1px solid #ebebeb;
-            background-color: #f9f9f9;
-            max-width: 90%;
-            margin: auto;
-            padding: 16px;
-            font-family: Arial, sans-serif;
-        }
-        .order-card h6 {
-            margin-bottom: 16px;
-        }
-        .row1 {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            line-height: 1.2; /* Adjust this value to control line height */
-        }
-        .row span {
-            display: inline-block;
-        }
-        .row .field {
-            text-align: left;
-        }
-        .row .value {
-            margin-right: 65px;
-            text-align: right;
-            margin-left: auto;
-        }
-        
-/* Preloder */
-
-#preloder {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	z-index: 999999;
-	background: #ffffff;
-}
-
-.loader {
-	width: 40px;
-	height: 40px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -13px;
-	margin-left: -13px;
-	border-radius: 60px;
-	animation: loader 0.8s linear infinite;
-	-webkit-animation: loader 0.8s linear infinite;
-}
-
-
-@keyframes loader {
-	0% {
-		-webkit-transform: rotate(0deg);
-		transform: rotate(0deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
-	}
-	50% {
-		-webkit-transform: rotate(180deg);
-		transform: rotate(180deg);
-		border: 4px solid #673ab7;
-		border-left-color: transparent;
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		transform: rotate(360deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
-	}
-}
-
-@-webkit-keyframes loader {
-	0% {
-		-webkit-transform: rotate(0deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
-	}
-	50% {
-		-webkit-transform: rotate(180deg);
-		border: 4px solid #673ab7;
-		border-left-color: transparent;
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-		border: 4px solid #f44336;
-		border-left-color: transparent;
-	}
-}
-
-    </style>
+</style>
     
 </head>
 <body>
@@ -239,13 +244,85 @@ button{
      <div id="preloder">
         <div class="loader"></div>
     </div>
+<!-- Header Section Begin -->
+<header class="header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-lg-2">
+                <div class="header__logo">
+                    <a href="./index.html" style="width: 100px;height: 100px;"><img src="img/preview2.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-7">
+                <nav class="header__menu">
+                    
+                    <ul>
+                        <li style="margin-left: 45px;"> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/">Home</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop">Shop</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="#">Women</a></p></li>
+                        <li> <p style="font-size: smaller"><a style="text-decoration: none;font-size: small;margin: 15px;" href="#">Men</a></p></li>
+                        <!-- <li><a href="#">Pages</a>
+                            <ul class="dropdown">
+                                <li><a href="#">Product Details</a></li>
+                                <li><a href="/cart">Shop Cart</a></li>
+                                <li><a href="./checkout.html">Checkout</a></li>
+                                <li><a href="./blog-details.html">Blog Details</a></li>
+                            </ul>
+                        </li> -->
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="./blog.html">Blog</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="./contact.html">Contact</a></p></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3">
+                <div class="header__right">
+                    <div class="header__right__auth">
+                        <% if(locals.user){ %>
+                            <!-- Dropdown menu -->
+                <div class="dropdown">
+                    <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%-locals.user.name %>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                         <li><a href="/userProfile">Profile</a></li>
+                         <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+                        <%}else {%>
+                        <a href="/login">Login</a>
+                        <a href="/signup">Register</a>
+                        <%}%>
+                    </div>
+                    <ul class="header__right__widget">
+                        <!-- <li><span class="icon_search search-switch"></span></li> -->
+                        <li><a href="/wishlist"><span class="icon_heart_alt"></span>
+                            <!-- <% if(1==1)  { %>         //for wishlist count
+                            <div class="tip"><%=  %></div>   
+                            <% } %> -->
+                        </a></li>
+                        <li><a href="/cart"><span class="icon_bag_alt"></span>
+                            <!-- <% if(1==1) { %>
+                            <div class="tip"><%=  %></div>           //for cart count
+                            <% } %> -->
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open">
+            <i class="fa fa-bars"></i>
+        </div>
+    </div>
+</header>
+
+
 
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
             <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
                 <div class="position-sticky pt-3">
-                    <ul class="nav flex-column">
+                    <ul class="nav flex-column"  style="padding-top: 35px;">
                         <li class="nav-item" style="display: flex; align-items: center;">
                             <span>
                                 <a class="nav-link" style="font-size: smaller;font-style:oblique;text-decoration:underline;" href="/">
@@ -280,11 +357,6 @@ button{
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-credit-card"></i> My Saved Payment
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="/logout" id="logout-btn">
                                 <i class="fas fa-sign-out-alt"></i> Log Out
                             </a>
@@ -299,3 +371,24 @@ button{
 
                 </div>
             </nav>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const links = document.querySelectorAll('.nav-link');
+                    
+                    links.forEach(link => {
+                        link.addEventListener('click', function(event) {
+                            // Prevent default action (navigation)
+                            event.preventDefault();
+                            // Remove active class from all links
+                            links.forEach(item => item.classList.remove('active'));
+                            // Add active class to the clicked link
+                            this.classList.add('active');
+                            // Redirect after a short delay to allow for style to take effect
+                            setTimeout(() => {
+                                window.location.href = this.href;
+                            }, 100);
+                        });
+                    });
+                });
+            </script>

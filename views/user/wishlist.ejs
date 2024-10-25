@@ -59,7 +59,7 @@
         <!-- Wishlist Items -->
 <div class="row">
     <% wishlist.forEach(function(wish) { %>
-        <div class="col-md-4 mb-4"> <!-- col-md-4 makes 3 products per row on medium and larger screens -->
+        <div class="col-md-3 mb-3"> <!-- col-md-4 makes 3 products per row on medium and larger screens -->
             <div class="card h-100" style="border: 1px solid #ebebeb; background-color: #f9f9f9; position: relative; align-items: center;">
                 <div class="card-body d-flex flex-column" style="align-items: center;">
                     <!-- Close Tag -->
@@ -73,12 +73,18 @@
                     <% } %>
                     <!-- Product Details -->
                     <h6 class="product-title mt-2"><%= wish.productName %></h6>
-                    <p>MRP: <span style="text-decoration: line-through;"><%= wish.salePrice %></span> ₹<%= wish.salePrice %></p>
+                    <% if(wish.offerPrice===0){%>
+                    <p>MRP: ₹<%= wish.salePrice %></p>
+                    <%}else{%>
+                        <p>MRP: <span style="text-decoration: line-through;"><%= wish.offerPrice %></span> ₹<%= wish.salePrice %></p>
+                    <%}%>
+
+                    <% if(wish.offerPercentage>0){%>
                     <p><span class="text-success"><%= wish.offerPercentage %>% Off</span></p>
-                    
+                    <%}%>
                     <!-- Move to Bag Button -->
                     <div class="d-grid gap-2 mt-auto">
-                        <a href="/addToCart/<%= wish._id %>/11" class="btn btn-outline-primary btn-sm">Move to Bag</a>
+                        <a href="/addToCart/<%= wish._id %>/11" class="btn btn-outline-primary btn-sm" style="color: crimson;border-color: crimson;">Move to Bag</a>
                     </div>
                 </div>
             </div>
@@ -88,7 +94,7 @@
 
         <!-- Continue Shopping -->
         <div class="mt-4 ">
-            <button style="background-color: #0e0c0d; border-color: #0e0c0d;width: 32%;" class="btn btn-outline-primary">
+            <button style="background-color: #9b2c2c; border-color: #9d2828;width: 32%;" class="btn btn-outline-primary">
                 <a style="text-decoration: none; color: aliceblue;" href="/shop">Continue Shopping</a>
             </button>
         </div>

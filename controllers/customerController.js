@@ -2,7 +2,6 @@ const User = require("../models/userSchema");
 
 const loadCustomers = async (req,res)=>{
     try {
-        if(req.session.admin){
             let search = "";
             if(req.query.search){
                 search=req.query.search;
@@ -34,11 +33,7 @@ const loadCustomers = async (req,res)=>{
         const totalPages = Math.ceil(count / limit);
     
         res.render("customers", { data: userData, totalPages: totalPages, currentpage: page, search: search });            
-        }else{
-            res.redirect("/pageerror")
-        }
         
-
     } catch (error) {
         console.error(error);
         
@@ -51,14 +46,10 @@ const loadCustomers = async (req,res)=>{
 
 const customerBlocked = async (req,res)=>{
     try {
-        if(req.session.admin){
             let id=req.query.id;
             await User.updateOne({_id:id},{$set:{isBlocked:true}});
             res.redirect("/admin/customers");            
-        }else{
-            res.redirect("/pageerror")
-        }
-        
+       
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror");
@@ -72,14 +63,10 @@ const customerBlocked = async (req,res)=>{
 
 const customerunBlocked = async (req,res)=>{
     try {
-        if(req.session.admin){
             let id=req.query.id;
             await User.updateOne({_id:id},{$set:{isBlocked:false}});
             res.redirect("/admin/customers");            
-        }else{
-            res.redirect("/pageerror")
-        }
-    
+        
     } catch (error) {
         console.error(error);
         res.redirect("/pageerror");

@@ -32,6 +32,7 @@
     <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <!-- jQuery and Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -39,6 +40,16 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
+        header {
+    position: fixed;  /* Fix the header at the top */
+    top: 0;          /* Align it to the top */
+    left: 0;         /* Align it to the left */
+    width: 100%;     /* Full width */
+    z-index: 1000;   /* Ensure it stays above other content */
+    background-color: white; /* Set a background color to prevent transparency */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+}
         .dropdown {
   position: relative;
 }
@@ -87,6 +98,74 @@
 li {
     text-decoration: none;
 }
+
+body {
+    padding-top: 65px; /* Adjust this value based on the header's height */
+}
+.header__search .search-icon {
+    background-color: lightgray; /* Background color of the icon box */
+    border-radius: 0 1px 1px 0; /* Rounded corners */
+    display: flex;               /* Center the icon vertically */
+    align-items: center;        /* Center the icon vertically */
+    padding: 5px;              /* Padding around the icon */
+}
+
+.header__search input {
+    border: solid gray; 
+    border-width: 0.5px; 
+    border-radius: 1px 0 0 1px; /* Round the left corners to match */
+    height: 35px; 
+    width: 800px; 
+    border-color: rgb(11, 10, 10);
+}
+.profile-logo {
+    font-size: 30px;  /* Adjust size as needed */
+    display: block;    /* Make it a block element */
+    margin: 0 auto 5px; /* Center it and add space below */
+    color: #333; /* Set a color for the icon */
+}
+
+.profile-text {
+    display: block; /* Ensure text is below the icon */
+    text-align: center; /* Center the text */
+    font-weight: bold; /* Optional: make text bold */
+}
+
+/* Hides the dropdown arrow */
+.dropdown-toggle::after {
+    display: none; /* Hides the default dropdown arrow */
+}
+.profile-logo {
+    font-size: 30px;  /* Adjust size as needed */
+    display: block;    /* Make it a block element */
+    margin: 0 auto 5px; /* Center it and add space below */
+    color: #333; /* Set a color for the icon */
+}
+
+.profile-text {
+    display: block; /* Ensure text is below the icon */
+    text-align: center; /* Center the text */
+    font-weight: bold; /* Optional: make text bold */
+}
+.header__right__auth a,
+.header__right__widget a {
+    text-decoration: none;  /* Remove underlines */
+    color: inherit;         /* Maintain the default text color */
+    color: #000000;
+}
+
+.header__right__auth a:hover,
+.header__right__widget a:hover {
+    color: inherit;         /* No color change on hover */
+    background-color: transparent; /* No background color on hover */
+    color: #4b4949;
+}
+
+
+/* Adjust this value based on your header's height */
+/* .header__menu {
+    padding: 10px; 
+}  */
     </style>
 </head>
 
@@ -109,10 +188,10 @@ li {
                 <div class="tip">2</div>
             </a></li>
         </ul>
-        <div class="offcanvas__logo">
+        <!-- <div class="offcanvas__logo">
             <a href="./index.html"><img src="img/logo.png" alt=""></a>
-        </div>
-        <div id="mobile-menu-wrap"></div>
+        </div> -->
+        <!-- <div id="mobile-menu-wrap"></div> -->
         <div class="offcanvas__auth">
             <%if(locals.user){%>
                 <div class="dropdown">
@@ -126,8 +205,14 @@ li {
 
                 </div>
             <%}else {%>
-            <a href="/login">Login</a>
-            <a href="/signup">Register</a>
+                <div class="dropdown">
+                    <i class="fas fa-user-circle profile-logo"></i> <!-- Font Awesome icon -->
+                    <span class="profile-text">Profile</span>
+                                <div class="dropdown-content">
+                        <a href="/login">Log In</a>
+                        <a href="/signup">Sign Up</a>
+                    </div>
+                </div>
             <%}%>
         </div>
     </div>
@@ -139,16 +224,28 @@ li {
             <div class="row">
                 <div class="col-xl-3 col-lg-2">
                     <div class="header__logo">
-                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                        <a href="./index.html" style="width: 100px;height: 100px;"><img src="img/preview2.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-xl-6 col-lg-7">
                     <nav class="header__menu">
+                        
                         <ul>
-                            <li class="active"><a style="text-decoration: none;" href="/">Home</a></li>
-                            <li><a style="text-decoration: none;" href="#">Women’s</a></li>
-                            <li><a style="text-decoration: none;" href="#">Kid’s</a></li>
-                            <li><a style="text-decoration: none;" href="/shop">Shop</a></li>
+                            <li class="header__search" style="display: flex; align-items: center;">
+                                <form action="/shop" method="get" class="search-form" style="display: flex; align-items: center; width: 100%;">
+                                    <input style="border: solid gray; border-width: 0.5px; border-radius: 1px 0 0 1px; height: 35px; width: 800px;" 
+                                           type="text" name="search" placeholder="Search for products..." aria-label="Search">
+                                    <div class="search-icon" style="background-color: lightgray; border-radius: 0 1px 1px 0; padding: 5px;">
+                                        <button type="submit" style="border: none; background-color: transparent; cursor: pointer;">
+                                            <span class="icon_search"></span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </li>                            
+                            <li style="margin-left: 45px;"> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/">Home</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop">Shop</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;"  href="/shop?categoryName=Women">Women</a></p></li>
+                            <li> <p style="font-size: smaller"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop?categoryName=Men">Men</a></p></li>
                             <!-- <li><a href="#">Pages</a>
                                 <ul class="dropdown">
                                     <li><a href="#">Product Details</a></li>
@@ -157,45 +254,52 @@ li {
                                     <li><a href="./blog-details.html">Blog Details</a></li>
                                 </ul>
                             </li> -->
-                            <li><a href="./blog.html">Blog</a></li>
-                            <li><a href="./contact.html">Contact</a></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="/blog">Blog</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="/contact">Contact</a></p></li>
                         </ul>
                     </nav>
                 </div>
                 <div class="col-lg-3">
-                    <div class="header__right">
-                        <div class="header__right__auth">
-                            <% if(locals.user){ %>
+                    <div class="header__right" style="padding: 21px 0 27px; display: flex; align-items: center; justify-content: flex-end;margin-right: 30px;"> <!-- Added justify-content -->
+                        <div class="header__right__auth" style="text-align: center; margin-right: 5px; margin-left: -10px;"> <!-- Adjusted margin-left for user icon -->
+                            <% if(locals.user) { %>
                                 <!-- Dropdown menu -->
-                    <div class="dropdown">
-                        <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <%-locals.user.name %>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                             <li><a href="/userProfile">Profile</a></li>
-                             <li><a href="/logout">Logout</a></li>
-                        </ul>
-                    </div>
-                            <%}else {%>
-                            <a href="/login">Login</a>
-                            <a href="/signup">Register</a>
-                            <%}%>
+                                <div class="dropdown">
+                                    <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: block; margin-top: 5px;">
+                                        <span class="fas fa-user-circle" style="font-size: 20px; display: block; margin: 0 auto; margin-bottom: 2px;"></span>
+                                        <%=locals.user.name%>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="/userProfile">Profile</a></li>
+                                        <li><a href="/logout">Logout</a></li>
+                                    </ul>
+                                </div>
+                            <% } else { %>
+                                <div class="dropdown">
+                                    <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="fas fa-user-circle" style="font-size: 20px; margin-bottom: 12px;"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a href="/login">Log In</a></li>
+                                        <li><a href="/Signup">Sign Up</a></li>
+                                    </ul>
+                                </div>
+                            <% } %>
                         </div>
-                        <ul class="header__right__widget">
-                            <li><span class="icon_search search-switch"></span></li>
-                            <li><a href="/wishlist"><span class="icon_heart_alt"></span>
-                                <!-- <% if(1==1)  { %>         //for wishlist count
-                                <div class="tip"><%=  %></div>   
-                                <% } %> -->
-                            </a></li>
-                            <li><a href="/cart"><span class="icon_bag_alt"></span>
-                                <!-- <% if(1==1) { %>
-                                <div class="tip"><%=  %></div>           //for cart count
-                                <% } %> -->
-                            </a></li>
+                        <ul class="header__right__widget" style="display: flex; align-items: flex-start; margin: 0; padding: 0;">
+                            <li style="margin: 0 2px; margin-top: -9px; margin-left: -5px;"> <!-- Adjust margin to uplift the icon -->
+                                <a href="/wishlist">
+                                    <span class="icon_heart_alt"></span>
+                                </a>
+                            </li>
+                            <li style="margin: 0 2px; margin-top: -9px; margin-left: 10px;"> <!-- Adjust margin to uplift the icon -->
+                                <a href="/cart">
+                                    <span class="icon_bag_alt"></span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
-                </div>
+                </div>                
             </div>
             <div class="canvas__open">
                 <i class="fa fa-bars"></i>

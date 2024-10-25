@@ -6,7 +6,6 @@ const product = require("../models/productSchema");
 
 const loadBrands = async (req,res)=>{
     try {
-        if(req.session.admin){
             const page = parseInt(req.query.page) || 1;
             const limit = 5;
             const skip = (page-1)*limit;
@@ -20,9 +19,6 @@ const loadBrands = async (req,res)=>{
                 totalPages:totalPages,
                 totalBrands:totalBrands
             })        
-        }else{
-            res.redirect("/pageerror")
-        }
         
     } catch (error) {
         res.redirect("/pageerror")
@@ -34,7 +30,6 @@ const loadBrands = async (req,res)=>{
 const addBrand = async (req, res) => {
     try {
 
-        if(req.session.admin){
             console.log(req.body);
         
             if (!req.file) {
@@ -53,9 +48,6 @@ const addBrand = async (req, res) => {
             console.log(".");
             
             res.redirect("/admin/brands");        
-        }else{
-            return res.redirect("/pageerror")
-        }
         
     } catch (error) {
         res.redirect("/pageerror");
@@ -67,13 +59,9 @@ const addBrand = async (req, res) => {
 
 const blockBrand = async (req,res)=>{
     try {
-        if(req.session.admin){
             const id = req.query.id;
             await Brand.updateOne({_id:id},{$set:{isBlocked:true}});
             res.redirect("/admin/brands")        
-        }else{
-            return res.redirect("/pageerror")
-        }
         
     } catch (error) {
         res.redirect("/pageerror")
@@ -85,13 +73,9 @@ const blockBrand = async (req,res)=>{
 
 const unBlockBrand = async (req,res)=>{
     try {
-        if(req.session.admin){
             const id = req.query.id;
             await Brand.updateOne({_id:id},{$set:{isBlocked:false}});
             res.redirect("/admin/brands")        
-        }else{
-           return res.redirect("/pageerror")
-        }
         
     } catch (error) {
         res.redirect("/pageerror")
@@ -103,17 +87,12 @@ const unBlockBrand = async (req,res)=>{
 
 const deleteBrand = async (req,res)=>{
     try {
-        if(req.session.admin){
-
             const {id} = req.query;
             if(!id){
                 return res.redirect("/pageerror")
             }
             await Brand.deleteOne({_id:id});
             res.redirect("/admin/brands")
-            }else{
-           return res.redirect("/pageerror")
-            }
         
     } catch (error) {
         console.error("error deleting brand:",error);

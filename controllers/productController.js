@@ -4,22 +4,17 @@ const Brand = require("../models/brandSchema");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
-// productController.js
+
 
 const getProductAddPage = async (req, res) => {
     try {
-        
-if(req.session.admin){
-
     const category = await Category.find({ isListed: true });
     const brand = await Brand.find({ isBlocked: false });
     res.render("addProducts", {
         cat: category,
         brand: brand,
     });    
-}else{
-    res.redirect("/pageerror")
-}
+
     } catch (error) {
         console.error("Error loading product add page:", error);
         res.redirect("/pageerror");
@@ -27,11 +22,9 @@ if(req.session.admin){
 };
 
 
+
 const loadProducts = async (req, res) => {
     try {
-        
-if(req.session.admin){
-
     const search = req.query.search || "";
     const page = req.query.page || 1;
     const limit = 4;
@@ -51,10 +44,8 @@ if(req.session.admin){
         ],
     }).countDocuments();
 
-
     const category = await Category.find({ isListed: true });
     const brand = await Brand.find({ isBlocked: false });
-
 
     if (category && brand) {
         res.render("products", {
@@ -67,21 +58,17 @@ if(req.session.admin){
         })
     } else {
         res.render("page_404")
-    }    
-}else{
-    res.redirect("/pageerror")
-}
-    } catch (error) {
+    } 
+
+  } catch (error) {
         res.render("products")
     }
 }
 
 
 const addProducts = async (req, res) => {
-    try {
-        
-if(req.session.admin){
-console.log(req.body);
+    try {        
+    console.log(req.body);
 
     const products = req.body;
     const productExists = await Product.findOne({
@@ -144,9 +131,7 @@ console.log(req.body);
     } else {
         return res.status(400).json("Product already exists. Please try with another name.");
     }    
-}else{
-    res.redirect("/pageerror")
-}
+
     } catch (error) {
         console.error("Error saving product:", error);
         return res.redirect("/pageerror");
@@ -158,7 +143,6 @@ console.log(req.body);
 
 const addProductOffer = async (req, res) => {
     try {
-        if (req.session.admin) {
             const { productId, percentage } = req.body;
 
             console.log("Received productId:", productId);
@@ -203,9 +187,7 @@ const addProductOffer = async (req, res) => {
             await findCategory.save();
 
             res.json({ status: true });    
-        } else {
-            res.redirect("/pageerror");
-        }
+        
     } catch (error) {
         console.error("Error adding product offer:", error);
         res.status(500).json({ status: false, message: "Internal server error" });
@@ -217,7 +199,6 @@ const addProductOffer = async (req, res) => {
 
 const removeProductOffer = async (req, res) => {
     try {
-        if (req.session.admin) {
             const { productId } = req.body;
 
             const findProduct = await Product.findOne({ _id: productId });
@@ -237,9 +218,7 @@ const removeProductOffer = async (req, res) => {
             await findProduct.save();
 
             res.json({ status: true, message: "Offer removed successfully." });
-        } else {
-            res.redirect("/pageerror");
-        }
+        
     } catch (error) {
         console.error("Error removing product offer:", error);
         res.status(500).json({ status: false, message: "Internal server error" });
@@ -250,34 +229,22 @@ const removeProductOffer = async (req, res) => {
 
 const blockProduct = async (req, res) => {
     try {
-        
-if(req.session.admin){
     let id = req.query.id;
     await Product.updateOne({ _id: id }, { $set: { isBlocked: true } });
     res.redirect("/admin/products");
-
-}else{
-    res.redirect("/pageerror")
-}
-     
 
     } catch (error) {
         res.redirect("/pageerror")
     }
 }
 
+
+
 const unblockProduct = async (req, res) => {
     try {
-        
-if(req.session.admin){
-
     let id = req.query.id;
     await Product.updateOne({ _id: id }, { $set: { isBlocked: false } });
     res.redirect("/admin/products");
-
-}else{
-    res.redirect("/pageerror")
-}
 
     } catch (error) {
         res.redirect("/pageerror")
@@ -287,7 +254,6 @@ if(req.session.admin){
 
 const getEditProduct = async (req, res) => {
     try {
-        if (req.session.admin) {
             const id = req.query.id;
 
             const product = await Product.findOne({ _id: id });
@@ -303,9 +269,7 @@ const getEditProduct = async (req, res) => {
                 cat: category,
                 brand: brand,
             });
-        } else {
-            return res.redirect("/pageerror");
-        }
+        
     } catch (error) {
         console.error("Error fetching product:", error);
         return res.redirect("/pageerror");
@@ -318,8 +282,6 @@ const getEditProduct = async (req, res) => {
 
 const deleteSingleImage = async (req, res) => {
     try {
-        
-if(req.session.admin){
     const { imageNameToServer, productIdToserver } = req.body;
     const product = await Product.findByIdAndUpdate(productIdToserver, { $pull: { productImage: imageNameToServer } });
     
@@ -335,10 +297,7 @@ if(req.session.admin){
     }
 
     res.send({ status: true })    
-}else{
-    res.redirect("/pageerror")
-}
-        
+       
     } catch (error) {
         res.redirect("/pageerror")
     }
@@ -348,9 +307,7 @@ if(req.session.admin){
 
 const editProduct = async (req, res) => {
     try {
-        
-if(req.session.admin){
-    const id = req.params.id;
+        const id = req.params.id;
     // if (req.session.admin) {
         const product = await Product.findById(id);
         const data = req.body;
@@ -405,14 +362,6 @@ if(req.session.admin){
         // Update product details
         await Product.findByIdAndUpdate(id, updateFields, { new: true });
         res.redirect("/admin/products");
-    // } else {
-        
-    //     res.redirect("/pageerror");
-    // }    
-}else{
-    res.redirect("/pageerror")
-}
-        
 
     } catch (error) {
         console.error(error);

@@ -323,7 +323,7 @@ ol {
 }
 
 .header__logo {
-	padding: 26px 0;
+	padding: 13px 0;
 }
 
 .header__logo a {
@@ -331,7 +331,7 @@ ol {
 }
 
 .header__menu {
-	padding: 30px 0 27px;
+	padding: 18px 0 27px;
 }
 
 .header__menu ul li {
@@ -424,7 +424,7 @@ ol {
 
 .header__right {
 	text-align: right;
-	padding: 30px 0 27px;
+	padding: 18px 0 27px;
 }
 
 .header__right__auth {
@@ -451,7 +451,7 @@ ol {
 	position: absolute;
 	right: -8px;
 	top: -2px;
-	content: "/";
+	content: " ";
 	font-size: 13px;
 }
 
@@ -1417,7 +1417,7 @@ ol {
 }
 
 .sidebar__filter .section-title {
-	margin-bottom: 50px;
+	margin-bottom: 10px;
 }
 
 .sidebar__filter .section-title h4 {
@@ -1662,7 +1662,7 @@ ol {
 	margin-left: 20px;
 }
 
-.product__details__pic__slider.owl-carousel .owl-nav button {
+/* .product__details__pic__slider.owl-carousel .owl-nav button {
 	position: absolute;
 	left: 10px;
 	top: 50%;
@@ -1675,12 +1675,12 @@ ol {
 	line-height: 44px;
 	text-align: center;
 	margin-top: -20px;
-}
-
+} */
+/* 
 .product__details__pic__slider.owl-carousel .owl-nav button.owl-next {
 	left: auto;
 	right: 10px;
-}
+} */
 
 .product__details__text h3 {
 	color: #111111;
@@ -2070,7 +2070,7 @@ ol {
 -----------------------*/
 
 .shop-cart {
-	padding-top: 70px;
+	padding-top: 95px;
 	padding-bottom: 90px;
 }
 
@@ -3157,11 +3157,16 @@ ol {
 		margin-right: 20px;
 	}
 	.header {
-		padding: 0 30px;
+		padding: 0 18px;
 	}
 }
 
 @media only screen and (min-width: 1200px) {
+	.container {
+		max-width: 1170px;
+	}
+}
+@media only screen and (mi-width: 1200px) {
 	.container {
 		max-width: 1170px;
 	}

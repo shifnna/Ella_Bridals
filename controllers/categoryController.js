@@ -3,10 +3,8 @@ const Product = require("../models/productSchema");
 
 
 
-
 const loadCategories = async (req, res) => {
     try {
-      if(req.session.admin){
         let search = "";
         if (req.query.search) {
             search = req.query.search;
@@ -44,9 +42,6 @@ const loadCategories = async (req, res) => {
             totalCategories: count,
             search: search
         });      
-      }else{
-      return res.redirect("/pageerror")
-      }
       
     } catch (error) {
         console.error(error);
@@ -59,7 +54,6 @@ const loadCategories = async (req, res) => {
 
 const addCategory = async (req, res) => {
   try {
-  if(req.session.admin){
     const { name, description } = req.body;
   
     // Trim inputs
@@ -106,9 +100,6 @@ const addCategory = async (req, res) => {
       const newCategory = new Category({ name: trimmedName, description: trimmedDescription });
       await newCategory.save();
       return res.redirect("/admin/category");  
-    }else{
-      return res.redirect("/pageerror")
-  }
    
     } catch (error) {
       console.error(error);
@@ -121,7 +112,6 @@ const addCategory = async (req, res) => {
 
 const addCategoryOffer = async (req,res)=>{
     try {
-      if(req.session.admin){
         const percentage = parseFloat(req.body.percentage)
         const categoryId = req.body.categoryId;
         const category = await Category.findById(categoryId);
@@ -144,9 +134,6 @@ const addCategoryOffer = async (req,res)=>{
             await product.save()
         }
         res.json({status:true})      
-      }else{
-      return res.redirect("/pageerror")
-      }
       
     } catch (error) {
         console.error('Error adding category offer:', error);
@@ -159,7 +146,6 @@ const addCategoryOffer = async (req,res)=>{
 
 const removeCategoryOffer = async (req,res)=>{
     try {
-      if(req.session.admin){
         const categoryId = req.body.categoryId;
         console.log("Received categoryId:", categoryId);
         const category = await Category.findById(categoryId);
@@ -183,9 +169,7 @@ const removeCategoryOffer = async (req,res)=>{
         await category.save();
 
         res.json({status:true})
-          }else{
-      return res.redirect("/pageerror")
-      }
+          
       } catch (error) {
         console.error("Error removing category offer:", error);
         res.status(500).json({status:false,message:"Internal server error"})
@@ -197,14 +181,9 @@ const removeCategoryOffer = async (req,res)=>{
 
 const getListCategory = async (req,res)=>{
     try {
-      if(req.session.admin){
         let id = req.query.id;
         await Category.updateOne({_id:id},{$set:{isListed:true}});
         res.redirect("/admin/category")      
-      }else{
-      return res.redirect("/pageerror")
-      }
-      
     } catch (error) {
         res.redirect("/pageerror")
     }
@@ -212,16 +191,11 @@ const getListCategory = async (req,res)=>{
 
 
 
-
 const getUnlistCategory = async (req,res)=>{
     try {
-      if(req.session.admin){
         let id = req.query.id;
         await Category.updateOne({_id:id},{$set:{isListed:false}});
         res.redirect("/admin/category")
-      }else{
-      return res.redirect("/pageerror")
-      }
       
     } catch (error) {
         res.redirect("/pageerror");
@@ -230,19 +204,12 @@ const getUnlistCategory = async (req,res)=>{
 
 
 
-
-
-
-
 const getEditCategory = async (req,res)=>{
     try {
-      if(req.session.admin){
         let id = req.query.id;
         const category = await Category.findOne({_id:id});
          res.render("editCategory",{category:category,error:''})
-        }else{
-      return res.redirect("/pageerror")
-      }
+        
        } catch (error) {
         res.redirect("/pageerror");
     }
@@ -252,7 +219,6 @@ const getEditCategory = async (req,res)=>{
 
 const editCategory = async (req, res) => {
     try {
-      if(req.session.admin){
         const id = req.params.id;
         const { categoryName, description } = req.body;
     
@@ -301,10 +267,7 @@ const editCategory = async (req, res) => {
             error
           });
         }      
-      }else{
-      return res.redirect("/pageerror")
-      }
-      
+
     } catch (error) {
       console.error("Error updating category:", error);
       return res.status(500).render("editCategory", {

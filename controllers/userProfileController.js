@@ -19,29 +19,14 @@ const razorpay = new Razorpay({
 
 
 
-
-
-
 const loadUserProfile = async (req, res) => {
   try {
-    const userId = req.session.user;
-    // console.log(`User ID: ${userId}`);
-
-    if (userId) {
-      const user = await User.findById(userId)
-      if(user.isBlocked){
-        return res.redirect("/login")
-      }
+      const userId = req.session.user;
       const userData = await User.findById(userId);
       const addresses = await Address.find({ user: req.session.user }).exec(); 
-// console.log("userData:",userData);
-// console.log("addresses:",addresses);
       const message = req.query.message || '';
-
       return res.render("profile", { user: userData, addresses: addresses ,message});
-    } else {
-     return res.redirect("/login")
-    }
+    
   } catch (error) {
     console.log("profile page not found", error);
     res.status(500).send("server error");
@@ -50,56 +35,32 @@ const loadUserProfile = async (req, res) => {
 }
 
 
-
-  const editProfilePage = async (req,res)=>{
+const editProfilePage = async (req,res)=>{
     try {
-        const userId = req.session.user;
-        if(userId){
+          const userId = req.session.user;
           const profile = await User.findOne({_id:userId})
-          if(profile.isBlocked){
-            return res.redirect("/login")
-          }
           res.render("edit-profile", { data: profile });
-        }else{
-          res.redirect("/login");
-        }
-
     } catch (error) {
-        console.log("profile edit page not found", error);
+      console.log("profile edit page not found", error);
       res.status(500).send("server error");
       return res.redirect("/pageerror")
-
     }
   }
 
 
 
-  const editProfile = async (req,res)=>{
+const editProfile = async (req,res)=>{
     try {
-       const user = req.session.user;
        const id = req.params.id
-       if(user){
-        const userId = await User.findById(id)
-
-        if(userId.isBlocked){
-          return res.redirect("/login")
-        }else if( !userId){
-          return res.redirect("/pageerror")
-        }
         const data = req.body;
-
         const updateUserData = {
             name : data.name,
             email:data.email,
             phone:data.phone,
         }
-
         await User.findByIdAndUpdate(id,updateUserData,{new:true});
         res.redirect("/userProfile");
-       }else{
-        res.redirect("/login")
-       }
-
+       
     } catch (error) {
          console.error(error);
         res.redirect("/pageerror")
@@ -111,36 +72,22 @@ const loadUserProfile = async (req, res) => {
   const addAddressPage = async (req,res)=>{
     try {
       const userId = req.session.user;
-      if(userId){
         const usermodel = await User.findOne({_id:userId})
-
-        if(usermodel.isBlocked){
-          return res.redirect("/login")
-        }else if( !usermodel){
-          return res.redirect("/pageerror")
-        }
-
         res.render("add-address", { data: usermodel });
-      }else{
-        return res.redirect("/pageerror")
-      }
-      
   } catch (error) {
       console.log("profile edit page not found", error);
     res.status(500).send("server error");
   }
-
   }
 
 
 
   const addAddress = async (req, res) => {
     try {
-      if (req.session.user) {
-        const userId = req.params.id; // Make sure this is the user ID
+        const userId = req.params.id; 
         const { name, phone, address, city, state, postalCode, country } = req.body;
-  
-        // Find the existing address document for the user
+        const users = await User.findById(req.session.user);
+
         const existingAddress = await Address.findOne({ user: userId });
   
         if (existingAddress) {
@@ -170,12 +117,12 @@ const loadUserProfile = async (req, res) => {
             }]
           });
           await newAddress.save();
+          users.addresses.push(newAddress);
+          users.save();
         }
-  
+      
         return res.redirect("/userProfile");
-      } else {
-        return res.redirect("/pageerror");
-      }
+      
     } catch (error) {
       console.error("Error adding address:", error);
       res.status(500).json({
@@ -191,13 +138,7 @@ const loadUserProfile = async (req, res) => {
   const editAddressPage = async (req, res) => {
     try {
       const addressId = req.query.addressId;
-      const userId = req.session.user;
-  
-      if (userId) {
-        const user = await User.findById(userId);
-        if (!user || user.isBlocked) {
-          return res.redirect("/login");
-        }
+      const userId = req.session.user;        
   
         const address = await Address.findOne({ user: userId });
         if (!address) {
@@ -213,10 +154,7 @@ const loadUserProfile = async (req, res) => {
   
         console.log("target address:", targetAddress);
         return res.render("edit-address", { address: targetAddress });
-      } else {
-        console.log('User not found or not logged in.');
-        return res.redirect("/pageerror");
-      }
+      
     } catch (error) {
       console.error("Error fetching address for edit:", error.message);
       return res.redirect("/pageerror");
@@ -304,22 +242,12 @@ const loadUserProfile = async (req, res) => {
 
 
   const loadOrders = async (req,res)=>{
-    try {
-      const userId = req.session.user;
-    // console.log(`User ID: ${userId}`);
-
-    if (userId) {
-      const user =await User.findById(userId)
-      if(user.isBlocked){
-        return res.redirect("/login")
-      }
+    try {  
+      const userId = req.userId;
       const orders = await Order.find({ userId: userId }).sort({orderDate:-1})
       console.log("orders:",orders);
       return res.render("orders",{orders:orders});
 
-    } else {
-     return res.redirect("/pageerror")
-    }
   } catch (error) {
     console.log("profile page not found", error);
     res.redirect("/pageerror")
@@ -330,22 +258,12 @@ const loadUserProfile = async (req, res) => {
 
   const loadOrderDetails = async (req, res) => {
     try {
-      const userId = req.session.user;
       const orderId = req.query.orderId;
     
-      let user = await User.findById(userId);
-    
-      if (!user || user.isBlocked) {
-        return res.redirect("/login");
-      }
-    
-      if (userId) {
         const order = await Order.findOne({ _id: orderId }).sort({ orderDate: -1 });
                
         return res.render("orderDetails", { order: order });
-      } else {
-        return res.redirect("/login");
-      }
+      
     } catch (error) {
       console.log("Error loading order details:", error);
       res.status(500).send("Server error");
@@ -360,13 +278,8 @@ const loadUserProfile = async (req, res) => {
  const cartPage = async (req,res)=>{
     try {
       const userId = req.session.user;
-      if(userId){
         const user = await User.findById(userId);        
-        if (user.isBlocked) {
-          console.log('User is blocked, redirecting to login.');
-          return res.redirect("/login"); // Redirect if user is blocked
-      }
-
+        
         const cart = await Cart.findOne({ user: userId }).populate('products.product');  // Populates product details in cart
         const couponCode = req.session.couponCode || ''; 
         const coupons = await Coupon.find();
@@ -382,11 +295,7 @@ const loadUserProfile = async (req, res) => {
             errorMessage: errorMessage,
             discountValue: req.session.discount || 0,
         });
-        
-      }else{
-          res.redirect("/login")
-      }
-      
+     
     } catch (error) {
       console.error(error);
       console.log('hy4');
@@ -404,15 +313,8 @@ const loadUserProfile = async (req, res) => {
         const productId2 = req.params.id2;
         const quantity = parseInt(req.body.quantity, 10) || 1; // Ensure quantity is a number and defaults to 1 if not provided
 
-        if (!userId) {
-            return res.redirect("/login");
-        }
-
         const user = await User.findById(userId)
-        if(user.isBlocked){
-          return res.redirect("/login")
-        }
-
+        
         if (productId2 == 11) {
           user.wishlist.pull(productId);
           await user.save(); 
@@ -541,7 +443,6 @@ const updateCart = async (req, res) => {
       const userId = req.session.user;
       const productId = req.query.productId;
   
-      if (userId) {
         let cart = await Cart.findOneAndUpdate(
           { user: userId },
           { $pull: { products: { _id: productId } } },
@@ -554,9 +455,7 @@ const updateCart = async (req, res) => {
   
         console.log("Product removed from cart");
         res.redirect("/cart");
-      } else {
-        res.redirect("/login");
-      }
+      
     } catch (error) {
       console.log("Removing from cart error found", error);
       res.status(500).send("Server error");
@@ -570,11 +469,7 @@ const updateCart = async (req, res) => {
   const selectAddress = async (req, res) => {
     try {
         const userId = req.session.user;
-        let user = await User.findById(userId);
-        if (!user || user.isBlocked) {
-            return res.redirect("/login");
-        }
-
+        
         const cartItems = req.query;
 
         if(!cartItems){
@@ -641,12 +536,7 @@ const updateCart = async (req, res) => {
         const userId = req.session.user;
         req.session.addressId = req.query.addressId;
         const addressId = req.session.addressId  || req.query.addressId;
-        let user = await User.findById(userId)
-
-        if(!user || user.isBlocked){
-          return res.redirect("/login")
-        }
-        if (userId) {
+        
             const user = await User.findById(userId);
             const cart = await Cart.findOne({ user: userId }).populate('products.product');
             if (!cart) {
@@ -692,9 +582,7 @@ const updateCart = async (req, res) => {
           } else {
             return res.redirect("/selectAddress?message=Please select an address.");
           }
-        } else {
-            return res.redirect("/login");
-        }
+        
     } catch (error) {
         console.log("profile page not found", error);
         res.status(500).send("server error");
@@ -706,16 +594,8 @@ const updateCart = async (req, res) => {
 
 const confirmOrder2 = async (req,res)=>{
   try {
-    const orderId = req.query.orderId;
-    const userId = req.session.user;
-    // console.log("order id :" , orderId);
-    let user = await User.findById(userId)
-
-    if(!user || user.isBlocked){
-      return res.redirect("/login")
-    }
+    const orderId = req.query.orderId;   
     const order = await Order.findById(orderId)
-    const cart = await Cart.findOne({ user: userId }).populate('products.product');
 
   return res.render('razorpayPage', {
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -741,10 +621,6 @@ const confirmOrder = async (req, res) => {
       const subtotal = req.query.subtotal;
 
       let user = await User.findById(userId);
-
-      if (!user || user.isBlocked) {
-          return res.redirect("/login");
-      }
 
       const userAddress = await Address.findOne({ user: userId, "address._id": addressId }, { "address.$": 1 });
 
@@ -942,13 +818,8 @@ const confirmOrder = async (req, res) => {
 const verifyPayment = async (req, res) => {
 
   const userId = req.session.user;
-  let user = await User.findById(userId)
 
-        if(!user || user.isBlocked  ){
-          return res.redirect("/login")
-        }
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-console.log('razorpay body',req.body);
 
   try {
      
@@ -1118,12 +989,6 @@ console.log('razorpay body',req.body);
       const orderId = req.query.orderId; 
       const productId = req.query.productId;
     
-      let user = await User.findById(userId)
-
-        if(!user || user.isBlocked){
-          return res.redirect("/login")
-        }
-
       if (!orderId) {
         return res.status(400).send('Order ID is required');
       }
@@ -1219,14 +1084,6 @@ console.log('razorpay body',req.body);
     try {
         const userId = req.session.user;
         const { couponCode , cartData} = req.body;
-        let user = await User.findById(userId)
-
-        if(!user || user.isBlocked ){
-          return res.redirect("/login")
-        }
-        if (!userId) {
-            return res.redirect("/login");
-        }
 
         let parsedCartData = cartData ? JSON.parse(cartData) : null;
 
@@ -1304,18 +1161,7 @@ console.log('razorpay body',req.body);
 
         await cart.save();
 
-      }else if(req.session.applied){
-
-      //   return res.render("cart", {
-      //     availableCoupons:coupons ,
-      //     user: req.user,
-      //     cart: cart.products,
-      //     totalPrice:cart.totalPrice,
-      //     couponCode: couponCode,
-      //     discountValue: discountValue || 0,          
-      //     errorMessage: "Already Applied"
-      // });
-    }
+      }
 
 
       const totalPrice = parseFloat(cart.totalPrice);
@@ -1323,18 +1169,7 @@ console.log('razorpay body',req.body);
       console.log("Updated Total Price:", cart.totalPrice);
       console.log("Applied Discount Value:", discountValue);
       
-      // return res.render("cart", {
-      //   availableCoupons:coupons ,
-      //     user: req.user,
-      //     cart: cart.products,
-      //     totalPrice:totalPrice,
-      //     couponCode: couponCode,
-      //     discountValue: discountValue || 0,          
-      //     errorMessage: null
-      // });
       return res.redirect("/cart");
-
-
 
     } catch (error) {
         console.error(error);
@@ -1346,27 +1181,19 @@ console.log('razorpay body',req.body);
 
 
 
-const removeCoupon = async (req,res)=>{
-
-}
-
 
 const orderSuccess = async (req,res)=>{
-const userId = req.session.user
-let user = await User.findById(userId)
-
-        if(!user || user.isBlocked){
-          return res.redirect("/login")
-        }
   return res.render("orderSuccess");
 }
+
 
 const orderFailed = async (req,res)=>{
   const orderId = req.query.orderId;
   console.log('orderid in failed page:',orderId);
-  
   return res.render("orderFailed",{orderId:orderId})
 }
+
+
 module.exports = {
     loadUserProfile,
     editProfilePage,

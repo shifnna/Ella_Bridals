@@ -7,9 +7,7 @@ const Category = require("../models/categorySchema");
 
 const loadOffers = async (req,res)=>{
     try {
-        
-if(req.session.admin){
-    let search = "";
+            let search = "";
     if(req.query.search){
         search=req.query.search;
     }
@@ -38,19 +36,16 @@ const count = await Offer.find({
 const totalPages = Math.ceil(count / limit);
 
 res.render("offer", { data: offerData, totalPages: totalPages, currentpage: page, search: search });    
-}else{
-    res.redirect("/pageerror")
-}
-       
+    
     } catch (error) {
         res.redirect("/pageerror")
     }
 }
 
+
+
 const loadAddOffer = async (req, res) => {
     try {
-        
-if(req.session.admin){
     const offerType = req.query.offerType || 'Category';
     const category = await Category.find({ isListed: true });
     const brand = await Brand.find({ isBlocked: false });
@@ -60,9 +55,7 @@ if(req.session.admin){
     }
 
     res.render('addOffer', { category, brand, offerType });    
-}else{
-    res.redirect("/pageerror")
-}
+
     } catch (error) {
         res.redirect("/pageerror");
     }
@@ -74,7 +67,6 @@ if(req.session.admin){
 
 const addOffer = async (req, res) => {
     try {
-        if (req.session.admin) {
             const {
                 offerType,
                 entityId,
@@ -127,9 +119,7 @@ const addOffer = async (req, res) => {
 
             console.log("Offer created and products updated successfully.");
             res.redirect("/admin/offers");
-        } else {
-            res.redirect("/pageerror");
-        }
+       
     } catch (error) {
         console.log("Error adding offer:", error);
         res.redirect("/pageerror");
@@ -142,7 +132,6 @@ const addOffer = async (req, res) => {
 const loadEditOffer = async (req, res) => {
     try {
         
-if(req.session.admin){
     let id = req.query.id;
     const offer = await Offer.findOne({ _id: id });
     const offerType = offer.offerType || 'Category'; // Use offer's saved type or default to 'Category'
@@ -155,11 +144,9 @@ if(req.session.admin){
     }
 
     // Render the edit offer page with the saved offer and available categories/brands
-    res.render("editOffer", { offer, offerType, category, brand });    
-}else{
-    res.redirect("/pageerror")
-}       
-    } catch (error) {
+    res.render("editOffer", { offer, offerType, category, brand });  
+
+  } catch (error) {
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
@@ -169,9 +156,7 @@ if(req.session.admin){
 
 const editOffer = async (req,res)=>{
     try {
-        
-if(req.session.admin){
-    const id=req.query.id;
+            const id=req.query.id;
     // console.log("body is :",req.body);
     const {offerType,entityId,discountPercentage,validFrom,validTo,status} = req.body;
 
@@ -197,11 +182,7 @@ if(req.session.admin){
     }else{
         res.status(404).json({error:"Offer not found"})
     }    
-}else{
-    res.redirect("/pageerror")
-}
-        
-  
+ 
     } catch (error) {
         console.log("error editing offer",error);
         
@@ -212,7 +193,6 @@ if(req.session.admin){
 
 const deleteOffer = async (req, res) => {
     try {
-        if (req.session.admin) {
             const id = req.query.id;
 
             const offer = await Offer.findById(id);
@@ -250,9 +230,7 @@ const deleteOffer = async (req, res) => {
             } else {
                 res.status(404).json({ error: "Offer not found" });
             }
-        } else {
-            res.redirect("/pageerror");
-        }
+        
     } catch (error) {
         console.log("Error deleting offer:", error);
         res.redirect("/pageerror");

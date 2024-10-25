@@ -248,7 +248,7 @@
                 <div class="form-group">
                     <label for="image<%= i %>">Image <%= i %></label>
                     <img src="" alt="" id="imgView<%= i %>">
-                    <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg" onchange="viewImage(event, `<%= i %>`)">
+                    <input type="file" class="form-control-file" name="images" id="input<%= i %>" accept="image/png, image/jpeg, image/jpg, image/webp" onchange="viewImage(event, `<%= i %>`)">
                     <span class="error-message" id="images-error" style="color: red;"></span>
                 </div>
                 <div class="image-cropper d-flex align-items-center" style="display:none;">

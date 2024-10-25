@@ -8,9 +8,7 @@ const Coupon = require("../models/couponSchema");
 
 const loadCoupons = async (req,res)=>{
     try {
-        
-if(req.session.admin){
-    let search = "";
+            let search = "";
         if(req.query.search){
             search=req.query.search;
         }
@@ -39,10 +37,7 @@ if(req.session.admin){
     const totalPages = Math.ceil(count / limit);
 
     res.render("couponManagement", { data: couponData, totalPages: totalPages, currentpage: page, search: search });
-}else{
-    return res.redirect("/pageerror")
-}
-    
+  
     } catch (error) {
         res.redirect("/pageerror")
     }
@@ -50,7 +45,6 @@ if(req.session.admin){
 
 const loadAddCoupon = async (req,res)=>{
     try {
-        if(req.session.admin){
  // const page = parseInt(req.query.page) || 1;
         // const limit = 5;
         // const skip = (page-1)*limit;
@@ -59,10 +53,6 @@ const loadAddCoupon = async (req,res)=>{
         // const totalPages = Math.ceil(totalBrands/limit);
         // const reverseBrand = brandData.reverse();
         res.render("addcoupon")
-        // res.render("offer")        
-        }else{
-            return res.redirect("/pageerror")
-        }
        
     } catch (error) {
         res.redirect("/pageerror")
@@ -72,10 +62,7 @@ const loadAddCoupon = async (req,res)=>{
 
 const addCoupon = async (req, res) => {
     try {
-        
-if(req.session.admin){
-   // console.log("body is :",req.body);
-        
+
    const { couponCode, discountType, discountValue, expiryDate, minOrderAmount, maxOrderAmount, description } = req.body;
    console.log(req.body);
    
@@ -100,10 +87,7 @@ if (!couponCode || !discountType || !discountValue || !expiryDate || !minOrderAm
    await newCoupon.save();
    console.log("coupon created successfully");       
    res.redirect("/admin/coupon")
-}else{
-    return res.redirect("/pageerror")
-}
-     
+   
     } catch (error) {
         res.status(400).json({ message: 'Error creating coupon', error: error.message });
     }
@@ -112,8 +96,6 @@ if (!couponCode || !discountType || !discountValue || !expiryDate || !minOrderAm
 
 const deleteCoupon = async (req,res)=>{
     try {
-        
-if(req.session.admin){
     const id = req.query.couponId;
     console.log(id);
     
@@ -123,10 +105,7 @@ if(req.session.admin){
     }else{
         res.redirect("/pageerror");
     }
-}else{
-    return res.redirect("/pageerror")
-}
-       
+      
     } catch (error) {
         res.status(400).json({ message: 'Error deleting coupon', error: error.message });
     }
@@ -137,15 +116,10 @@ if(req.session.admin){
 
 const loadEditCoupon = async (req,res)=>{
     try {
-        
-if(req.session.admin){
-
     let id = req.query.id;
     const coupon = await Coupon.findOne({_id:id});
      res.render("editCoupon",{coupon:coupon});
-    }else{
-    return res.redirect("/pageerror")
-}
+    
     } catch (error) {
         res.redirect("/pageerror");
     }
@@ -155,9 +129,7 @@ if(req.session.admin){
 
 const editCoupon = async (req,res)=>{
     try {
-        
-if(req.session.admin){
-    const id=req.query.id;
+        const id=req.query.id;
         const { couponCode, discountType, discountValue, expiryDate, minOrderAmount, maxOrderAmount, description } = req.body;
      
         const updateCoupon = await Coupon.findByIdAndUpdate(id,{
@@ -176,10 +148,7 @@ if(req.session.admin){
         }else{
             res.status(404).json({error:"Coupon not found"})
         }
-}else{
-    return res.redirect("/pageerror")
-}
-    
+   
     } catch (error) {
         res.status(500).json({error:"internal Server Error"})
     }

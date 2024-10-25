@@ -5,7 +5,9 @@ const env = require("dotenv").config();
 const Product = require("../models/productSchema");
 const Category = require("../models/categorySchema");
 const Order= require("../models/orderSchema")
-const Transaction = require("../models/transactionSchema")
+const Transaction = require("../models/transactionSchema");
+const Address= require("../models/addressSchema")
+
 
 const { jsPDF } = require('jspdf');
 const fs = require('fs');
@@ -362,66 +364,76 @@ const login = async (req, res) => {
 };
 
 
-
 const loadShopingPage = async (req, res) => {
-    try {
+  try {
       const user = req.session.user;
       let userData = null;
       let wishlist = [];
-  
+
       if (user) {
-        userData = await User.findOne({ _id: user });
-        wishlist = userData.wishlist;
+          userData = await User.findOne({ _id: user });
+          wishlist = userData.wishlist;
       }
 
       const searchQuery = req.query.search;
+      const categoryName = req.query.categoryName;
       const categoryId = req.query.category;
+      const currentPage = parseInt(req.query.page) || 1; // Current page from query params
+      const itemsPerPage = 12; // Number of items per page
       let products;
-    //   console.log("search : ",searchQuery);
 
+      // Determine the filter based on category and search
+      let query = {};
       if (categoryId) {
-        const category = await Category.findById(categoryId);
+          const category = await Category.findById(categoryId);
+          if (!category) {
+              return res.status(404).send('Category not found');
+          }
+          query.category = category._id;
+      }else if(categoryName) {
+        const category = await Category.findOne({name:categoryName});
         if (!category) {
-          return res.status(404).send('Category not found');
+            return res.status(404).send('Category not found');
         }
-  
-        // If a search query is present, filter products by name or description
-        if (searchQuery) {
-          products = await Product.find({
-            category: category._id,
-            $or: [
-              { productName: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
-              { description: { $regex: searchQuery, $options: 'i' } }
-            ]
-          });
-        } else {
-          products = await Product.find({ category: category._id });
-        }
-  
-      } else {
-        // If no category is selected but there's a search query
-        if (searchQuery) {
-          products = await Product.find({
-            $or: [
+        query.category = category._id;
+    }
+      
+      // If a search query is present
+      if (searchQuery) {
+          query.$or = [
               { productName: { $regex: searchQuery, $options: 'i' } },
               { description: { $regex: searchQuery, $options: 'i' } }
-            ]
-          });
-        } else {
-          products = await Product.find();
-        }
+          ];
       }
-  
-      const message = req.query.message || 'none';
 
-      const categories = await Category.find({isListed:true});
-      return res.render('shop', { products, wishlist, user: userData, categories,message });
-    } catch (error) {
-      console.log('Error loading home page:', error.message);
+      // Get the total count of products
+      const totalProducts = await Product.countDocuments(query);
+      const totalPages = Math.ceil(totalProducts / itemsPerPage);
+
+      // Fetch products for the current page
+      products = await Product.find(query)
+          .skip((currentPage - 1) * itemsPerPage)
+          .limit(itemsPerPage);
+
+      const message = req.query.message || 'none';
+      const categories = await Category.find({ isListed: true });
+
+      return res.render('shop', {
+          products,
+          wishlist,
+          user: userData,
+          categories,
+          message,
+          currentPage,
+          totalPages
+      });
+  } catch (error) {
+      console.log('Error loading shop page:', error.message);
       res.status(500).send('Internal Server Error');
-      return res.redirect("/pageerror")
-    }
-  };
+      return res.redirect("/pageerror");
+  }
+};
+
 
 
 
@@ -460,11 +472,7 @@ const logout = async (req,res)=>{
 
 const loadResetPassword = async (req,res)=>{
     try {
-        if(req.session.user){
-            res.render("resetPassword");
-        }else{
-            res.redirect("/pageerror")
-        }
+      res.render("resetPassword");     
     } catch (error) {
         console.error("error occure for loading forgottpassword page",error);
         return res.redirect("/pageerror")
@@ -475,16 +483,6 @@ const loadResetPassword = async (req,res)=>{
 const resetPassword = async (req, res) => {
     
   const userId = req.session.user; 
-    if (!userId) {
-      return res.redirect("/login");
-    }
-
-    let user = await User.findById(userId); 
-
-    if (!user || user.isBlocked) {
-      return res.redirect("/login"); 
-    }
-
     const { oldpassword, newpassword, confirmpassword } = req.body;
   
     if (newpassword !== confirmpassword) {
@@ -492,7 +490,7 @@ const resetPassword = async (req, res) => {
     }
 
     try {
-       user = await User.findById(userId);
+      const user = await User.findById(userId);
       if (!user) {
         return res.render('resetPassword', { message3: "User not found" });
       }
@@ -521,12 +519,7 @@ const resetPassword = async (req, res) => {
         const productId = req.params.id; 
 
         let user = await User.findById(userId)
-if(!userId){
-  return res.redirect("/login")
-}
-        if(!user || user.isBlocked ){
-          return res.redirect("/login")
-        }
+
         const product = await Product.findById(productId);
       if (!product) {
         return res.redirect(`/shop?message=product not found`)
@@ -538,10 +531,6 @@ if(!userId){
         return res.redirect(`/shop?message=product stocks left`)
       }
 
-         user = await User.findById(userId);
-        if (!user) {
-           res.redirect("/login");
-        }
 
         if (user.wishlist.includes(productId)) {
           return res.redirect(`/shop?message=product is already in wishlist`)
@@ -561,20 +550,12 @@ if(!userId){
   const loadwishlist = async (req, res) => {
     try {
         const userId = req.session.user;
-
         const user = await User.findById(userId).populate('wishlist'); // Populate the wishlist with product details
 
-        if(!user || user.isBlocked){
-          return res.redirect("/login")
-        }
-
-        if (!user) {
-            return res.redirect("/login"); 
-        }
         res.render("wishlist", {
             wishlist: user.wishlist,// Pass the populated wishlist to the template
-           
         });
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
@@ -588,10 +569,6 @@ const removeFromWishlist = async (req,res)=>{
         const userId = req.session.user;
 
         const user = await User.findById(userId);
-
-        if (!user) {
-           res.redirect("/login");
-        }
 
         user.wishlist.pull(productId);
         user.save();
@@ -610,13 +587,8 @@ const loadWallet = async (req,res)=>{
     try {
         const userId = req.session.user; // Assuming user ID is stored in session
         const user = await User.findById(userId).populate("transactions") // Adjust the field names as necessary
-
-        if(!user || user.isBlocked){
-          return res.redirect("/login")
-        }
-        
-    // console.log("transactions",user.transactions);
-    const transactions = await Transaction.find({userId:userId}).sort({date:-1})
+      
+        const transactions = await Transaction.find({userId:userId}).sort({date:-1})
     
         // Render the wallet page and pass the user data
         res.render('wallet', {
@@ -683,12 +655,6 @@ const downloadInvoice = async (req, res) => {
     const order = await Order.findById(req.params.orderId).populate('products');
     const doc = new jsPDF();
 
-    const userId = req.session.user;
-    let user = await User.findById(userId)
-
-        if(!user || user.isBlocked ){
-          return res.redirect("/login")
-        }
     // Invoice Header
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
@@ -879,6 +845,87 @@ console.log(user);
 }
 
 
+async function sendEmail(userEmail, message) {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.NODEMAILER_EMAIL, // Admin's email address
+        pass: process.env.NODEMAILER_PASSWORD, // Admin's email password
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    const mailOptions = {
+      from: userEmail.email,
+      to: process.env.NODEMAILER_EMAIL, 
+      subject: 'New message from user', 
+      text: message,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+
+    if (info.accepted.length > 0) {
+      console.log("Successfully sent to email");
+    }
+
+    return info.accepted.length > 0;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
+  }
+}
+
+
+
+const loadcontact = async (req,res)=>{
+  try {
+    const admin = await User.findOne({isAdmin:true});
+    const address = await Address.findOne({user:admin._id});
+    console.log('address',address);
+    
+    const email = process.env.NODEMAILER_EMAIL;
+
+  return res.render("contact",{address,email});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const contact = async (req,res)=>{
+  try {
+    const details = req.body;
+    console.log(details);
+
+    const user = await User.findById(req.session.user)
+    
+    const userEmail = await User.findOne({email:user.email})
+    const message = req.body.message;
+
+    const emailSend = await sendEmail(userEmail,message);
+    if (!emailSend) {
+      console.log('email sending failed');
+    }else{
+      console.log('email sending success');
+    }
+
+  return res.redirect("/contact");
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+const loadblog = async (req,res)=>{
+  try {
+  return res.render("blog");
+  } catch (error) {
+    console.log(error);
+  }
+}
 module.exports = {
     pageNotFound,
     loadHomePage,
@@ -899,4 +946,7 @@ module.exports = {
     loadWallet,
     downloadInvoice,
     share_refer,
+    loadcontact,
+    loadblog,
+    contact,
 }

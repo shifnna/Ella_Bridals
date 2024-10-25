@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,14 +6,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choose Address</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+
+    <!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+      
     <style>
+          header {
+    position: fixed;  /* Fix the header at the top */
+    top: 0;          /* Align it to the top */
+    left: 0;         /* Align it to the left */
+    width: 100%;     /* Full width */
+    z-index: 1000;   /* Ensure it stays above other content */
+    background-color: white; /* Set a background color to prevent transparency */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+}
+        .dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  display: none;
+}
+
+.dropdown-menu li {
+  margin-bottom: 10px;
+}
+
+.dropdown-menu li a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+  color: #000000;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+.wishlist-icon {
+    color: red; /* Set heart icon color to red */
+    font-size: 24px; /* Adjust size if necessary */
+    transition: color 0.3s; /* Optional: Adds a transition effect */
+}
+
+/* Optional: Change color on hover */
+.wishlist-icon:hover {
+    color: darkred; /* Change to a darker red on hover */
+}
+
+li {
+    text-decoration: none;
+}
+
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
         }
 
         .container {
-            margin-top: 30px;
+            margin-top: 140px;
         }
 
         h1 {
@@ -45,7 +136,7 @@
             height: 30px;
             width: 30px;
             border-radius: 50%;
-            background-color: #ff007f;
+            background-color: #ca1515;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -61,15 +152,15 @@
         }
 
         .step.active .line {
-            background-color: #ff007f;
+            background-color: #ca1515;
         }
 
         .step.active .circle {
-            background-color: #ff007f;
+            background-color: #ca1515;
         }
 
         .step.completed .circle {
-            background-color: #ff007f;
+            background-color: #ca1515;
         }
 
         .address-card {
@@ -100,22 +191,22 @@
             align-items: center;
             justify-content: center;
             height: 150px;
-            color: #ff007f;
+            color: #ca1515;
             cursor: pointer;
         }
 
         .add-address-card:hover {
-            border-color: #ff007f;
+            border-color: #ca1515;
         }
 
         .btn-outline-primary {
-            color: #ff007f;
-            border-color: #ff007f;
+            color: #ca1515;
+            border-color: #ca1515;
         }
 
         .btn-outline-primary:hover {
             color: #fff;
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
 
         /* Preloder */
@@ -148,7 +239,7 @@
 	0% {
 		-webkit-transform: rotate(0deg);
 		transform: rotate(0deg);
-		border: 4px solid #f44336;
+		border: 4px solid rgb(187, 13, 13);
 		border-left-color: transparent;
 	}
 	50% {
@@ -160,7 +251,7 @@
 	100% {
 		-webkit-transform: rotate(360deg);
 		transform: rotate(360deg);
-		border: 4px solid #f44336;
+		border: 4px solid rgb(187, 13, 13);;
 		border-left-color: transparent;
 	}
 }
@@ -182,6 +273,18 @@
 		border-left-color: transparent;
 	}
 }
+.custom-deliver-button {
+    background-color: rgb(187, 13, 13); /* Set the desired background color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+}
+
+/* Optional: Add hover effect */
+.custom-deliver-button:hover {
+    background-color: rgb(187, 13, 13);; /* Darker shade on hover */
+    color: #ebebeb;
+}
+
     </style>
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
@@ -192,6 +295,76 @@
     <div class="loader"></div>
 </div>
 
+ <!-- Header Section Begin -->
+ <header class="header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-lg-2">
+                <div class="header__logo">
+                    <a href="./index.html" style="width: 100px;height: 100px;"><img src="img/preview2.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-7">
+                <nav class="header__menu">
+                    
+                    <ul>
+                        <li style="margin-left: 45px;"> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/">Home</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop">Shop</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="#">Women</a></p></li>
+                        <li> <p style="font-size: smaller"><a style="text-decoration: none;font-size: small;margin: 15px;" href="#">Men</a></p></li>
+                        <!-- <li><a href="#">Pages</a>
+                            <ul class="dropdown">
+                                <li><a href="#">Product Details</a></li>
+                                <li><a href="/cart">Shop Cart</a></li>
+                                <li><a href="./checkout.html">Checkout</a></li>
+                                <li><a href="./blog-details.html">Blog Details</a></li>
+                            </ul>
+                        </li> -->
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="./blog.html">Blog</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="./contact.html">Contact</a></p></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3">
+                <div class="header__right">
+                    <div class="header__right__auth">
+                        <% if(locals.user){ %>
+                            <!-- Dropdown menu -->
+                <div class="dropdown">
+                    <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%-locals.user.name %>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                         <li><a href="/userProfile">Profile</a></li>
+                         <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+                        <%}else {%>
+                        <a href="/login">Login</a>
+                        <a href="/signup">Register</a>
+                        <%}%>
+                    </div>
+                    <ul class="header__right__widget">
+                        <!-- <li><span class="icon_search search-switch"></span></li> -->
+                        <li><a href="/wishlist"><span class="icon_heart_alt"></span>
+                            <!-- <% if(1==1)  { %>         //for wishlist count
+                            <div class="tip"><%=  %></div>   
+                            <% } %> -->
+                        </a></li>
+                        <li><a href="/cart"><span class="icon_bag_alt"></span>
+                            <!-- <% if(1==1) { %>
+                            <div class="tip"><%=  %></div>           //for cart count
+                            <% } %> -->
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open">
+            <i class="fa fa-bars"></i>
+        </div>
+    </div>
+</header>
 
 <div class="container">
     <!-- Stepper -->
@@ -228,14 +401,18 @@
 
         <% addresses.forEach(function(addr) { %>
             <% addr.address.forEach(function(address) { %>
-        <div class="col-md-5 mb-3">
-            <div class="address-card">
-                <h5><%=address.name%></h5>
-                <p><%=address.name%> , <%=address.city%> <br>pin: <%=address.postalCode%> <br> <%=address.state%> , <%=address.country%></p>
-               <a href="/editAddress?addressId=<%= address._id %>&id=<%= locals.user._id %>"><button class="btn btn-outline-primary btn-sm">Edit</button></a> 
-               <a href="/selectPayment?addressId=<%= address._id %>"><button class="btn btn-primary btn-sm">Deliver here</button></a> 
-            </div>
-        </div>
+                <div class="col-md-5 mb-3">
+                    <div class="address-card">
+                        <h5><%=address.name%></h5>
+                        <p><%=address.name%>, <%=address.city%> <br>pin: <%=address.postalCode%> <br> <%=address.state%>, <%=address.country%></p>
+                        <a href="/editAddress?addressId=<%= address._id %>&id=<%= locals.user._id %>">
+                            <button class="btn btn-outline-primary btn-sm">Edit</button>
+                        </a> 
+                        <a href="/selectPayment?addressId=<%= address._id %>">
+                            <button class="btn btn-sm custom-deliver-button">Deliver here</button>
+                        </a> 
+                    </div>
+                </div>                
         <% }); %>
       <% }); %>
 

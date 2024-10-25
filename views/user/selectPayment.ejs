@@ -13,14 +13,98 @@
     <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
-    <style>
+ <!-- Css Styles -->
+ <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+ <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+ <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+ <link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
+ <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
+ <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
+ <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
+ <link rel="stylesheet" href="css/style.css" type="text/css">
+
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+
+ <!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+   
+ <style>
+       header {
+ position: fixed;  /* Fix the header at the top */
+ top: 0;          /* Align it to the top */
+ left: 0;         /* Align it to the left */
+ width: 100%;     /* Full width */
+ z-index: 1000;   /* Ensure it stays above other content */
+ background-color: white; /* Set a background color to prevent transparency */
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow effect */
+}
+     .dropdown {
+position: relative;
+}
+
+.dropdown-toggle {
+cursor: pointer;
+}
+
+.dropdown-menu {
+position: absolute;
+top: 100%;
+left: 0;
+background-color: #fff;
+border: 1px solid #ddd;
+padding: 10px;
+display: none;
+}
+
+.dropdown-menu li {
+margin-bottom: 10px;
+}
+
+.dropdown-menu li a {
+color: #000000;
+text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+color: #000000;
+}
+
+.dropdown:hover .dropdown-menu {
+display: block;
+}
+.wishlist-icon {
+ color: red; /* Set heart icon color to red */
+ font-size: 24px; /* Adjust size if necessary */
+ transition: color 0.3s; /* Optional: Adds a transition effect */
+}
+
+/* Optional: Change color on hover */
+.wishlist-icon:hover {
+ color: darkred; /* Change to a darker red on hover */
+}
+
+li {
+ text-decoration: none;
+}
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
         }
 
         .container {
-            margin-top: 30px;
+            margin-top: 110px;
         }
 
         h1 {
@@ -52,7 +136,7 @@
             height: 30px;
             width: 30px;
             border-radius: 50%;
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -68,15 +152,15 @@
         }
 
         .step.active .line {
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
 
         .step.active .circle {
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
 
         .step.completed .circle {
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
 
         .payment-method-card {
@@ -92,23 +176,23 @@
         }
 
         .btn-primary {
-    background-color: #e6a4c0 !important; /* Light Pink when button is enabled */
-    border-color: #e4adc5 !important;
+    background-color: #dc9494 !important; /* Light Pink when button is enabled */
+    border-color: #dc9494 !important;
     color: #fff !important;
     transition: background-color 0.3s, border-color 0.3s; /* Smooth transition */
 }
 
 .btn-primary:disabled {
-    background-color: #e6a4c0  !important; /* Gray when button is disabled */
-    border-color: #dc94c7 !important;
+    background: #dc9494!important; /* Gray when button is disabled */
+    border-color: #dc9494 !important;
     color: #fff !important; /* Ensures text color is white */
     cursor: not-allowed !important; /* Show that button is not clickable */
     opacity: 1 !important; /* Ensure visibility */
 }
 
 .btn-primary.active {
-    background-color: #ff007f !important; /* Dark Pink when button is active */
-    border-color: #ff007f !important;
+    background:rgb(187, 13, 13) !important; /* Dark Pink when button is active */
+    border-color: #ca1515 !important;
     color: #fff !important;
 }
 
@@ -208,6 +292,78 @@
 <div id="preloder">
     <div class="loader"></div>
 </div>
+<!-- Header Section Begin -->
+<header class="header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 col-lg-2">
+                <div class="header__logo">
+                    <a href="./index.html" style="width: 100px;height: 100px;"><img src="img/preview2.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-7">
+                <nav class="header__menu">
+                    
+                    <ul>
+                        <li style="margin-left: 45px;"> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/">Home</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop">Shop</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="#">Women</a></p></li>
+                        <li> <p style="font-size: smaller"><a style="text-decoration: none;font-size: small;margin: 15px;" href="#">Men</a></p></li>
+                        <!-- <li><a href="#">Pages</a>
+                            <ul class="dropdown">
+                                <li><a href="#">Product Details</a></li>
+                                <li><a href="/cart">Shop Cart</a></li>
+                                <li><a href="./checkout.html">Checkout</a></li>
+                                <li><a href="./blog-details.html">Blog Details</a></li>
+                            </ul>
+                        </li> -->
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="./blog.html">Blog</a></p></li>
+                        <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="./contact.html">Contact</a></p></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3">
+                <div class="header__right">
+                    <div class="header__right__auth">
+                        <% if(locals.user){ %>
+                            <!-- Dropdown menu -->
+                <div class="dropdown">
+                    <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <%-locals.user.name %>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                         <li><a href="/userProfile">Profile</a></li>
+                         <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+                        <%}else {%>
+                        <a href="/login">Login</a>
+                        <a href="/signup">Register</a>
+                        <%}%>
+                    </div>
+                    <ul class="header__right__widget">
+                        <!-- <li><span class="icon_search search-switch"></span></li> -->
+                        <li><a href="/wishlist"><span class="icon_heart_alt"></span>
+                            <!-- <% if(1==1)  { %>         //for wishlist count
+                            <div class="tip"><%=  %></div>   
+                            <% } %> -->
+                        </a></li>
+                        <li><a href="/cart"><span class="icon_bag_alt"></span>
+                            <!-- <% if(1==1) { %>
+                            <div class="tip"><%=  %></div>           //for cart count
+                            <% } %> -->
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open">
+            <i class="fa fa-bars"></i>
+        </div>
+    </div>
+</header>
+
+
 <div class="container">
     <div class="stepper">
         <div class="step completed">
@@ -289,13 +445,6 @@
                             <li>Shipping <span>₹0.00</span></li>
                             <li>Total <span>₹ <%= totalPrice %></span></li>
                         </ul>
-                    </div>
-                    <div class="checkout__order__widget">
-                        <label for="o-acc">
-                            Create an account?
-                            <input type="checkbox" id="o-acc">
-                            <span class="checkmark"></span>
-                        </label>
                     </div>
                     <button type="submit" id="proceedBtn" style="width: 300px; height: 50px;" class="btn btn-primary btn-lg" disabled>Proceed</button>
                 </div>

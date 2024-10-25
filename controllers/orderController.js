@@ -11,7 +11,6 @@ const Coupon = require("../models/couponSchema");
 
 const loadOrders = async (req, res) => {
   try {
-    if (req.session.admin) {
       let search = "";
       if (req.query.search) {
         search = req.query.search;
@@ -49,10 +48,7 @@ const loadOrders = async (req, res) => {
         totalCategories: count,
         search: search,
       });
-    } else {
-      res.redirect("/pageerror");
-    }
-
+    
   } catch (error) {
     console.error('Error loading orders:', error);
     res.status(500).send('Internal Server Error');
@@ -65,7 +61,6 @@ const loadOrders = async (req, res) => {
 
 const loadOrderDetails = async (req, res) => {
   try {
-    if(req.session.admin){
       let search = req.query.search || ""; 
       let page = parseInt(req.query.page) || 1; 
       const limit = 10; 
@@ -108,11 +103,7 @@ const loadOrderDetails = async (req, res) => {
         order: order,
         user : userData,
       });      
-    }else{
-      res.redirect("/pageerror")
-    }
     
-
   } catch (error) {
     console.error('Error loading order details:', error);
     res.status(500).send('Internal Server Error');
@@ -122,7 +113,6 @@ const loadOrderDetails = async (req, res) => {
 
 
 const changeStatus = async (req, res) => {
-  if (req.session.admin) {
     const status = req.body.status;
     const orderId = req.query.orderId;
 
@@ -151,9 +141,6 @@ const changeStatus = async (req, res) => {
         user: userData,
       });
     }
-  } else {
-    res.redirect("/pageerror");
-  }
 };
 
 

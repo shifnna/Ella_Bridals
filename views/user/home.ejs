@@ -1,391 +1,297 @@
 <%-include("../../views/partials/userHeader")%>
-      <!-- Breadcrumb Begin -->
-      <div class="breadcrumb-option">
+<style>
+    .banner {
+        position: relative; /* Ensures correct positioning */
+        height: 500px;     /* Set a height for the banner */
+        background-size: cover; /* Make the background cover the section */
+        background-position: center; /* Center the background */
+        margin: 50px;
+    }
+
+    .banner__text {
+        position: absolute; /* Position text over the banner */
+        bottom: 20px;      /* Position text from bottom */
+        left: 20px;        /* Position text from left */
+        color: white;      /* Adjust text color */
+    }
+
+    /* Carousel Item */
+    .owl-carousel .item {
+        height: 100%;      /* Ensure full height for items */
+        transition: opacity 1s ease-in-out; /* Smooth transition for fading */
+    }
+
+    /* Navigation buttons */
+    .owl-nav {
+        position: absolute; /* Position buttons absolutely */
+        top: 50%; /* Center vertically */
+        width: 100%; /* Full width for centering */
+        transform: translateY(-50%); /* Adjust for vertical centering */
+        display: flex; /* Use flexbox for alignment */
+        justify-content: space-between; /* Space out buttons */
+        z-index: 10; /* Ensure buttons are above other elements */
+        border: none;
+    }
+
+
+    .owl-nav .owl-prev {
+    background: rgba(169, 169, 169, 0.4); /* Light gray with more fade effect */
+    width: 40px; /* Set a width for the button */
+    height: 40px; /* Set a height for the button */
+    border-radius: 50%; /* Make it round */
+    display: flex; /* Use flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    position: relative; /* For positioning the arrow */
+    border: none; /* Remove any border */
+    margin-left: 5%;
+}
+
+/* Increase size of the arrow */
+.owl-nav .owl-prev:before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-width: 10px 10px 10px 0; /* Adjust the size of the triangle */
+    border-color: transparent rgba(169, 169, 169, 0.4) transparent transparent; /* Same faded gray color for the triangle */
+    position: absolute; /* Position it within the button */
+    left: 10px; /* Adjust to center */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Correct vertical positioning */
+}
+
+.owl-nav .owl-next {
+    background: rgba(169, 169, 169, 0.4); /* Light gray with more fade effect */
+    width: 40px; /* Set a width for the button */
+    height: 40px; /* Set a height for the button */
+    border-radius: 50%; /* Make it round */
+    display: flex; /* Use flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    position: relative; /* For positioning the arrow */
+    border: none; /* Remove any border */
+    margin-right: 5%;
+}
+
+/* Increase size of the arrow for next button */
+.owl-nav .owl-next:before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-width: 10px 0 10px 10px; /* Adjust the size of the triangle */
+    border-color: transparent transparent transparent rgba(169, 169, 169, 0.4); /* Same faded gray color for the triangle */
+    position: absolute; /* Position it within the button */
+    right: 10px; /* Adjust to center */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Correct vertical positioning */
+}
+/* Hover effect */
+.owl-nav .owl-prev:hover, .owl-nav .owl-next:hover {
+    background: rgba(169, 169, 169, 0.6); /* Slightly darker gray on hover */
+    outline: none; /* Remove outline for focus state */
+}
+
+/* Active effect */
+.owl-nav .owl-prev:active, .owl-nav .owl-next:active {
+    background: rgba(169, 169, 169, 0.8); /* Even darker gray when clicked */
+    outline: none; /* Remove outline for focus state */
+}
+    /* Dot indicators */
+    .owl-dots {
+        position: absolute; /* Position dots absolutely */
+        bottom: 10px; /* Adjust vertical position */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Center dots */
+        display: flex; /* Use flexbox for alignment */
+        gap: 10px; /* Space between dots */
+    }
+
+    .owl-dots .owl-dot {
+        width: 12px; /* Width of each dot */
+        height: 12px; /* Height of each dot */
+        background: rgba(255, 255, 255, 0.5); /* Inactive dot color */
+        border-radius: 50%; /* Round dots */
+        cursor: pointer; /* Pointer cursor */
+        transition: background 0.3s; /* Smooth transition for hover effect */
+        display: block; /* Ensure dots are block elements */
+        border: none;
+    }
+
+    .owl-dots .owl-dot.active {
+        background: rgba(255, 255, 255, 1); /* Active dot color */
+        border: none;
+    }
+</style>
+
+<section class="banner-slider owl-carousel">
+    <div class="banner set-bg" data-setbg="img/banner/banner-5.jpg">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="breadcrumb__links">
-                        <a href="/"><i class="fa fa-home"></i> Home</a>
-                        <span>Shop</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Breadcrumb End -->
-    <!-- Categories Section Begin -->
-    <section class="categories">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-6 p-0">
-                    <div class="categories__item categories__large__item set-bg"
-                    data-setbg="img/categories/category-1.jpg">
-                    <div class="categories__text">
-                        <h1>Women’s fashion</h1>
-                        <p>Sitamet, consectetur adipiscing elit, sed do eiusmod tempor incidid-unt labore
-                        edolore magna aliquapendisse ultrices gravida.</p>
+                    <div class="banner__text">
+                        <h1>Banner 6 Title</h1>
                         <a href="#">Shop now</a>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/category-2.jpg">
-                            <div class="categories__text">
-                                <h4>Men’s fashion</h4>
-                                <p>358 items</p>
-                                <a href="#">Shop now</a>
-                            </div>
-                        </div>
+        </div>
+    </div>
+    <div class="banner set-bg" data-setbg="img/banner/banner-34.webp">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="banner__text">
+                        <h1>Banner 5 Title</h1>
+                        <a href="#">Shop now</a>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/category-3.jpg">
-                            <div class="categories__text">
-                                <h4>Kid’s fashion</h4>
-                                <p>273 items</p>
-                                <a href="#">Shop now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/category-4.jpg">
-                            <div class="categories__text">
-                                <h4>Cosmetics</h4>
-                                <p>159 items</p>
-                                <a href="#">Shop now</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/category-5.jpg">
-                            <div class="categories__text">
-                                <h4>Accessories</h4>
-                                <p>792 items</p>
-                                <a href="#">Shop now</a>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="banner set-bg" data-setbg="img/banner/banner-20.webp">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="banner__text">
+                        <h1>Banner 5 Title</h1>
+                        <a href="#">Shop now</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Categories Section End -->
-<!-- Product Section Begin -->
-<section class="product spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4">
-                <div class="section-title">
-                    <h4>New product</h4>
-                </div>
-            </div>
-            <div class="col-lg-8 col-md-8">
-                <ul class="filter__controls">
-                    <li class="active" data-filter="*">All</li>
-                    <li data-filter=".women">Women’s</li>
-                    <li data-filter=".kid">Kid’s</li>
-                </ul>
-            </div>                   
 
-        </div>
-        <div class="row property__gallery">
-            <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="img/product/product-7.jpg">
-                        <div class="label new">New</div>
-                        <ul class="product__hover">
-                            <li><a href="img/product/product-7.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                            <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6><a href="#">Contrasting sunglasses</a></h6>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                        </div>
-                        <div class="product__price">₹ 59.0</div>
-                    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.banner-slider').owlCarousel({
+            loop: true,           // Enable looping
+            margin: 10,          // Space between items
+            nav: true,           // Enable navigation buttons
+            dots: true,          // Enable dot indicators
+            autoplay: true,      // Enable autoplay
+            autoplayTimeout: 4000, // Duration of each slide (4 seconds)
+            autoplayHoverPause: true, // Pause on hover
+            items: 1,            // Show 1 item
+            onInitialized: function() {
+                console.log("Carousel initialized");
+            }
+        });
+    });
+</script>
+
+<section>
+    <h5 style="margin-left: 70px;">BEST SELLERS</h5>
+    <div style="margin-left: 50px;margin-right: 50px;">
+<div class="row property__gallery">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
+        <div class="product__item">
+            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-28.webp">
+                <ul class="product__hover">
+                    <li><a href="img/banner/banner-28.webp" class="image-popup"></a></li>
+                    </ul>
+            </div>
+            <div class="product__item__text">
+                <h6><a href="#">Contrasting sunglasses</a></h6>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
                 </div>
             </div>
-            <% products.forEach(function(product) { %>
-                <div class="col-lg-3 col-md-6 product-item" data-sale-price="<%= product.salePrice %>" data-product-name="<%= product.productName %>" data-created-at="<%= new Date(product.createdAt).getTime() %>">
-                  <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="/imgs/re-images/<%= product.productImage[0] %>">
-                      <!-- <% if(product.quantity <= 0) { %>
-                        <div class="label stockout stockblue">Out Of Stock</div>
-                      <% } else if(product.isBlocked === true) { %>
-                        <div class="label stockout stockblue">Unavailable</div>
-                      <% } %> -->
-                      <!-- <a href="/productdetails/<%= product._id %>"> -->
-                        <ul class="product__hover">
-                           <li>
-                                <a href="#" class="image-popup" data-toggle="modal" data-target="#imageModal" data-img-src="/imgs/re-images/<%= product.productImage[0] %>">
-                                    <span class="arrow_expand"></span>
-                                </a>
-                          </li>                            
-                          <!-- <li><a src="/imgs/re-images/<%= product.productImage[0] %>" class="image-popup"><span class="arrow_expand"></span></a></li> -->
-                          <li><a href="/addwishlist/<%= product._id %>"><span class="icon_heart_alt <% if (wishlist.includes(product._id.toString())) { %> wishlist-icon <% } %>"></span></a></li>
-                          <li><a href="/addToCart/<%= product._id %>/10"><span class="icon_bag_alt"></span></a></li>
-                        </ul>
-                      <!-- </a> -->
-                    </div>
-                  <div class="product__item__text">
-                      <h6><a href="#"><%= product.productName %></a></h6>
-                      <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                      </div>                                
-                      <% if (product.offerPrice && product.offerPrice > 0) { %>
-                        <div class="price-container" style="display: flex; align-items: center;">
-                          <div class="sale-price" style="text-decoration: line-through; margin-right: 10px; margin-left: 25%; font-weight: 600; color: dimgray;">
-                            ₹ <%= product.salePrice %>
-                          </div>
-                          <div class="offer-price" style="color: black; text-align: center; font-weight: 600;">
-                            ₹ <%= product.offerPrice %>
-                          </div>
-                        </div>
-                      <% } else { %>
-                        <div class="product__price">₹ <%= product.salePrice %></div>
-                      <% } %>
-                    </div>
-                  </div>
-                </div>
-              <% }) %>         
         </div>
     </div>
-</section>
-
-<!-- Product Section End -->
+    <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
+        <div class="product__item">
+            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-27.webp">
+                <ul class="product__hover">
+                    <li><a href="img/banner/banner-27.webp" class="image-popup"></a></li>
+                    </ul>
+            </div>
+            <div class="product__item__text">
+                <h6><a href="#">Contrasting sunglasses</a></h6>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
+        <div class="product__item">
+            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-11.webp">
+                <ul class="product__hover">
+                    <li><a href="img/banner/banner-11.webp" class="image-popup"></a></li>
+                     </ul>
+            </div>
+            <div class="product__item__text">
+                <h6><a href="#">Contrasting sunglasses</a></h6>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-4 col-sm-6 ">
+        <div class="product__item">
+            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-31.avif">
+                <ul class="product__hover">
+                    <li><a href="img/banner/banner-31.avif" class="image-popup"></a></li>
+                      </ul>
+            </div>
+            <div class="product__item__text">
+                <h6><a href="#">Contrasting sunglasses</a></h6>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
 
 <!-- Banner Section Begin -->
-<section class="banner set-bg" data-setbg="img/banner/banner-1.jpg">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-7 col-lg-8 m-auto">
-                <div class="banner__slider owl-carousel">
-                    <div class="banner__item">
-                        <div class="banner__text">
-                            <span>The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a href="#">Shop now</a>
-                        </div>
-                    </div>
-                    <div class="banner__item">
-                        <div class="banner__text">
-                            <span>The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a href="#">Shop now</a>
-                        </div>
-                    </div>
-                    <div class="banner__item">
-                        <div class="banner__text">
-                            <span>The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a href="#">Shop now</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<section>
+    <div class="banner set-bg" data-setbg="img/banner/banner-19.webp">
+        
     </div>
 </section>
 <!-- Banner Section End -->
-
-<!-- Trend Section Begin -->
 <section class="trend spad">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Hot Trend</h4>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/ht-1.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Chain bucket bag</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/ht-2.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Pendant earrings</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/ht-3.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Cotton T-Shirt</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Best seller</h4>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/bs-1.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Cotton T-Shirt</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/bs-2.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Zip-pockets pebbled tote <br />briefcase</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/bs-3.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Round leather bag</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="trend__content">
-                    <div class="section-title">
-                        <h4>Feature</h4>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/f-1.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Bow wrap skirt</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/f-2.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Metallic earrings</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                    <div class="trend__item">
-                        <div class="trend__item__pic">
-                            <img src="img/trend/f-3.jpg" alt="">
-                        </div>
-                        <div class="trend__item__text">
-                            <h6>Flap cross-body bag</h6>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                            </div>
-                            <div class="product__price">$ 59.0</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
-<!-- Trend Section End -->
-
 <!-- Discount Section Begin -->
 <section class="discount">
     <div class="container">
         <div class="row">
             <div class="col-lg-6 p-0">
                 <div class="discount__pic">
-                    <img src="img/discount.jpg" alt="">
+                    <img style="width: 585px;height: 390px;" src="img/banner/banner-30.webp" alt="">
                 </div>
             </div>
             <div class="col-lg-6 p-0">
                 <div class="discount__text">
                     <div class="discount__text__title">
                         <span>Discount</span>
-                        <h2>Summer 2019</h2>
+                        <h2>Summer 2024</h2>
                         <h5><span>Sale</span> 50%</h5>
                     </div>
                     <div class="discount__countdown" id="countdown-time">

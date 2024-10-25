@@ -168,6 +168,7 @@ const logout= async (req,res)=>{
 
 
 
+
 const generateReport = async (req, res) => {
     const formatDateString = (dateString) => {
         // Check if the date is in the yyyy-mm-dd format
@@ -187,21 +188,12 @@ const generateReport = async (req, res) => {
 
     console.log('req body :',req.body);
     
-    // console.log(startDateString);
-    // console.log(endDateString);
-
-    // Convert the date strings to Date objects
     const startDate = new Date(startDateString.split('-').reverse().join('-')); // Converts dd-mm-yyyy to yyyy-mm-dd
     const endDate = new Date(endDateString.split('-').reverse().join('-'));
 
-    // console.log(startDate);
-    // console.log(endDate);
-       
-    // Set the time for endDate to the end of the day
     endDate.setHours(23, 59, 59, 999);
 
     try {
-        if (req.session.admin) {
             const orders = await Order.find({
                 orderDate: { $gte: startDate, $lte: endDate }
             });
@@ -415,11 +407,9 @@ const topSellingBrands = brandSalesData.map(sale => ({
       };
   }
 
-res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount,topSellingBrands,topSellingCategories,topSellingProducts,chartData});
+        res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount,topSellingBrands,topSellingCategories,topSellingProducts,chartData});
             console.log('Report generated successfully..');
-        } else {
-            return res.redirect("/login"); 
-        }
+        
     } catch (error) {
         console.error("Error generating report:", error);
         res.status(500).json({ error: "Failed to generate report" });
