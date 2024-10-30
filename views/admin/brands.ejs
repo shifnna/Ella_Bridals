@@ -16,13 +16,21 @@
         .container {
             display: flex;
             min-height: 100vh;
+            transition: margin-left 0.3s; /* Animation for sidebar */
         }
         .sidebar {
-            background-color: #253234;
+            background-color: #e3e5e6;
             min-height: 100vh;
             width: 250px;
-            color: #e7dddd;
+            color: #1b1919;
             padding-top: 20px;
+            position: fixed; /* Make sidebar fixed */
+            left: -250px; /* Hide sidebar off-screen */
+            transition: left 0.3s; /* Animation for sidebar */
+            z-index: 1000; /* Keep sidebar above content */
+        }
+        .sidebar.active {
+            left: 0; /* Show sidebar when active */
         }
         .sidebar ul {
             list-style-type: none;
@@ -36,7 +44,7 @@
             align-items: center;
             padding: 15px;
             text-decoration: none;
-            color: #e7dddd;
+            color: #1f1c1c;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -52,12 +60,13 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            margin-left: 0; /* No margin initially */
         }
         .top-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
         .top-header h2 {
             margin: 0;
@@ -71,60 +80,37 @@
         .main-content-body {
             display: flex;
             gap: 20px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
         }
-        .left-section {
-            width: 30%;
-        }
+        .left-section,
         .right-section {
-            width: 70%;
+            flex: 1; /* Allow sections to grow equally */
+            min-width: 300px; /* Minimum width for responsiveness */
         }
         .brand-form {
             background-color: #fff;
-            padding: 20px;
+            /* padding: 20px; */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .brand-form h3 {
-            margin-bottom: 20px;
-        }
-        .brand-form .form-group {
-            margin-bottom: 15px;
-        }
-        .brand-form .form-control, .brand-form .form-control-file {
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .brand-form button {
-            margin-top: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .brand-form button:hover {
-            background-color: #218838;
-        }
-        .blockButton{
-
+            margin-bottom: 20px; /* Space between elements */
         }
         .brand-table {
             background-color: #fff;
-            padding: 20px;
+            /* padding: 20px; */
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         table {
             width: 100%;
             border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
+            table-layout: fixed; /* Fix the layout to prevent overflow */
         }
         th, td {
-            padding: 10px;
-            text-align: left;
+            margin: 10px;
+            text-align: center;
+            overflow: hidden; /* Hide overflow */
+            text-overflow: ellipsis; /* Add ellipsis for long text */
+            white-space: nowrap; /* Prevent text from wrapping */
         }
         th {
             background-color: #f2f2f2;
@@ -137,53 +123,44 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        .action-button:hover {
-            background-color: darkred;
+        /* Button styling */
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none; /* Remove underline from links inside buttons */
         }
-        /* General button styling for consistency */
-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none; /* Remove underline from links inside buttons */
-}
-
-button:hover {
-    background-color: #218838;
-}
-
-.btn-danger {
-    background-color: #dc3545; /* Red color for danger buttons */
-}
-
-.btn-danger:hover {
-    background-color: #ad212f; /* Darker red for danger buttons */
-}
-
-.btn-success {
-    background-color: #28a745; /* Green color for success buttons */
-}
-
-.btn-success:hover {
-    background-color: #218838; /* Darker green for success buttons */
-}
-
-.btn-block {
-    width: 90px; /* Same width as specified in the inline style */
-    margin-right: 5px; /* Space between buttons */
-}
-button a {
-    text-decoration: none; /* Remove underline from links inside buttons */
-    color: white; /* Set text color to white */
-}
-
-button:hover a {
-    color: white; /* Ensure text color remains white on hover */
-}
-.pagination {
+        button:hover {
+            background-color: #218838;
+        }
+        .btn-danger {
+            background-color: #dc3545; /* Red color for danger buttons */
+        }
+        .btn-danger:hover {
+            background-color: #ad212f; /* Darker red for danger buttons */
+        }
+        .btn-success {
+            background-color: #28a745; /* Green color for success buttons */
+        }
+        .btn-success:hover {
+            background-color: #218838; /* Darker green for success buttons */
+        }
+        .btn-block {
+            /* width: 90px; Set width for buttons */
+            margin-right: 5px; /* Space between buttons */
+        }
+        button a {
+            text-decoration: none; /* Remove underline from links inside buttons */
+            color: white; /* Set text color to white */
+        }
+        button:hover a {
+            color: white; /* Ensure text color remains white on hover */
+        }
+        .pagination {
             display: flex;
             justify-content: center;
             margin-top: 20px;
@@ -193,7 +170,6 @@ button:hover a {
         .page-item {
             margin: 0 5px;
             list-style: none;
-            margin-right: 70px;
         }
         .page-link {
             padding: 10px 15px;
@@ -210,13 +186,44 @@ button:hover a {
             background-color: #007bff;
             color: #fff;
         }
+        .menu-icon {
+            display: block; /* Hidden by default */
+            font-size: 24px; /* Size of the icon */
+            cursor: pointer; /* Cursor changes to pointer */
+            margin-left: 25px;
+    margin-top: 10px;
+        }
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px; /* Reduced width on mobile */
+            }
+            .menu-icon {
+                display: block; /* Show icon on mobile */
+                position: absolute; /* Position it */
+                left: 0px;
+                top: 0px;
+                z-index: 2000; /* Above the sidebar */
+            }
+            .main-content {
+                margin-left: 0; /* Reset margin */
+            }
+            .brand-table,
+            .brand-form {
+                width: 100%; /* Full width for mobile */
+                margin: 0; /* No margin on mobile */
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="menu-icon" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i> <!-- Menu icon -->
+    </div>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <h1 style="margin-left: 18px;">Womenz Store</h1>
+        <div class="sidebar" id="sidebar">
+            <!-- <h1 style="margin-left: 18px;">Womenz Store</h1> -->
             <ul>
                 <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
@@ -229,7 +236,6 @@ button:hover a {
                 <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
                 <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
                 <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
-
             </ul>
         </div>
 
@@ -247,14 +253,14 @@ button:hover a {
                 <div class="left-section">
                     <!-- Brand Form -->
                     <div class="brand-form">
-                        <h3>Add New Brand</h3>
+                        <h3 style="margin: 20px;">Add New Brand</h3>
                         <form id="brandForm" action="/admin/addBrand" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
-                            <div class="form-group">
+                            <div class="form-group" style="margin: 20px;">
                                 <label for="brandName">Brand Name</label>
                                 <input style="height: 40px;" type="text" class="form-control" id="brandName" name="brandName" placeholder="Type here">
                                 <div id="brandNameError" class="error-message" style="color: red;font-size: small;"></div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin: 20px;">
                                 <label for="brandImage">Brand Image</label>
                                 <img src="" alt=""/>
                                 <input style="height: 40px;" type="file" class="form-control-file" id="brandImage" name="brandImage">
@@ -269,7 +275,7 @@ button:hover a {
                     <!-- Brand Details Table -->
                     <div class="brand-table">
                         <table class="table table-hover">
-                            <thead>
+                            <thead style="height: 50px;">
                                 <tr>
                                     <th>Brand</th>
                                     <th>Logo</th>
@@ -278,85 +284,84 @@ button:hover a {
                                 </tr>
                             </thead>
                             <tbody>
-    <% data.forEach(function(brand) { %>
-    <tr>
-        <td><%= brand.brandName %></td>
-        <td><img src="/imgs/productImages/<%= brand.brandImage[0] %>" alt="brand logo" style="width: 60px; height: 60px; object-fit: cover;"></td>
-        <td>
-            <% if (brand.isBlocked === true) { %>
-                <span class="badge rounded-pill alert-danger" style="width: 60px">Blocked</span>
-            <% } else { %>
-                <span class="badge rounded-pill alert-success" style="width: 60px">Active</span>
-            <% } %>
-        </td>
-        <td>
-            <% if(brand.isBlocked === false){ %>
-                <button class="btn btn-danger btn-block" onclick="return confirmBlock()">
-                    <a href="/admin/blockBrand?id=<%= brand._id %>" class="text-white">Block</a>
-                </button>
-            <% } else { %>
-                <button class="btn btn-success btn-block" onclick="return confirmUnblock()">
-                    <a href="/admin/unBlockBrand?id=<%= brand._id %>" class="text-white">Unblock</a>
-                </button>
-            <% } %>
-            <button class="btn btn-danger btn-block" onclick="return confirmDelete()">
-                <a href="/admin/deleteBrand?id=<%= brand._id %>" class="text-white">Delete</a>
-            </button>
-        </td>
-    </tr>
-    <% }) %>
-</tbody>
-
+                                <% data.forEach(function(brand) { %>
+                                <tr>
+                                    <td><%= brand.brandName %></td>
+                                    <td><img src="/imgs/productImages/<%= brand.brandImage[0] %>" alt="brand logo" style="width: 60px; height: 60px; object-fit: cover;"></td>
+                                    <td>
+                                        <% if (brand.isBlocked === true) { %>
+                                            <span class="badge rounded-pill alert-danger" style="width: 60px">Blocked</span>
+                                        <% } else { %>
+                                            <span class="badge rounded-pill alert-success" style="width: 60px">Active</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if(brand.isBlocked === false){ %>
+                                            <button class="btn btn-danger btn-block" onclick="return confirmBlock()">
+                                                <a href="/admin/blockBrand?id=<%= brand._id %>" class="text-white">Block</a>
+                                            </button>
+                                        <% } else { %>
+                                            <button class="btn btn-success btn-block" onclick="return confirmUnblock()">
+                                                <a href="/admin/unBlockBrand?id=<%= brand._id %>" class="text-white">Unblock</a>
+                                            </button>
+                                        <% } %>
+                                        <button class="btn btn-danger btn-block" onclick="return confirmDelete()">
+                                            <a href="/admin/deleteBrand?id=<%= brand._id %>" class="text-white">Delete</a>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
                         </table>
                     </div>
-          
-               
                 </div>
             </div>
         </div>
     </div>
 
     <script>
- function validateForm() {
-        // Clear previous error messages
-        document.getElementById('brandNameError').innerText = '';
-        document.getElementById('brandImageError').innerText = '';
-
-        // Get the values from the form
-        const brandName = document.getElementById('brandName').value.trim();
-        const brandImage = document.getElementById('brandImage').files[0];
-
-        let isValid = true;
-
-        // Validate brand name
-        if (!brandName.match(/^[A-Za-z\s]+$/)) {
-            document.getElementById('brandNameError').innerText = 'Brand name must contain only letters.';
-            isValid = false;
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active'); // Toggle the active class to show/hide sidebar
         }
 
-        // Validate brand image
-        if (!brandImage) {
-            document.getElementById('brandImageError').innerText = 'Please select a brand image.';
-            isValid = false;
+        function validateForm() {
+            // Clear previous error messages
+            document.getElementById('brandNameError').innerText = '';
+            document.getElementById('brandImageError').innerText = '';
+
+            // Get the values from the form
+            const brandName = document.getElementById('brandName').value.trim();
+            const brandImage = document.getElementById('brandImage').files[0];
+
+            let isValid = true;
+
+            // Validate brand name
+            if (!brandName.match(/^[A-Za-z\s]+$/)) {
+                document.getElementById('brandNameError').innerText = 'Brand name must contain only letters.';
+                isValid = false;
+            }
+
+            // Validate brand image
+            if (!brandImage) {
+                document.getElementById('brandImageError').innerText = 'Please select a brand image.';
+                isValid = false;
+            }
+
+            return isValid; // Return true if all validations pass
         }
-
-        return isValid; // Return true if all validations pass
-    }
-
-
-
 
         function confirmDelete(){
-          return confirm("are you sure you want to delete this brand?")
+            return confirm("Are you sure you want to delete this brand?");
         }
         
         function confirmBlock(){
-  return confirm("are you sure you want to Block this brand?")
-}
+            return confirm("Are you sure you want to block this brand?");
+        }
 
-function confirmUnblock(){
-  return confirm("are you sure you want to UnBlock this brand?")
-}
+        function confirmUnblock(){
+            return confirm("Are you sure you want to unblock this brand?");
+        }
     </script>
 
 </body>

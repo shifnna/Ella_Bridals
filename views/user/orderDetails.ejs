@@ -1,4 +1,4 @@
-<%- include("../../views/partials/H-profile") %>
+<%- include("../../views/partials/userHeader") %>
 <style>
     .download-invoice {
         margin-right: 55px;
@@ -9,77 +9,109 @@
     .download-invoice:hover {
         color: #eb2f6e; /* Hover color */
     }
+
+    .order-card {
+        border: 1px solid #ebebeb;
+        background-color: #f9f9f9;
+        width: 80%; /* Set width to 80% */
+        margin: auto; /* Center the card */
+        max-width: 800px; /* Optional: Limit the maximum width */
+    }
+    #hy{
+            margin-left: 103px;
+        }
+    body{
+            padding-top: 13px;
+        }
+    @media (max-width: 768px){
+        body{
+            padding-top: 70px;
+        }
+        #hy{
+            margin-left: 0px;
+        }
+    }
+
 </style>
 
 <!-- Order Details Section -->
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Order Details</h1>
-        <a class="download-invoice" href="/downloadInvoice/<%= order._id %>">Download Invoice &#x1F4E5;</a>    
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" id="hy" >
+    <!-- Page Heading -->
+    <div id="hy" class="row border-bottom pb-3 mb-3" style="margin-top: 7%">
+        <div class="col-12">
+            <h1 class="h2">Order Details</h1>
+        </div>
+    </div>
+
+    <!-- Download Invoice Link -->
+    <div class="row mb-3">
+        <div class="col-12 text-center">
+            <a class="download-invoice" href="/downloadInvoice/<%= order._id %>">Download Invoice &#x1F4E5;</a>
+        </div>
     </div>
 
     <!-- Order Information -->
-    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
-        <div id="report-form" class="col-md-8">
+    <div class="order-card row mb-3 p-3">
+        <div class="col-md-8">
             <h6 class="product-title">PLACED : <%= order.orderDate.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></h6>
             <p style="font-size:15px;">ORDER NO : <%= order._id.toString().slice(-8).toUpperCase() %></p>
         </div>
-        <div style="margin-left: 100px;" class="col-md-2 text-end">
-            <h5>TOTAL: ₹<%= order.totalAmount %> </h5>
+        <div class="col-md-4 text-end">
+            <h5>TOTAL: ₹<%= order.totalAmount %></h5>
         </div>
     </div>
 
     <!-- Shipping Address -->
-    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto;">
-        <h4>Shipping Address</h6>
-        <div>
-            <%= order.address[0].username %> <br>
-            <%= order.address[0].address %> <br>
-            <%= order.address[0].state %>, <%= order.address[0].city %>, <%= order.address[0].pincode %> <br>
-            <%= order.address[0].mobile %>
+    <div class="order-card row mb-3 p-3">
+        <div class="col-12">
+            <h4>Shipping Address</h4>
+            <div>
+                <%= order.address[0].username %><br>
+                <%= order.address[0].address %><br>
+                <%= order.address[0].state %>, <%= order.address[0].city %>, <%= order.address[0].pincode %><br>
+                <%= order.address[0].mobile %>
+            </div>
         </div>
     </div>
 
     <!-- Product Details -->
     <% order.products.forEach(function(product) { %>
-        <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 90%; margin: auto; align-items: center;">
-            <% if (product.productImage && product.productImage.length > 0) { %>
-                <img style="width: 80px; height: 80px; object-fit: cover; margin-right: 16px;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
-            <% } else { %>
-                <img style="width: 80px; height: 80px; object-fit: cover; margin-right: 16px;" src="/path/to/default/image.jpg" alt="Default Image" class="img-fluid rounded">
-            <% } %>
+        <div class="order-card row mb-3 p-3 align-items-center">
+            <div class="col-md-2">
+                <% if (product.productImage && product.productImage.length > 0) { %>
+                    <img style="width: 80px; height: 80px; object-fit: cover;" src="/imgs/re-images/<%= product.productImage[0] %>" alt="Product Image" class="img-fluid rounded">
+                <% } else { %>
+                    <img style="width: 80px; height: 80px; object-fit: cover;" src="/path/to/default/image.jpg" alt="Default Image" class="img-fluid rounded">
+                <% } %>
+            </div>
             <div class="col-md-8">
-                <div>
-                    <p>Status: <%= product.status %></p>
-                    <h6>Product Name: <%= product.name %></h6>
-                    <h6>Price: ₹<%= product.price %></h6>
-                    <p>Quantity: <%= product.quantity %></p>
-                    <!-- Add more details if needed -->
-                </div>
+                <p>Status: <%= product.status %></p>
+                <h6>Product Name: <%= product.name %></h6>
+                <h6>Price: ₹<%= product.price %></h6>
+                <p>Quantity: <%= product.quantity %></p>
             </div>
             <div class="col-md-2 text-end">
-                <% if(product.status === 'Delivered') { %>
-                    <button id="returnOrderBtn"  class="btn btn-outline-dark" style="width: 100%;">
+                <% if (product.status === 'Delivered') { %>
+                    <button class="btn btn-outline-dark" style="width: 100%;">
                         <a href="/returnOrder?orderId=<%= order._id %>&productId=<%= product.productId %>" style="text-decoration: none; color: black;">Return Order</a>
                     </button>
-                <% } else if(product.status === 'OrderConfirmed') { %>
-                    <button id="cancelOrderBtn" class="btn btn-outline-dark" style="width: 100%;">
-                        <a href="/cancelOrder?orderId=<%= order._id %>&productId=<%= product.productId %>" style="text-decoration: none; color: black;">Cancel Order</a>
-                    </button>
-                <% } else if(product.status === 'Shipped') { %>
-                    <button id="cancelOrderBtn" class="btn btn-outline-dark" style="width: 100%;">
+                <% } else if (product.status === 'OrderConfirmed' || product.status === 'Shipped') { %>
+                    <button class="btn btn-outline-dark" style="width: 100%;">
                         <a href="/cancelOrder?orderId=<%= order._id %>&productId=<%= product.productId %>" style="text-decoration: none; color: black;">Cancel Order</a>
                     </button>
                 <% } %>
             </div>
         </div>
     <% }); %>
-    
 
     <!-- Payment Details -->
-    <div class="order-card row mb-3 p-3" style="border: 1px solid #ebebeb; background-color: #f9f9f9; max-width: 40%; margin: auto; margin-left: 55%; border-width: 8px; border-color: rgba(127, 124, 124, 0.326); border-radius: 3px;">
-        <h4>Payment Details</h4>
-        <div class="payment-details">
+    <div class="order-card row mb-3 p-3">
+        <div class="col-12">
+            <h4>Payment Details</h4>
+        </div>
+        <div class="payment-details col-12">
+            <!-- Payment details rows -->
+            <!-- For layout consistency, ensure each section is within a row and properly spaced -->
             <div class="row">
                 <div class="col-6">
                     <span>Payment method</span>
@@ -93,7 +125,7 @@
                     <span>Subtotal (Inclusive tax)</span>
                 </div>
                 <div class="col-6 text-end">
-                    <span>₹<%= order.totalAmount %></span> 
+                    <span>₹<%= order.totalAmount %></span>
                 </div>
             </div>
             <div class="row">
@@ -120,16 +152,19 @@
                     <h5>₹<%= order.totalAmount %></h5>
                 </div>
             </div>
+            <!-- Additional details like Subtotal, Discount, etc. -->
         </div>
-        <% if(order.status === 'Pending') { %>
-            <button class="btn btn-outline-dark" style="width:200px;background-color: rgb(68, 148, 68);border: none;margin-left: 5%;">
-                <a href="/proceedOrder?orderId=<%= order._id %>" style="text-decoration: none; color: rgb(252, 249, 249);">Continue Payment</a>
-            </button>
-        <%}%>
-    </div> 
-    
-          
+
+        <% if (order.status === 'Pending') { %>
+            <div class="col-md-12 text-center mt-3">
+                <button class="btn btn-outline-dark continue-payment-btn">
+                    <a href="/proceedOrder?orderId=<%= order._id %>" style="text-decoration: none; color: rgb(89, 189, 121);">Continue Payment</a>
+                </button>
+            </div>
+        <% } %>
+    </div>
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -160,12 +195,11 @@
         }
     });
 
-
     document.addEventListener("DOMContentLoaded", function () {
-        var cancelOrderBtn = document.getElementById('returnOrderBtn');
+        var returnOrderBtn = document.getElementById('returnOrderBtn');
 
-        if (cancelOrderBtn) {
-            cancelOrderBtn.addEventListener('click', function(event) {
+        if (returnOrderBtn) {
+            returnOrderBtn.addEventListener('click', function(event) {
                 event.preventDefault(); // Prevent default button action
 
                 // Trigger SweetAlert for confirmation
@@ -180,7 +214,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Redirect to cancel the order
-                        window.location.href = cancelOrderBtn.querySelector('a').href;
+                        window.location.href = returnOrderBtn.querySelector('a').href;
                     }
                 });
             });

@@ -27,7 +27,7 @@
             min-height: 100vh;
             width: 250px;
             color: #e7dddd;
-            padding-top: 20px;
+            padding-top: 50px;
         }
         .sidebar ul {
             list-style-type: none;
@@ -41,7 +41,7 @@
             align-items: center;
             padding: 15px;
             text-decoration: none;
-            color: #e7dddd;
+            color: #040000;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -57,7 +57,7 @@
             padding-left: 80px;
             padding-bottom: 80px;
             padding-right: 80px;
-            padding-top: 20px;
+            padding-top: 50px;
         }
         .top-header {
             display: flex;
@@ -142,13 +142,56 @@
             flex: 1;
             min-width: calc(50% - 20px);
         }
+        /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #fdfcfc;
+    color: rgb(16, 1, 1);
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000; /* Ensure it is above the sidebar */
+}
+
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #ffffff;
+    color: rgb(15, 2, 2);
+    position: fixed;
+    left: -250px; /* Hidden by default */
+    transition: left 0.3s ease; /* Smooth transition */
+    z-index: 999; /* Below the menu icon */
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar */
+}
+
+.main-content {
+    margin-left: 0; /* Default margin */
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+.main-content.sidebar-active {
+    margin-left: 250px; /* Push main content to the right */
+}
+
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- <div class="container"> -->
+        <div class="menu-icon" id="menuIcon">&#9776;</div>
         <!-- Sidebar -->
-        <div class="sidebar">
-            <h1 style="margin-left: 18px;">Womenz Store</h1>
+        <div class="sidebar" id="sidebar">
             <ul>
                 <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
@@ -264,6 +307,25 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
+        // script.js
+const menuIcon = document.getElementById('menuIcon');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+
+menuIcon.addEventListener('click', () => {
+    sidebar.classList.toggle('active'); // Toggle sidebar visibility
+    mainContent.classList.toggle('sidebar-active'); // Adjust main content margin
+});
+
+// Close sidebar when clicking outside of it
+document.addEventListener('click', (event) => {
+    if (!sidebar.contains(event.target) && !menuIcon.contains(event.target)) {
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('sidebar-active');
+    }
+});
+
+
          function validateAndSubmit() {
         if (validateForm()) {
             document.forms[0].submit();

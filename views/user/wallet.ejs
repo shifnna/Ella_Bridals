@@ -1,4 +1,4 @@
-<%-include("../../views/partials/H-profile")%>
+<%-include("../../views/partials/userHeader")%>
 <style>
   .close-tag {
     position: absolute;
@@ -30,6 +30,18 @@
 .close-tag:hover {
     background-color: rgb(235, 225, 225); /* Change background on hover */
 }
+main{
+    margin-left: 9%;
+}
+@media (max-width: 768px) {
+    .body{
+        font-size: 11px;
+    }
+    main{
+        margin-left: 0%;
+    }
+}
+
 </style>
 
 <!-- Wallet Section -->

@@ -1,7 +1,17 @@
-<%-include("../../views/partials/H-profile")%>
+<%-include("../../views/partials/userHeader")%>
+<style>
+    main{
+        margin-left: 10%;
+    }
+    @media (max-width: 768px) {
+       main{
+        margin-left: 0%;
+       } 
+    }
 
+</style>
             <!-- Profile Section -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"  style="padding-top: 100px;">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"  style="padding-top: 50px;">
                 <!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2">User Profile</h1>
                 </div> -->
@@ -12,10 +22,10 @@
                     </div>
                     <div class="col-md-10">
                         <div class="details">
-                            <span>Name: <%= locals.user.name%></span>
-                            <span>Email: <%= locals.user.email%></span>
-                            <span>Mobile: <%= locals.user.phone%></span>
-                            <span>Date of Birth: dd/mm/yyyy</span>
+                            <span>Name: <%= locals.user.name%></span><br>
+                            <span>Email: <%= locals.user.email%></span><br>
+                            <span>Mobile: <%= locals.user.phone%></span><br>
+                            <span>Date of Birth: dd/mm/yyyy</span><br>
                             <a style="border-color: #0e0c0d;color: aliceblue;background-color: #0e0c0d;font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;font-size: small;" href="/editProfile?id=<%=locals.user._id%>" class="btn btn-outline-primary btn-sm mt-2">
                                 <i style="color: #ffffff;" class="fas fa-edit">Edit</i> 
                             </a>

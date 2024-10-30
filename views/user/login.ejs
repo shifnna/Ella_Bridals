@@ -18,15 +18,20 @@
 
     .reset-password-container {
       background-color: white;
-      width: 400px;
+      width: 25%;
       padding: 40px;
       border-radius: 10px;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
+	@media (max-width: 768px) {
+		.reset-password-container {
+      width: 55%;
+		}
+	}
 
     .reset-password-container h2 {
       text-align: center;
-      color: #ff3f6c;
+      color: #d64b4b;
       margin-bottom: 20px;
     }
 
@@ -42,7 +47,7 @@
     }
 
     .form-group input {
-      width: 100%;
+      width: 90%;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -51,14 +56,14 @@
     }
 
     .form-group input:focus {
-      border-color: #ff3f6c;
+      border-color: #d64b4b;
     }
 
     .reset-btn {
-      background-color: #ff3f6c;
+      background-color:#d64b4b;
       color: white;
       padding: 10px 15px;
-      width: 100%;
+      width: 97%;
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -69,14 +74,14 @@
     }
 
     .reset-btn:hover {
-      background-color: #e2335d;
+      background-color:#be3737;
     }
 
     .back-to-login {
       display: block;
       text-align: center;
       margin-top: 20px;
-      color: #ff3f6c;
+      color: #d64b4b;
       text-decoration: none;
       font-size: 14px;
     }
@@ -150,6 +155,25 @@
 		border-left-color: transparent;
 	}
 }
+.reset-password-container {
+    text-align: center;
+}
+
+.reset-btn {
+    display: block;
+    margin: 0 auto;
+}
+
+.forgot-password-link {
+    display: block;
+    margin-top: 10px; /* Space between the button and link */
+    color: rgb(116, 117, 122);
+    text-decoration: none;
+}
+
+.forgot-password-link:hover {
+    text-decoration: underline;
+}
 
     </style>
     
@@ -161,31 +185,31 @@
     </div>
 
 
-  <div class="reset-password-container">
-    <h2>Log In</h2>
-	<form id="loginform" action="/login" method="post">
-        
+	<div class="reset-password-container">
+		<h2>Log In</h2>
+		<form id="loginform" action="/login" method="post">
 			<div class="signup">
 				<div class="form-holder">
-				<div class="form-group">
-					<input type="email" name="email" id="email" class="input" placeholder="Email" />			
-					<div id="error1" class="error-message"></div>
+					<div class="form-group">
+						<input type="email" name="email" id="email" class="input" placeholder="Email" />
+						<div id="error1" class="error-message"></div>
+					</div>
+					<div class="form-group">
+						<input type="password" name="password" id="password" class="input" placeholder="Password" />
+						<div id="error2" class="error-message"></div>
+					</div>
 				</div>
-				<div class="form-group">
-					<input type="password" name="password" id="password" class="input" placeholder="Password" />
-					<div id="error2" class="error-message"></div>
-				</div>
-				</div>
-				<%if(locals.message && message.length>0){%>
-					  <span style="color: red;font-size: small;"><%=message%></span>
+				<%if(locals.message && message.length > 0){%>
+					<span style="color: red;font-size: small;"><%=message%></span>
 				<%}%>
 				<button type="submit" class="reset-btn">login</button>
-				<a href="/forgotPassword" style="color: rgb(116, 117, 122);margin-left: 37%;">forgot password?</a>
+				<a href="/forgotPassword" class="forgot-password-link">forgot password?</a>
 			</div>
-
-    </form>
-    <a href="/userProfile" class="back-to-login">Back to Profile</a>
-  </div>
+		</form>
+		<a href="/" class="back-to-login">Back to Home</a>
+	</div>
+	
+	
 
 </body>
 

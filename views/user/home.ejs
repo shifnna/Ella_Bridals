@@ -121,44 +121,97 @@
         background: rgba(255, 255, 255, 1); /* Active dot color */
         border: none;
     }
-</style>
+    /* Hide the mobile search bar by default */
+.mobile-search {
+    display: none; /* Hidden by default */
+}
 
-<section class="banner-slider owl-carousel">
-    <div class="banner set-bg" data-setbg="img/banner/banner-5.jpg">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="banner__text">
-                        <h1>Banner 6 Title</h1>
-                        <a href="#">Shop now</a>
-                    </div>
+/* Show the mobile search bar on screens 768px or smaller */
+@media (max-width: 768px) {
+    .mobile-search {
+        display: block; /* Show on mobile devices */
+        margin-top: 34px;
+    }
+}
+
+.breadcrumb-option{
+    margin-top: 45px;
+}
+@media (max-width: 768px) {
+    .property__gallery {
+        display: flex; 
+        flex-wrap: wrap; 
+        justify-content: space-between; 
+    }
+    
+    .product__item {
+        margin-bottom: 0px; /* Space between rows */
+    }
+    
+    .product__item__pic {
+        height: 167px; /* Set a smaller height for images */
+        background-size: cover; 
+        background-position: center; 
+        width: 140px;
+    }
+
+    /* Adjust banner styles if necessary */
+    .banner {
+        height: 150px; /* Adjust height for mobile */
+        background-size: cover; /* Cover the entire area */
+        margin: 0px;
+        margin-top: 17px;
+    }
+
+    .banner__text h1 {
+        font-size: 1.5rem; /* Adjust the font size for mobile */
+    }
+
+    .banner__text a {
+        font-size: 0.9rem; /* Adjust font size for the link/button */
+        padding: 8px 12px; /* Optional: adjust padding for the button */
+    }
+    .breadcrumb-option{
+    margin-top: 0px;
+}
+}
+
+</style>
+<div class="mobile-search" >
+    <ul class="header__search" style="display: flex; align-items: center;">
+        <form action="/shop" method="get" class="search-form" style="display: flex; align-items: center; width: 100%;">
+            <input style="border: solid gray; border-width: 0.5px; border-radius: 1px 0 0 1px; height: 35px; width: 800px;" 
+                   type="text" name="search" placeholder="Search for products..." aria-label="Search">
+            <div class="search-icon" style="background-color: lightgray; border-radius: 0 1px 1px 0; padding: 5px;">
+                <button type="submit" style="border: none; background-color: transparent; cursor: pointer;">
+                    <span class="icon_search"></span>
+                </button>
+            </div>
+        </form>
+    </ul>
+</div>
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="/"><i class="fa fa-home"></i> Home</a>
+                    <a href="/shop"><span>Shop</span></a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<section class="banner-slider owl-carousel" style="margin-top: -45px;">
+    <div class="banner set-bg" data-setbg="img/banner/banner-5.jpg">
+
     </div>
     <div class="banner set-bg" data-setbg="img/banner/banner-34.webp">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="banner__text">
-                        <h1>Banner 5 Title</h1>
-                        <a href="#">Shop now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
     </div>
     <div class="banner set-bg" data-setbg="img/banner/banner-20.webp">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="banner__text">
-                        <h1>Banner 5 Title</h1>
-                        <a href="#">Shop now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+       
     </div>
 </section>
 
@@ -183,89 +236,85 @@
 </script>
 
 <section>
-    <h5 style="margin-left: 70px;">BEST SELLERS</h5>
-    <div style="margin-left: 50px;margin-right: 50px;">
-<div class="row property__gallery">
-                <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
-        <div class="product__item">
-            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-28.webp">
-                <ul class="product__hover">
-                    <li><a href="img/banner/banner-28.webp" class="image-popup"></a></li>
-                    </ul>
-            </div>
-            <div class="product__item__text">
-                <h6><a href="#">Contrasting sunglasses</a></h6>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
+    <h5 style="margin-left: 50px;margin-top: 40px;">BEST SELLERS</h5>
+    <div style="margin-left: 10%;margin-right: 10%;">
+        <div class="row property__gallery">
+            <div class="col-6 col-md-4 col-lg-3 mix women men kid accessories cosmetic"> <!-- Adjusted for 2 items in mobile -->
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="img/banner/banner-28.webp">
+                        <ul class="product__hover">
+                            <li><a href="img/banner/banner-28.webp" class="image-popup"></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="#">Contrasting sunglasses</a></h6>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
-        <div class="product__item">
-            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-27.webp">
-                <ul class="product__hover">
-                    <li><a href="img/banner/banner-27.webp" class="image-popup"></a></li>
-                    </ul>
-            </div>
-            <div class="product__item__text">
-                <h6><a href="#">Contrasting sunglasses</a></h6>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
+            <div class="col-6 col-md-4 col-lg-3 mix women men kid accessories cosmetic"> <!-- Adjusted for 2 items in mobile -->
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="img/banner/banner-27.webp">
+                        <ul class="product__hover">
+                            <li><a href="img/banner/banner-27.webp" class="image-popup"></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="#">Contrasting sunglasses</a></h6>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-4 col-sm-6 mix women men kid accessories cosmetic">
-        <div class="product__item">
-            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-11.webp">
-                <ul class="product__hover">
-                    <li><a href="img/banner/banner-11.webp" class="image-popup"></a></li>
-                     </ul>
-            </div>
-            <div class="product__item__text">
-                <h6><a href="#">Contrasting sunglasses</a></h6>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
+            <div class="col-6 col-md-4 col-lg-3 mix women men kid accessories cosmetic"> <!-- Adjusted for 2 items in mobile -->
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="img/banner/banner-11.webp">
+                        <ul class="product__hover">
+                            <li><a href="img/banner/banner-27.webp" class="image-popup"></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="#">Contrasting sunglasses</a></h6>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-3 col-md-4 col-sm-6 ">
-        <div class="product__item">
-            <div class="product__item__pic set-bg" data-setbg="img/banner/banner-31.avif">
-                <ul class="product__hover">
-                    <li><a href="img/banner/banner-31.avif" class="image-popup"></a></li>
-                      </ul>
-            </div>
-            <div class="product__item__text">
-                <h6><a href="#">Contrasting sunglasses</a></h6>
-                <div class="rating">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
+            <div class="col-6 col-md-4 col-lg-3 mix women men kid accessories cosmetic"> <!-- Adjusted for 2 items in mobile -->
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="img/banner/banner-31.avif">
+                        <ul class="product__hover">
+                            <li><a href="img/banner/banner-27.webp" class="image-popup"></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="#">Contrasting sunglasses</a></h6>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- Repeat for other product items -->
         </div>
     </div>
-</div>
-</div>
-</div>
+</section>
 
 <!-- Banner Section Begin -->
 <section>

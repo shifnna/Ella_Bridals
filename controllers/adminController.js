@@ -15,9 +15,10 @@ const pageerror = async (req,res)=>{
 }
 
 
-const loadLogin =  (req,res)=>{
+const loadLogin = async (req,res)=>{
     
     if(req.session.admin){
+        
         return res.redirect("/admin/dashboard")
 
     }else{
@@ -35,7 +36,6 @@ const login = async (req,res)=>{
             const {email,password} = req.body;
 
             const admins =await User.findOne({email,isAdmin:true});
-    
             if (!admins) {
                 return res.render("loginPage", { message: "Incorrect email or password" });
             }
@@ -47,7 +47,10 @@ const login = async (req,res)=>{
             }
     
             req.session.admin = true;
-        }        
+        }
+
+        const admins =await User.findOne({isAdmin:true});        
+        const adminName=admins.name;
 
  //^ Step 1: Aggregate orders to find total quantity sold for each product
  const salesData = await Order.aggregate([
@@ -143,7 +146,7 @@ const topSellingBrands = brandSalesData.map(sale => ({
         const offerDiscount = 0;
         const chartData = [];
         
-        return res.render("dashboard", { orders, grandTotal, totalDiscount, offerDiscount ,topSellingProducts,topSellingCategories,topSellingBrands,chartData});
+        return res.render("dashboard", { orders, grandTotal, totalDiscount, offerDiscount ,topSellingProducts,topSellingCategories,topSellingBrands,chartData,adminName});
 
     } catch (error) {
         console.log("login error",error);
@@ -180,11 +183,14 @@ const generateReport = async (req, res) => {
         // If it's already in dd-mm-yyyy format, return as is
         return dateString;
     };
-
     const startDateString = formatDateString(req.body['start-date']);
     const endDateString = formatDateString(req.body['end-date']);
 
     const interval = req.body['interval'];
+    const { 'start-date': startDates, 'end-date': endDates } = req.body;
+    if (!startDates || !endDates) {
+        return res.redirect("/admin/login")
+    }
 
     console.log('req body :',req.body);
     
@@ -407,12 +413,15 @@ const topSellingBrands = brandSalesData.map(sale => ({
       };
   }
 
-        res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount,topSellingBrands,topSellingCategories,topSellingProducts,chartData});
+  const admins =await User.findOne({isAdmin:true});        
+  const adminName=admins.name;
+
+        res.render("dashboard", { orders ,grandTotal,totalDiscount,offerDiscount,topSellingBrands,topSellingCategories,topSellingProducts,chartData,adminName});
             console.log('Report generated successfully..');
         
     } catch (error) {
         console.error("Error generating report:", error);
-        res.status(500).json({ error: "Failed to generate report" });
+        return res.redirect("/pageerror")
     }
 }
 

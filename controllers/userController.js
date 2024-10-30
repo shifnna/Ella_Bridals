@@ -12,6 +12,7 @@ const Address= require("../models/addressSchema")
 const { jsPDF } = require('jspdf');
 const fs = require('fs');
 const path = require('path');
+const { log } = require("console");
 
 
 
@@ -155,6 +156,7 @@ const signup = async (req, res) => {
   try {
       const { name, email, phone, password, cpassword, referalCode } = req.body;
       req.session.referalCode = referalCode;
+console.log('here');
 
       const user = await User.find({email:email})
       if(user.length >0){

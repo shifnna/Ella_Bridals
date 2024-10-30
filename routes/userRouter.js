@@ -22,6 +22,8 @@ router.post("/resendOtp",userController.resendOtp);
 //google signup
 router.get("/auth/google",passport.authenticate('google',{scope:['profile','email']}));
 router.get("/auth/google/callback",passport.authenticate('google',{failureRedirect:"/signup"}),(req,res)=>{
+    console.log('hy');
+    
     res.redirect("/")
 })
 
@@ -82,12 +84,12 @@ router.get("/share-refer",userMiddleware,userController.share_refer)
 
 
 //^ forget password
-router.get("/forgotPassword",userMiddleware, forgotPasswordController.forgotPassword);
-router.get("/verifyForgotOtp",userMiddleware,forgotPasswordController.loadVerifyForgotOtp)
+router.get("/forgotPassword", forgotPasswordController.forgotPassword);
+router.get("/verifyForgotOtp",forgotPasswordController.loadVerifyForgotOtp)
 router.get("/resetPassword",userMiddleware,forgotPasswordController.resetPassword);
-router.post("/sendOtp",userMiddleware, forgotPasswordController.sendOtp);
-router.post("/verifyForgotOtp",userMiddleware, forgotPasswordController.verifyForgotOtp);
-router.post("/updatePassword",userMiddleware, forgotPasswordController.updatePassword);
+router.post("/sendOtp", forgotPasswordController.sendOtp);
+router.post("/verifyForgotOtp", forgotPasswordController.verifyForgotOtp);
+router.post("/updatePassword", forgotPasswordController.updatePassword);
 
 
 

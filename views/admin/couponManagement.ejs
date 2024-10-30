@@ -24,6 +24,7 @@
             background-color: #253234;
             min-height: 100vh;
             width: 250px;
+            margin-top: 45px;
         }
         .sidebar ul {
             list-style-type: none;
@@ -37,7 +38,7 @@
             align-items: center;
             padding: 15px;
             text-decoration: none;
-            color: #e7dddd;
+            color: #060000;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -205,12 +206,56 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.container {
+    display: flex;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #fdfcfc;
+    color: rgb(16, 1, 1);
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000; /* Ensure it is above the sidebar */
+}
+
+.sidebar {
+    width: 180px;
+    height: 100%;
+    background-color: #ffffff;
+    color: rgb(15, 2, 2);
+    position: fixed;
+    left: -250px; /* Hidden by default */
+    transition: left 0.3s ease; /* Smooth transition */
+    z-index: 999; /* Below the menu icon */
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar */
+}
+
+.main-content {
+    margin-left: 0; /* Default margin */
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+.main-content.sidebar-active {
+    margin-left: 250px; /* Push main content to the right */
+}
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+        <div class="menu-icon" id="menu-icon">&#9776; <!-- Hamburger icon --></div>
+        <div class="sidebar" id="sidebar">
             <ul>
                 <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
@@ -227,9 +272,9 @@
             </ul>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" id="main-content">
             <div class="top-header">
-                <h2>Coupon Management</h2>
+                <h2 style="margin-left: 70px;">Coupon Management</h2>
                 <div class="profile">
                     <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
                 </div>
@@ -293,7 +338,20 @@
     </div>
 
     <script>
-        // JavaScript code if needed
-    </script>
+         // jQuery to toggle the sidebar
+         $(document).ready(function() {
+            $("#menu-icon").click(function() {
+                $("#sidebar").toggleClass("active");
+            });
+
+            // Close sidebar when clicking outside of it
+            $(document).click(function(event) {
+                if (!$(event.target).closest('#sidebar, #menu-icon').length) {
+                    $("#sidebar").removeClass("active");
+                }
+            });
+        });
+
+ </script>
 </body>
 </html>

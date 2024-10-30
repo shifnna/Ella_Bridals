@@ -1,12 +1,29 @@
-<%- include("../../views/partials/H-profile") %>
+<%- include("../../views/partials/userHeader") %>
+<style>
+    #addAddressForm{
+        margin-left: 45%;
+       }
+       #hy{
+        margin-left: 52%;
+       }
+
+    @media (max-width: 768px) {
+       #addAddressForm{
+        margin-left: 0%;
+       } 
+       #hy{
+        margin-left: 20%;
+       }
+    }
+</style>
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <div id="hy" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" style="margin-top: 40px;">
         <h1 class="h2">Add Address</h1>
     </div>
 
     <!-- Address Form -->
     <div class="container">
-        <form id="addAddressForm" action="/addAddress/<%= data._id %>" method="post" style="max-width: 400px; margin-left: 20px; margin-right: auto; padding: 15px; background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border: 2px solid #ddd;">
+        <form id="addAddressForm" action="/addAddress/<%= data._id %>" method="post" style="max-width: 400px;margin-right: auto; padding: 15px; background: linear-gradient(145deg, #ffffff, #f0f0f0); border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border: 2px solid #ddd;">
             <div class="mb-4 text-center">
                 <img src="https://via.placeholder.com/80" alt="User Profile" class="user-profile-pic">
                 <label for="name" class="form-label" style="font-weight: bold; color: #333; margin-top: 10px;"><%= data.name %></label>
@@ -94,7 +111,7 @@
     form {
         margin-left: 20px;
         margin-right: auto;
-        padding: 20px;
+        /* padding: 20px; */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
     }
 

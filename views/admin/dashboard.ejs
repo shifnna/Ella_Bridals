@@ -69,23 +69,265 @@
     margin-left: auto; /* Pushes total sold to the right end */
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+        .sidebar {
+            width: 200px; /* Sidebar width for tablets */
+        }
 
+        .main-content {
+            margin-left: 200px; /* Adjust for sidebar */
+        }
+
+        .summary-box {
+            flex: 1 1 calc(100% - 20px); /* Full width for mobile */
+            margin: 10px 0; /* Margin for vertical spacing */
+        }
+
+        .generate-report-btn,
+        .report-options button {
+            min-width: 100px; /* Reduce min width for mobile */
+        }
+    }
+
+
+    @media (max-width: 576px) {
+        .sidebar {
+            width: 100%; /* Full width for mobile */
+            position: relative; /* Make sidebar relative */
+            display: none; /* Hide sidebar by default */
+        }
+
+        .sidebar.open {
+            display: block; /* Show sidebar when open */
+        }
+
+        .main-content {
+            margin-left: 0; /* No margin for mobile */
+            padding: 10px; /* Reduce padding */
+        }
+
+        .sales-report {
+            padding: 20px; /* Less padding for mobile */
+        }
+
+        .modal-content {
+            width: 90%; /* More responsive width */
+        }
+
+        .report-options {
+            flex-direction: column; /* Stack buttons vertically */
+        }
+    }
+    /* Media query for screens smaller than 768px */
+    @media (max-width: 768px) {
+        .summary-box {
+            width: 100%; /* Full width for small screens */
+            padding: 10px; /* Less padding for smaller screens */
+        }
+
+        h3 {
+            font-size: 1em; /* Smaller heading size */
+        }
+
+        p {
+            font-size: 18px; /* Smaller paragraph size */
+        }
+    }
+
+    /* Media query for screens smaller than 576px */
+    @media (max-width: 576px) {
+        .summary-box {
+            padding: 8px; /* Further reduce padding */
+        }
+
+        h3 {
+            font-size: 0.9em; /* Even smaller heading size */
+        }
+
+        p {
+            font-size: 16px; /* Further reduce paragraph size */
+        }
+    }
+    body {
+        margin: 20px; /* Add some margin to the body for better spacing */
+        font-family: Arial, sans-serif; /* Choose a readable font */
+    }
+
+    table {
+        width: 100%; /* Make the table full-width */
+        border-collapse: collapse; /* Remove default spacing */
+        text-align: left; /* Align text to the left */
+        overflow-x: auto; /* Allow horizontal scrolling */
+    }
+
+    thead {
+        display: table-header-group; /* Ensure the header stays at the top */
+    }
+
+    th, td {
+        padding: 12px; /* Add padding for better readability */
+        border: 1px solid #ccc; /* Add a border */
+        font-size: 14px; /* Base font size */
+    }
+
+    th {
+        background-color: #f8d7da; /* Header background color */
+        color: #721c24; /* Header text color */
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        table {
+            display: block; /* Enable block display for the table */
+            overflow-x: auto; /* Allow horizontal scrolling on smaller screens */
+            white-space: nowrap; /* Prevent wrapping of text */
+        }
+
+        thead {
+            display: none; /* Hide the header for mobile view */
+        }
+
+        tbody tr {
+            display: block; /* Each row will become a block */
+            margin-bottom: 15px; /* Space between rows */
+            border: 1px solid #ccc; /* Add border around each row */
+            padding: 10px; /* Padding for touch targets */
+        }
+
+        tbody tr td {
+            display: flex; /* Use flexbox for cells */
+            justify-content: space-between; /* Space out the content */
+            padding: 10px; /* Padding for better touch targets */
+            border: none; /* Remove borders for cleaner look */
+            border-bottom: 1px solid #ccc; /* Add bottom border */
+            position: relative; /* Position for pseudo-elements */
+        }
+
+        tbody tr td::before {
+            content: attr(data-label); /* Display the header name */
+            font-weight: bold; /* Make header names bold */
+            color: #721c24; /* Color for header names */
+            text-transform: uppercase; /* Uppercase text */
+            margin-right: 10px; /* Space between label and content */
+        }
+    }
+  
+    .sidebar {
+    position: fixed; /* Fix the sidebar to the left side */
+    width: 250px; /* Set a fixed width for the sidebar */
+    height: 100%; /* Full height */
+    background-color: #fff; /* Background color */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); /* Optional shadow */
+    transition: transform 0.3s ease; /* Smooth transition */
+    transform: translateX(-100%); /* Initially hide the sidebar */
+    z-index: 1000; /* Ensure it is above other content */
+}
+
+.sidebar.open {
+    transform: translateX(0); /* Show the sidebar when open */
+}
+
+.main-content {
+    margin-left: 0; /* No margin when sidebar is closed */
+    transition: margin-left 0.3s ease; /* Smooth transition for margin change */
+}
+
+.sidebar.open + .main-content {
+    margin-left: 250px; /* Shift main content to the right when sidebar is open */
+}
+
+@media (max-width: 576px) {
+    .sidebar {
+        width: 170px; /* Reduce width for mobile */
+        position: fixed; /* Keep it fixed */
+        display: block; /* Ensure it displays correctly */
+    }
+
+    .sidebar.open {
+        display: block; /* Show sidebar when open */
+    }
+
+    .main-content {
+        margin-left: 0; /* No margin for mobile */
+        padding: 10px; /* Reduce padding */
+    }
+
+    .sidebar.open + .main-content {
+        margin-left: 170px; /* Shift main content to the right when sidebar is open */
+    }
+    .dashboard h2 {
+    font-size: 20px;
+    color: #333;
+}
+}
 </style>
+<body>
+    <button class="menu-btn"><i class="fas fa-bars"></i> Menu</button>
+    
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <!-- <h1 style="color: #181717;">womenz store</h1> -->
+        <ul>
+            <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
+            <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
+            <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
+            <li><a href="/admin/addProducts"><i class="fas fa-plus"></i> Add product</a></li>
+            <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
+            <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
+            <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
+            <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
+            <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
+            <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
+        </ul>
+    </div> 
 
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="top-header">
+            <div class="breadcrumb"></div>
+            <div class="profile">
+                <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
+                <span style="color: rgb(54, 53, 53);"><%=adminName%></span>
+            </div>
+        </div>
+        <div class="dashboard">
+            <h2>Welcome to the Admin Dashboard</h2>
+            <!-- Your main content goes here -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+       // Toggle sidebar visibility
+const menuBtn = document.querySelector('.menu-btn');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+
+// Open sidebar
+menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+});
+
+// Close sidebar when clicking outside
+document.addEventListener('click', (event) => {
+    const isClickInsideSidebar = sidebar.contains(event.target);
+    const isClickInsideButton = menuBtn.contains(event.target);
+
+    if (!isClickInsideSidebar && !isClickInsideButton && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+    }
+});
+
+</script>
 <!-- Main Content -->
 <div class="main-content" style="padding: 20px; background-color: #f5f7fa; font-family: Arial, sans-serif; width: 100%;">
 
-    <!-- Top Header -->
-    <div class="top-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-size: 24px; color: #333;">Dashboard</h2>
-        <div class="profile">
-            <img src="/img/avatar2.png" alt="" class="profile-pic" style="border-radius: 50%; width: 40px; height: 40px;">
-        </div>
-    </div>
-
-
     <!-- Sales Report Section -->
-    <div class="sales-report" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); width: 100%;">
+    <div class="sales-report" style="background-color: white; padding: 50px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); width: 100%;">
         <h2 style="color: #003366; font-size: 22px; margin-bottom: 20px;text-align: center;">Sales Report</h2>
         
         <button type="button" style="right: 20px; padding: 10px 20px; background-color: #53805a; color: white; border: none; border-radius: 5px;" id="openModal" >Top 10 Sellings</button>
@@ -176,63 +418,52 @@
 
         <!-- Sales Report Table -->
 <h2 style="color: #003366; font-size: 22px; margin-bottom: 10px;">Sales Report</h2>
-<table style="width: 100%; border-collapse: collapse; text-align: left;">
+<table>
     <thead>
-        <tr style="background-color: #f8d7da; color: #721c24;">
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Order ID</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Order Date</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Customer</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Product Name</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Brand</th>
-            <!-- <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Category</th> -->
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Total Quantity</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Discount</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Grand Total</th>
-            <th style="padding: 8px; border: 1px solid #ccc; font-size: 14px;">Status</th>
+        <tr>
+            <th>Order ID</th>
+            <th>Order Date</th>
+            <th>Customer</th>
+            <th>Product Name</th>
+            <th>Brand</th>
+            <th>Total Quantity</th>
+            <th>Discount</th>
+            <th>Grand Total</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
         <% if (orders.length > 0) { %>
             <% orders.forEach((order) => { %>
         <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;">    ORD-<%= order._id.toString().slice(-8).toUpperCase() %>
-            </td>
-            <td style="padding: 8px; border: 1px solid #ccc;"><%= order.orderDate.toLocaleDateString() %></td>
-            <td style="padding: 8px; border: 1px solid #ccc;"><%= order.address[0].username %></td>
-            <td style="padding: 8px; border: 1px solid #ccc;">
+            <td data-label="Order ID">ORD-<%= order._id.toString().slice(-8).toUpperCase() %></td>
+            <td data-label="Order Date"><%= order.orderDate.toLocaleDateString() %></td>
+            <td data-label="Customer"><%= order.address[0].username %></td>
+            <td data-label="Product Name">
                 <% order.products.forEach((product) => { %>
                     <div><%= product.name %> (<%= product.quantity %>)</div>
                 <% }) %>
             </td>
-            <td style="padding: 8px; border: 1px solid #ccc;">
+            <td data-label="Brand">
                 <% order.products.forEach((product) => { %>
                     <div><%= product.brand %></div>
                 <% }) %>
             </td>
-            <!-- <td style="padding: 8px; border: 1px solid #ccc;">
-                <% order.products.forEach((product) => { %>
-                    <div><%= product.category %></div>
-                <% }) %>
-            </td> -->
-            <td style="padding: 8px; border: 1px solid #ccc;">
+            <td data-label="Total Quantity">
                 <%= order.products.reduce((total, product) => total + product.quantity, 0) %>
             </td>
-            <td style="padding: 8px; border: 1px solid #ccc;">
-                Rs.<%= order.couponDiscount %>
-            </td>
-            <td style="padding: 8px; border: 1px solid #ccc;">
+            <td data-label="Discount">Rs.<%= order.couponDiscount %></td>
+            <td data-label="Grand Total">
                 <%= order.products.reduce((total, product) => total + product.price, 0) %>
             </td>
-            <td style="padding: 8px; border: 1px solid #ccc;">
-                <%= order.status %>
-            </td>
+            <td data-label="Status"><%= order.status %></td>
         </tr>
-        <%})%>
-        <%}else{%>
+        <% }) %>
+        <% } else { %>
             <tr>
-
+                <td colspan="9" style="text-align: center;">No orders found.</td>
             </tr>
-        <%}%>    
+        <% } %>    
     </tbody>
 </table>
 
@@ -246,6 +477,9 @@
 </div>
 
 <script>
+
+
+
     document.addEventListener("DOMContentLoaded", function() {
     // Ensure the chart is generated only after the DOM is loaded and chart data is available
     const chartData = <%- JSON.stringify(chartData) %>;     

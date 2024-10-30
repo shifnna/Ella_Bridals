@@ -65,7 +65,71 @@
             background-color: #007bff;
             color: #fff;
         }
+   /* Hide the mobile search bar by default */
+   .mobile-search {
+    display: none; /* Hidden by default */
+}
+
+/* Show the mobile search bar on screens 768px or smaller */
+@media (max-width: 768px) {
+    .mobile-search {
+        display: block; /* Show on mobile devices */
+        margin-top: 34px;
+    }
+    .sidebar__filter {
+    position: relative;
+    margin-bottom: 0px;
+}
+}
+@media (max-width: 768px) {
+    .product-item {
+        width: 50%; /* Two items per row */
+        box-sizing: border-box; /* Include padding and borders in the element's total width */
+    }
+    
+    /* Adjust the padding or margin if necessary */
+    .product__item {
+        margin-top: 30px; /* Add margin between products */
+    }
+    .product__item__pic {
+    height: 173px;
+    position: relative;
+    overflow: hidden;
+}
+.sidebar__categories {
+    margin-bottom: 10px;
+}
+.sidebar__categories .section-title {
+    margin-bottom: 11px;
+}
+h4{
+    margin-bottom: -0.5rem;
+}
+}
+.breadcrumb-option{
+        margin-top: 50px;
+    }
+    
+    @media (max-width: 768px) {
+       .breadcrumb-option{
+        margin-top: 0px;
+       } 
+    }
 </style>
+<!-- mobile -->
+<div class="mobile-search" >
+    <ul class="header__search" style="display: flex; align-items: center;">
+        <form action="/shop" method="get" class="search-form" style="display: flex; align-items: center; width: 100%;">
+            <input style="border: solid gray; border-width: 0.5px; border-radius: 1px 0 0 1px; height: 35px; width: 800px;" 
+                   type="text" name="search" placeholder="Search for products..." aria-label="Search">
+            <div class="search-icon" style="background-color: lightgray; border-radius: 0 1px 1px 0; padding: 5px;">
+                <button type="submit" style="border: none; background-color: transparent; cursor: pointer;">
+                    <span class="icon_search"></span>
+                </button>
+            </div>
+        </form>
+    </ul>
+</div>
       <!-- Breadcrumb Begin -->
       <div class="breadcrumb-option">
         <div class="container">
@@ -73,58 +137,80 @@
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
                         <a href="/"><i class="fa fa-home"></i> Home</a>
-                        <a href="/shop"><span>Shop</span></a>
+                        <a style="text-decoration: none;" href="/shop">Shop</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
    
+<!-- Add styles -->
+<style>
+    .pagination-arrow {
+        margin: 0 10px;
+        color: black;
+        text-decoration: none;
+        font-size: 20px;
+    }
+    .active-page {
+        color: black;
+        font-weight: bold;
+    }
+    .inactive-page {
+        color: gray;
+        font-weight: normal;
+    }
+    .hy{
+        margin: 50px;
+        margin-top: 50px;
+    }
+    
+    @media (max-width: 768px) {
+       .hy{
+        margin: 50px;
+        margin-top: 5px;
+       } 
+    }
+</style>
+
     <!-- Shop Section Begin -->
 <section>
-    <div style="margin: 50px;">
+    <div class="hy">
         <div class="row">
-            <div class="col-lg-3 col-md-3" style="max-width: 20%;">
-                <div class="shop__sidebar">
-                    <div class="sidebar__categories">
-                        <div class="section-title">
-                            <h4>Categories</h4>
-                        </div>
-                        <div class="categories__accordion">
-                            <div class="accordion" id="accordionExample">
-                                
-                                <div class="card">
-                                    <div class="card-heading ">
-                                        <a href="/shop">All</a>
-                                    </div>
-                                </div>
-                                <% categories.forEach(function(category) { %>
-                                    <div class="card">
-                                        <div class="card-heading ">
-                                            <a href="/shop?category=<%= category._id %>"><%= category.name %></a>
-                                        </div>
-                                    </div>
-                                    <% }) %>
-                            </div>
-                        </div>
+            <div class="shop__sidebar">
+                <div class="sidebar__categories">
+                    <div class="section-title">
+                        <h4>Categories</h4>
                     </div>
-                    <div class="sidebar__filter">
-                        <div class="section-title">
-                            <h4>Filter</h4>
-                        </div>
-                        <div class="filter-dropdown">
-                            <select  class="form-select card-heading" aria-label="Filter by" id="productFilter" style="width: 233px;height: 48px; border: none; border-top: 1px solid #f2f2f2;border-bottom: 1px solid #f2f2f2;">
-                                <option value="" selected disabled>Filter by</option>
-                                <option value="price-low-high">Price: Low to High</option>
-                                <option value="price-high-low">Price: High to Low</option>
-                                <option value="name-a-z">Product Name: A to Z</option>
-                                <option value="name-z-a">Product Name: Z to A</option>
-                                <option value="new-arrivals">New Arrivals</option>
+                    <div class="categories__dropdown">
+                        <form action="/shop" method="get">
+                            <select name="category" class="form-select card-heading" aria-label="Select category" onchange="this.form.submit()" style="width: 233px; height: 48px; border: none; border-top: 1px solid #f2f2f2; border-bottom: 1px solid #f2f2f2;">
+                                <option value="" selected disabled>Select Category</option>
+                                <option value="">All</option>
+                                <% categories.forEach(function(category) { %>
+                                    <option value="<%=category._id%>"><%= category.name %></option>
+                                <% }) %>
                             </select>
-                        </div>
+                        </form>
+                    </div>                    
+                </div>
+                <div class="sidebar__filter">
+                    <div class="section-title">
+                        <h4>Filter</h4>
+                    </div>
+                    <div class="filter-dropdown">
+                        <select class="form-select card-heading" aria-label="Filter by" id="productFilter" style="width: 233px; height: 48px; border: none; border-top: 1px solid #f2f2f2; border-bottom: 1px solid #f2f2f2;">
+                            <option value="" selected disabled>Filter by</option>
+                            <option value="price-low-high">Price: Low to High</option>
+                            <option value="price-high-low">Price: High to Low</option>
+                            <option value="name-a-z">Product Name: A to Z</option>
+                            <option value="name-z-a">Product Name: Z to A</option>
+                            <option value="new-arrivals">New Arrivals</option>
+                        </select>
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-9 col-md-9">
                 <!-- Product Grid -->
                 <div class="row product-row" id="productList">
@@ -173,27 +259,25 @@
                     </div>
                     <% }) %>
                 </div>
-<!-- Pagination Section -->
+                <!-- Pagination Section -->
 <div class="pagination" style="text-align: center; margin-top: 20px;">
     <div>
         <% if (currentPage > 1) { %>
-            <a href="/shop?page=<%= currentPage - 1 %>" style="margin-right: 10px; color: black; text-decoration: none; font-size: 20px;">&lt;<small>Previous</small> </a> <!-- Left Arrow -->
+            <a href="/shop?page=<%= currentPage - 1 %>" class="pagination-arrow"> &lt;<small>Previous</small> </a>
         <% } %>
 
         <% for (let i = 1; i <= totalPages; i++) { %>
-            <a href="/shop?page=<%= i %>" style="display: inline-block; margin: 0 5px; color: <%= currentPage === i ? 'black' : 'gray' %>; text-decoration: none; font-weight: <%= currentPage === i ? 'bold' : 'normal' %>; cursor: pointer;"><%= i %></a>
+            <a href="/shop?page=<%= i %>" class="<%= currentPage === i ? 'active-page' : 'inactive-page' %>"><%= i %></a>
         <% } %>
 
         <% if (currentPage < totalPages) { %>
-            <a href="/shop?page=<%= currentPage + 1 %>" style="margin-left: 10px; color: black; text-decoration: none; font-size: 20px;"> <small>Next</small>&gt;</a> <!-- Right Arrow -->
+            <a href="/shop?page=<%= currentPage + 1 %>" class="pagination-arrow"> <small>Next</small>&gt;</a>
         <% } %>
     </div>
 </div>
-
-
-            </div>
         </div>
     </div>
+</div>
 </section>
 
     <!-- Shop Section End -->

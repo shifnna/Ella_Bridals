@@ -13,7 +13,7 @@
         /* General styles */
         * {
             margin: 0;
-            padding: 0;
+            padding: 0px;
             box-sizing: border-box;
         }
 
@@ -24,13 +24,14 @@
 
         .container {
             display: flex;
-            height: 100vh;
+            /* height: 100vh; */
+            transition: margin-left 0.3s ease;
         }
 
         /* Sidebar styles */
         .sidebar {
             width: 250px;
-            background-color: #253234;
+            background-color: #e3e5e6;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -39,6 +40,26 @@
             top: 0;
             left: 0;
             height: 100%;
+            transform: translateX(-100%); /* Initially hidden */
+            transition: transform 0.3s ease;
+            z-index: 100; /* Ensure it appears above other elements */
+        }
+
+        .sidebar.open {
+            transform: translateX(0); /* Show sidebar */
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #e3e5e6;
+            color: rgb(30, 29, 29);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 101; /* Ensure button is above sidebar */
         }
 
         .logo-section {
@@ -58,7 +79,7 @@
 
         .logo-section h1 {
             font-size: 28px; /* Increased the font size */
-            color: #e7dddd;
+            color: #151414;
         }
 
         .sidebar ul {
@@ -76,7 +97,7 @@
             align-items: center;
             padding: 15px;
             text-decoration: none;
-            color: #e7dddd;
+            color: #1a1818;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -107,7 +128,7 @@
 
         .breadcrumb {
             font-size: 18px;
-            color: white;
+            color: rgb(29, 27, 27);
         }
 
         .profile {
@@ -124,11 +145,12 @@
 
         /* Main content styles */
         .main-content {
-            margin-left: 250px;
-            margin-top: 60px;
-            padding: 20px;
-            height: calc(100vh - 60px);
-            background-color:#f4f4f4;
+            /* margin-left: 250px; */
+            /* margin-top: 60px; */
+            /* padding: 20px; */
+            /* height: calc(100vh - 60px); */
+            background-color: #f4f4f4;
+            transition: margin-left 0.3s ease;
         }
 
         .dashboard h2 {
@@ -138,24 +160,5 @@
 
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- <img src="path-to-your-logo.png" alt="" class="logo"> -->
-            <h1 style="color: #e7dddd;">womenz store</h1>
-            <ul>
-                <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
-                <li><a href="/admin/category"><i class="fas fa-list"></i> Category</a></li>
-                <li><a href="/admin/brands"><i class="fas fa-star"></i> Brands</a></li>
-                <li><a href="/admin/addProducts"><i class="fas fa-plus"></i> Add product</a></li>
-                <li><a href="/admin/products"><i class="fas fa-box"></i> Products</a></li>
-                <li><a href="/admin/coupon"><i class="fas fa-tags"></i> Coupon</a></li>
-                <li><a href="/admin/banner"><i class="fas fa-image"></i> Banner</a></li>
-                <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
-                <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
-                <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
 
-            </ul>
-        </div>
+

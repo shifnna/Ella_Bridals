@@ -6,12 +6,14 @@
     <meta name="description" content="Ashion Template">
     <meta name="keywords" content="Ashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>womenz-store</title>
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
@@ -167,7 +169,6 @@ body {
     padding: 10px; 
 }  */
     </style>
-</head>
 
 <body>
     <!-- Page Preloder -->
@@ -177,45 +178,106 @@ body {
 
     <!-- Offcanvas Menu Begin -->
     <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-        <div class="offcanvas__close">+</div>
-        <ul class="offcanvas__widget">
-            <li><span class="icon_search search-switch"></span></li>
-            <li><a href="#"><span class="icon_heart_alt"></span>
-                <div class="tip">2</div>
-            </a></li>
-            <li><a href="#"><span class="icon_bag_alt"></span>
-                <div class="tip">2</div>
-            </a></li>
-        </ul>
-        <!-- <div class="offcanvas__logo">
-            <a href="./index.html"><img src="img/logo.png" alt=""></a>
-        </div> -->
-        <!-- <div id="mobile-menu-wrap"></div> -->
-        <div class="offcanvas__auth">
-            <%if(locals.user){%>
+<div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <ul class="offcanvas__widget">
+        <% if (locals.user) { %>
+            <li>
+                <!-- <div class="dropdown" style="display: flex; flex-direction: column; align-items: center;"> -->
+                    <a href="/userProfile"><i class="fas fa-user-circle profile-logo"></i></a>
+                    <span class="profile-text"><a href="/userProfile"> <%= locals.user.name %></a></span>
+                    
+                <!-- </div> -->
+            </li> 
+            <!-- <li></li>            -->
+            <li class="wishlist"  style="display: inline-block; flex-direction: column; align-items: center;"> <!-- Use margin-left: auto to push these items to the right -->
+                <a href="/wishlist">
+                    <span class="icon_heart_alt"></span>
+                    <!-- <div class="tip">2</div> -->
+                </a>
+                <a href="/cart">
+                    <span class="icon_bag_alt"></span>
+                    <!-- <div class="tip">2</div> -->
+                </a>
+            </li>
+        <% } else { %>
+            <li>
                 <div class="dropdown">
-                    <a href="" class="sign-in-link"><%=locals.user.name%></a>
+                    <i class="fas fa-user-circle profile-logo"></i>
+                   <a href="/userProfile"><span class="profile-text">Profile</span></a> 
+                   <a href="/wishlist">
+                    <span class="icon_heart_alt"></span>
+                    <!-- <div class="tip">2</div> -->
+                </a>
+                <a href="/cart">
+                    <span class="icon_bag_alt"></span>
+                    <!-- <div class="tip">2</div> -->
+                </a>
                     <div class="dropdown-content">
-
-                        <a href="/userProfile">Profile</a>
-                        <a href="/logout">Logout</a>
-
-                    </div>
-
-                </div>
-            <%}else {%>
-                <div class="dropdown">
-                    <i class="fas fa-user-circle profile-logo"></i> <!-- Font Awesome icon -->
-                    <span class="profile-text">Profile</span>
-                                <div class="dropdown-content">
-                        <a href="/login">Log In</a>
-                        <a href="/signup">Sign Up</a>
+                        <a href="/login">Log In</a><br>
+                        <a href="/signup">Sign Up</a>                    
                     </div>
                 </div>
-            <%}%>
-        </div>
-    </div>
+            </li>
+        <% } %>
+         <!-- New navigation links for mobile -->
+         <ul class="offcanvas-nav d-lg-none" > <!-- Only show on mobile -->
+            <li>
+                <p style=" display: flex; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/"><i class="fas fa-home"></i>Home</a>
+                </p>
+            </li>
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/shop"><i class="fas fa-shop"></i>Shop</a>
+                </p>
+            </li>
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/wallet"><i class="fas fa-wallet"></i>Wallet</a>
+                </p>
+            </li>
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/blog"><i class="fas fa-blog"></i>Blog</a>
+                </p>
+            </li>
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/contact"><i class="fas fa-phone"></i>Contact</a>
+                </p>
+            </li>
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/orders"><i class="fas fa-shopping-cart"></i>Orders</a>
+                </p>
+            </li>
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;" href="/logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                </p>
+            </li>
+            
+            <li>
+                <p style="margin: 10px 0; align-items: start;">
+                    <span style="margin-right: 5px;"></span>
+                    <a style="text-decoration: none; color: black; font-size: medium; font-weight: bold;"  href="/reset-password"><i class="fas fa-set"></i>Reset Password</a>
+                </p>
+            </li>
+        </ul>
+        
+    </ul>
+</div>
+
+    
+    
     <!-- Offcanvas Menu End -->
 
     <!-- Header Section Begin -->
@@ -224,12 +286,11 @@ body {
             <div class="row">
                 <div class="col-xl-3 col-lg-2">
                     <div class="header__logo">
-                        <a href="./index.html" style="width: 100px;height: 100px;"><img src="img/preview2.png" alt=""></a>
+                        <a href="/" style="width: 100px;height: 100px;"><img src="img/preview2.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-xl-6 col-lg-7">
                     <nav class="header__menu">
-                        
                         <ul>
                             <li class="header__search" style="display: flex; align-items: center;">
                                 <form action="/shop" method="get" class="search-form" style="display: flex; align-items: center; width: 100%;">
@@ -244,34 +305,28 @@ body {
                             </li>                            
                             <li style="margin-left: 45px;"> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/">Home</a></p></li>
                             <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop">Shop</a></p></li>
-                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;"  href="/shop?categoryName=Women">Women</a></p></li>
-                            <li> <p style="font-size: smaller"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop?categoryName=Men">Men</a></p></li>
-                            <!-- <li><a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="#">Product Details</a></li>
-                                    <li><a href="/cart">Shop Cart</a></li>
-                                    <li><a href="./checkout.html">Checkout</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
-                                </ul>
-                            </li> -->
-                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="/blog">Blog</a></p></li>
-                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;" href="/contact">Contact</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop?categoryName=Women">Women</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/shop?categoryName=Men">Men</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/blog">Blog</a></p></li>
+                            <li> <p style="font-size: smaller;"><a style="text-decoration: none;font-size: small;margin: 15px;" href="/contact">Contact</a></p></li>
                         </ul>
                     </nav>
                 </div>
-                <div class="col-lg-3">
-                    <div class="header__right" style="padding: 21px 0 27px; display: flex; align-items: center; justify-content: flex-end;margin-right: 30px;"> <!-- Added justify-content -->
-                        <div class="header__right__auth" style="text-align: center; margin-right: 5px; margin-left: -10px;"> <!-- Adjusted margin-left for user icon -->
-                            <% if(locals.user) { %>
-                                <!-- Dropdown menu -->
+                <div class="col-lg-3 d-none d-lg-block"> <!-- Hide on mobile -->
+                    <div class="header__right" style="padding: 21px 0 27px; display: flex; align-items: center; justify-content: flex-end;margin-right: 30px;">
+                        <div class="header__right__auth" style="text-align: center; margin-right: 5px; margin-left: -10px;">
+                            <% if (locals.user) { %>
                                 <div class="dropdown">
                                     <a href="#" class="sign-in-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="display: block; margin-top: 5px;">
                                         <span class="fas fa-user-circle" style="font-size: 20px; display: block; margin: 0 auto; margin-bottom: 2px;"></span>
-                                        <%=locals.user.name%>
+                                        <%= locals.user.name %>
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="/userProfile">Profile</a></li>
                                         <li><a href="/logout">Logout</a></li>
+                                        <li><a href="/wallet">Wallet</a></li>
+                                        <li><a href="/orders">Orders</a></li>
+                                        <li><a href="/orders">Reset Password</a></li>
                                     </ul>
                                 </div>
                             <% } else { %>
@@ -281,25 +336,26 @@ body {
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a href="/login">Log In</a></li>
+                                        <li></li>
                                         <li><a href="/Signup">Sign Up</a></li>
                                     </ul>
                                 </div>
                             <% } %>
                         </div>
                         <ul class="header__right__widget" style="display: flex; align-items: flex-start; margin: 0; padding: 0;">
-                            <li style="margin: 0 2px; margin-top: -9px; margin-left: -5px;"> <!-- Adjust margin to uplift the icon -->
+                            <li style="margin: 0 2px; margin-top: -9px; margin-left: -5px;">
                                 <a href="/wishlist">
                                     <span class="icon_heart_alt"></span>
                                 </a>
                             </li>
-                            <li style="margin: 0 2px; margin-top: -9px; margin-left: 10px;"> <!-- Adjust margin to uplift the icon -->
+                            <li style="margin: 0 2px; margin-top: -9px; margin-left: 10px;">
                                 <a href="/cart">
                                     <span class="icon_bag_alt"></span>
                                 </a>
                             </li>
                         </ul>
                     </div>
-                </div>                
+                </div> 
             </div>
             <div class="canvas__open">
                 <i class="fa fa-bars"></i>
@@ -307,3 +363,4 @@ body {
         </div>
     </header>
     <!-- Header Section End -->
+

@@ -34,7 +34,7 @@
             align-items: center;
             padding: 15px;
             text-decoration: none;
-            color: #e7dddd;
+            color: #0e0a0a;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
@@ -198,12 +198,64 @@
             background-color: #007bff;
             color: #fff;
         }
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-icon {
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    background-color: #fdfcfc;
+    color: rgb(16, 1, 1);
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000; /* Ensure it is above the sidebar */
+}
+
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background-color: #ffffff;
+    color: rgb(15, 2, 2);
+    position: fixed;
+    left: -250px; /* Hidden by default */
+    transition: left 0.3s ease; /* Smooth transition */
+    z-index: 999; /* Below the menu icon */
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar */
+}
+
+.main-content {
+    margin-left: 0; /* Default margin */
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+.main-content.sidebar-active {
+    margin-left: 250px; /* Push main content to the right */
+}
+
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+        <div class="menu-icon" id="menu-icon">&#9776; <!-- Hamburger icon --></div>
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar" style="margin-top: 43px;">
             <ul>
                 <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
@@ -222,7 +274,7 @@
 
         <div class="main-content">
             <div class="top-header">
-                <h2>Products Details</h2>
+                <h2 style="margin-left: 40px;">Products Details</h2>
                 <div class="profile">
                     <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
                 </div>
@@ -307,6 +359,21 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+         // jQuery to toggle the sidebar
+         $(document).ready(function() {
+            $("#menu-icon").click(function() {
+                $("#sidebar").toggleClass("active");
+            });
+
+            // Close sidebar when clicking outside of it
+            $(document).click(function(event) {
+                if (!$(event.target).closest('#sidebar, #menu-icon').length) {
+                    $("#sidebar").removeClass("active");
+                }
+            });
+        });
+
+
     async function addOffer(productId) {
     const { value: amount } = await Swal.fire({
         title: "Offer in percentage",

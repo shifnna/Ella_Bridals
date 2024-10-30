@@ -1,27 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Payment Method</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
-    <link rel="stylesheet" href="css/jquery-ui.min.css" type="text/css">
-    <link rel="stylesheet" href="css/magnific-popup.css" type="text/css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css" type="text/css">
-    <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
-    <link rel="stylesheet" href="css/style.css" type="text/css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<%-include("../../views/partials/userHeader")%>
+<style>
+    .container {
+    max-width: 800px;
+    margin: 0 auto;
+}
 
-    <style>
-        body {
+body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-        }
-
-        .container {
-            margin-top: 30px;
+            background-color: white;
         }
 
         h1 {
@@ -33,28 +19,28 @@
 
         p {
             text-align: center;
-            color: #e5b4cc;
+            color: #6c757d;
         }
 
-        /* Stepper CSS */
         .stepper {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 30px;
+            margin-top: 55px;
         }
 
         .step {
             display: flex;
             align-items: center;
-            padding: 0 10px;
+            /* padding: 0 10px; */
+            margin: -14px;
         }
 
         .step .circle {
             height: 30px;
             width: 30px;
             border-radius: 50%;
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -65,64 +51,29 @@
         .step .line {
             width: 50px;
             height: 3px;
-            background-color: #cccccc;
+            background-color: #ccc;
             margin: 0 5px;
         }
 
         .step.active .line {
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
 
         .step.active .circle {
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
 
         .step.completed .circle {
-            background-color: #ff007f;
+            background:rgb(187, 13, 13);
         }
-
-        .payment-method-card {
-            border: 1px solid #ebebeb;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #fff;
-            margin-bottom: 20px;
+        @media (max-width: 768px){
+            .h2, h2{
+                font-size: 18px;
+            }
         }
-
-        .payment-method-card input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        .btn-primary {
-            background-color: #ff007f;
-            border-color: #ff007f;
-        }
-
-        .btn-primary:hover {
-            background-color: #e6006c;
-            border-color: #e6006c;
-        }
-
-        /* Custom style for SweetAlert2 success icon */
-        .swal2-success .swal2-success-ring {
-            border-color: #ff007f !important; /* Pink color for the outer ring */
-        }
-
-        .swal2-success .swal2-success-line {
-            background-color: #ff007f !important; /* Pink color for the tick mark */
-        }
-        
-        .success-icon {
-            font-size: 50px; /* Adjust size as needed */
-            color: #ff007f; /* Match your theme color */
-            margin-bottom: 20px; /* Space between icon and text */
-        }
-    </style>
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.min.css">
-</head>
+</style>
 <body>
-    <div class="container">
+ <div class="container">
         <!-- Stepper -->
         <div class="stepper">
             <div class="step completed">
@@ -141,23 +92,30 @@
             </div>
         </div>
 
-        <div style="text-align: center;padding: 0px;width: 500px;margin-left: 310px;background: #ffffff;border-color: #000000;border-radius: 5px;margin-top: 50px;" class="checkout__order">
-                <!-- <i class="fas fa-check-circle"></i> -->
-                 <img style="width: 200px;height: 200px;" src="/imgs/success.png" alt="">
+        <div style="text-align: center;" class="checkout__order">
+            <img style="width: 170px; height: 160px;" src="/imgs/success.png" alt="">
             <h2>Your Order is Successfully placed</h2>
             <br>
             <a style="text-decoration: none;" href="/shop">
-                <button style="background-color: #000000;color: #ebebeb;height: 40px;border-radius: 5px;margin-bottom: 30px;" id="rzp-button">Continue Shopping</button>
+                <button style="background-color: #000000; color: #ebebeb; height: 40px; border-radius: 5px;" id="rzp-button">Continue Shopping</button>
             </a>
             <a href="/orders">
-                <button style="background-color: #000000;color: #ebebeb;height: 40px;border-radius: 5px;margin-bottom: 30px;" id="rzp-button">View Orders</button>
+                <button style="background-color: #000000; color: #ebebeb; height: 40px; border-radius: 5px;" id="rzp-button">View Orders</button>
             </a>
         </div>
     </div>
 
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.9/sweetalert2.all.min.js"></script>
-    <!-- Bootstrap JS CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- Js Plugins -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.magnific-popup.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/mixitup.min.js"></script>
+<script src="js/jquery.countdown.min.js"></script>
+<script src="js/jquery.slicknav.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/main.js"></script>
 </body>
+
 </html>

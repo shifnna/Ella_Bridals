@@ -21,9 +21,16 @@
             min-height: 100vh;
         }
         .sidebar {
-            background-color: #253234;
+            background-color: #e3e5e6;
             min-height: 100vh;
             width: 250px;
+            position: fixed; /* Make it fixed */
+            left: -250px; /* Initially hide it off screen */
+            transition: left 0.3s ease; /* Smooth transition */
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+        .sidebar.active {
+            left: 0; /* Show when active */
         }
         .sidebar ul {
             list-style-type: none;
@@ -37,13 +44,13 @@
             align-items: center;
             padding: 15px;
             text-decoration: none;
-            color: #e7dddd;
+            color: #1f1c1c;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
         .sidebar ul li a:hover {
             background-color: #6f898d;
-            color: white;
+            color: rgb(33, 32, 32);
             text-decoration: none;
         }
         .sidebar ul li a i {
@@ -52,7 +59,11 @@
         .main-content {
             flex: 1;
             padding: 20px;
-            background-color: #fff;
+            /* margin-left: 250px; Adjust for sidebar width */
+            transition: margin-left 0.3s ease; /* Smooth transition for content */
+        }
+        .main-content.shift {
+            margin-left: 0; /* Remove margin when sidebar is open */
         }
         .top-header {
             display: flex;
@@ -78,7 +89,6 @@
             margin-top: 20px;
         }
         .search-add-container {
-            display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
@@ -148,7 +158,6 @@
         .page-item {
             margin: 0 5px;
             list-style: none;
-            margin-right: 70px;
         }
         .page-link {
             padding: 10px 15px;
@@ -165,12 +174,17 @@
             background-color: #007bff;
             color: #fff;
         }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-            <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1>
+        <div class="sidebar" id="sidebar">
+            <!-- <h1 style="margin-left: 18px;color: rgb(226, 222, 222);">Womenz Store</h1> -->
             <ul>
                 <li><a href="/admin/dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
                 <li><a href="/admin/customers"><i class="fas fa-users"></i> Customers</a></li>
@@ -183,13 +197,12 @@
                 <li><a href="/admin/order"><i class="fas fa-receipt"></i> Orders</a></li> 
                 <li><a href="/admin/offers"><i class="fas fa-gift"></i> Offers</a></li> 
                 <li><a href="/admin/logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>              
-
-
             </ul>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" id="main-content">
             <div class="top-header">
+                <i class="fas fa-bars menu-icon" onclick="toggleSidebar()"></i>
                 <h2>Category Management</h2>
                 <div class="profile">
                     <img src="/img/avatar2.png" alt="Profile Picture" class="profile-pic">
@@ -198,7 +211,7 @@
 
             <div class="search-add-container">
                 <a href="/admin/addCategory" class="add-category-btn">+ Add Category</a>
-                <form action="/admin/category" method="get" class="d-inline">
+                <form action="/admin/category" method="get" class="d-inline"  style="margin-top: 20px;">
                     <input style="width: 400px;" name="search" type="text" placeholder="Search categories...">
                     <button type="submit">Search</button>
                 </form>
@@ -211,10 +224,9 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <!-- <th>Offer Price</th> -->
                                 <th>Offer</th>
                                 <th></th>
-                                <th>status</th>
+                                <th>Status</th>
                                 <th>List/Unlist</th>
                                 <th>Edit</th>
                             </tr>
@@ -224,7 +236,6 @@
                                 <tr>
                                     <td><%=category.name %></td>
                                     <td><%=category.description %></td>
-                                    <!-- <td></td> -->
                                     <td> 
                                         <% if(category.categoryOffer){ %>
                                             <%=category.categoryOffer%>%
@@ -268,130 +279,136 @@
                             <% }); %>
                         </tbody>
                     </table>
-
                 </div>
              <!-- pagination -->
                 <div class="pagination">
-                        <% for (let i = 1; i <= totalPages; i++) { %>
-                            <li class="page-item <%= (i === parseInt(currentPage)) ? 'active' : '' %>">
-                                <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
-                            </li>
-                        <% } %>
-                    </div>
-                    
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= (i === parseInt(currentPage)) ? 'active' : '' %>">
+                            <a class="page-link" href="?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>
 
-
-
     <script>
-        
-        async function addOffer(categoryId) {
-    const confirmation = await Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you want to add an offer to this category?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, add offer!',
-        cancelButtonText: 'Cancel'
-    });
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('shift'); // Shift main content
+        }
 
-    if (confirmation.isConfirmed) {
-        const { value: amount } = await Swal.fire({
-            title: "Offer in percentage",
-            input: "number",
-            inputLabel: 'Percentage',
-            inputPlaceholder: "%",
+        // Close sidebar when clicking outside of it
+        window.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuIcon = document.querySelector('.menu-icon');
+
+            if (!sidebar.contains(event.target) && !menuIcon.contains(event.target)) {
+                sidebar.classList.remove('active');
+                mainContent.classList.remove('shift'); // Remove shift from main content
+            }
         });
 
-        if (amount) {
+        async function addOffer(categoryId) {
+            const confirmation = await Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to add an offer to this category?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, add offer!',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (confirmation.isConfirmed) {
+                const { value: amount } = await Swal.fire({
+                    title: "Offer in percentage",
+                    input: "number",
+                    inputLabel: 'Percentage',
+                    inputPlaceholder: "%",
+                });
+
+                if (amount) {
+                    try {
+                        const response = await fetch("/admin/addCategoryOffer", {
+                            method: "POST",
+                            headers: {
+                                'content-type': "application/json"
+                            },
+                            body: JSON.stringify({
+                                percentage: amount,
+                                categoryId: categoryId,
+                            }),
+                        });
+
+                        const data = await response.json();
+                        if (response.ok && data.status === true) {
+                            Swal.fire(
+                                "Offer added",
+                                "The offer has been added successfully",
+                                "success"
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire("Failed", data.message || "Adding offer failed", "error");
+                        }
+                    } catch (error) {
+                        Swal.fire(
+                            "Error",
+                            "An error occurred while adding the offer",
+                            "error"
+                        );
+                        console.log("Error adding offer:", error);
+                    }
+                }
+            }
+        }
+
+        async function removeOffer(categoryId) {
             try {
-                const response = await fetch("/admin/addCategoryOffer", {
+                const response = await fetch("/admin/removeCategoryOffer", {
                     method: "POST",
                     headers: {
-                        'content-type': "application/json"
+                        "content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        percentage: amount,
-                        categoryId: categoryId,
-                    }),
+                        categoryId: categoryId
+                    })
                 });
 
                 const data = await response.json();
+
                 if (response.ok && data.status === true) {
                     Swal.fire(
-                        "Offer added",
-                        "The offer has been added successfully",
+                        "Offer removed",
+                        "The offer has been removed",
                         "success"
                     ).then(() => {
-                        location.reload();
+                        location.reload()
                     });
                 } else {
-                    Swal.fire("Failed", data.message || "Adding offer failed", "error");
+                    Swal.fire("Failed", data.message || "Removing Offer Failed", "error");
                 }
+
             } catch (error) {
                 Swal.fire(
                     "Error",
-                    "An error occurred while adding the offer",
+                    "An error occurred while removing the offer",
                     "error"
                 );
-                console.log("Error adding offer:", error);
+                console.log("Error removing offer", error);
             }
         }
-    }
-}
 
-
-
-
-async function removeOffer(categoryId){
-    try {
-        const response= await fetch("/admin/removeCategoryOffer",{
-            method:"POST",
-            headers:{
-                "content-type":"application/json"
-            },
-            body:JSON.stringify({
-                categoryId:categoryId
-            })
-        })
-
-        const data= await response.json();
-
-        if(response.ok && data.status === true){
-                Swal.fire(
-                    "offer removed",
-                    "the offer has been removed",
-                    "success"
-                ).then(()=>{
-                   location.reload()
-                })
-            }else{
-                Swal.fire("failed",data.message || "Removing Offer Failed","error")
-            }
-
-    } catch (error) {
-         Swal.fire(
-                "Error",
-                "An error occured while removing the offer",
-                "error"
-            );
-            console.log("error removing offer",error);
-            
+        function confirmUnlist() {
+            return confirm("Are you sure you want to Unlist the products");
         }
-      }
 
-
-      function confirmUnlist(){
-        return confirm("Are you sure you want to Unlist the products")
-      }
-
-      function confirmlist(){
-        return confirm("Are you sure you want to list the products")
-      }
-      
-      
+        function confirmlist() {
+            return confirm("Are you sure you want to list the products");
+        }
     </script>
 </body>
 </html>
