@@ -61,3 +61,10 @@ app.listen(process.env.PORT, (err) => {
 });
 
 module.exports = app;
+
+
+
+// netstat -ano | findstr :3002
+// taskkill /PID <PID> /F
+// npx kill-port 3002
+
