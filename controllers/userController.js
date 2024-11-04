@@ -365,6 +365,16 @@ const login = async (req, res) => {
   }
 };
 
+const success = async (req,res)=>{
+  try {
+    const findUser = User.findOne({email:req.user.email});
+    req.session.findUser = findUser;
+    res.redirect("/")
+  } catch (error) {
+    console.error(error);
+    res.redirect("/login")
+  }
+}
 
 const loadShopingPage = async (req, res) => {
   try {
@@ -951,4 +961,5 @@ module.exports = {
     loadcontact,
     loadblog,
     contact,
+    success,
 }

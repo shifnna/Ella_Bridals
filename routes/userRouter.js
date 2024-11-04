@@ -26,7 +26,11 @@ router.get("/auth/google/callback",passport.authenticate('google',{failureRedire
     
     res.redirect("/")
 })
-
+// router.get("/auth/google/callback",passport.authenticate('google',{successRedirect:'/success', failureRedirect:"/signup"}),(req,res)=>{
+//     console.log('hy');
+//     res.redirect("/")
+// })
+//  router.get("/success",userController.success)
 
 //login
 router.get("/login",userController.loadLogin);
